@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include "headers/sqlite/sqlite3.h"
+#include <sqlite3.h>
+
+//#include "headers/sqlite/sqlite3.h"
 #include "headers/sqliteFunctions.h"
 
 int main(void) {
