@@ -10,6 +10,7 @@
 >`pacman -Syu`\
 >`pacman -Syu`\
 >`pacman -S mingw-w64-x86_64-gcc`\
->`pacman -S mingw-w64-x86_64-toolchain`\
->`pacman -S mingw-w64-x86_64-gtk3`
+>`pacman -S mingw-w64-x86_64-toolchain base-devel`\
+>`pacman -S mingw-w64-x86_64-gtk3`\
+>`pacman -S mingw-w64-x86_64-glade`
 
