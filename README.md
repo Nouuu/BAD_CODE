@@ -20,6 +20,6 @@
 
 ### GTK & Glade
 
-[https://gerald3d.developpez.com/tutoriels/gtk/glade3/]()
-[https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade]()
+[https://gerald3d.developpez.com/tutoriels/gtk/glade3/]()\
+[https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade]()\
 [https://www.guillaumeriviere.name/estia/DRI/tp1.php]()
