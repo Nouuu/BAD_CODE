@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <libgen.h>
 #include <stdlib.h>
 #include <sqlite3.h>
 #include <gtk-3.0/gtk/gtk.h>
