@@ -74,7 +74,7 @@ int insertUserImage(char *dbname, int userId, char *photo_location) {
     }
     fseek(file, 0, SEEK_SET);
 
-    char *data = malloc(flen + 1);
+    char *data = malloc(flen);
     unsigned long long size = fread(data, sizeof(char), flen, file);
     //data contient maintenant tout le binaire du fichier, on peut donc fermer le fichier
 
@@ -89,7 +89,7 @@ int insertUserImage(char *dbname, int userId, char *photo_location) {
 
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
-    char *sqlRequest = "UPDATE USER SET photo = ? WHERE id = ?";
+    char *sqlRequest = "UPDATE user SET photo = ?, photo_name = ? WHERE id = ?";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
@@ -97,10 +97,14 @@ int insertUserImage(char *dbname, int userId, char *photo_location) {
         return 1;
     }
 
+    char *filePath = malloc(strlen(photo_location));
+    strcpy(filePath, photo_location);
+
     sqlite3_bind_blob(pStmt, 1, data, (int) size, SQLITE_STATIC);
     //remplace le parametre 1 ('?' n°1) par un blob
-    sqlite3_bind_int(pStmt, 2, userId);
-    //remplace le parametre 2 ('?' n°2) par un entier
+    sqlite3_bind_text(pStmt, 2, basename(filePath), -1, 0);
+    sqlite3_bind_int(pStmt, 3, userId);
+    //remplace le parametre 3 ('?' n°3) par un entier
 
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {
@@ -109,8 +113,10 @@ int insertUserImage(char *dbname, int userId, char *photo_location) {
     }
 
     free(data);
+    free(filePath);
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
+
     return 0;
 }
 
