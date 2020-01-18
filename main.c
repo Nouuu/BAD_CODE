@@ -8,6 +8,7 @@
 #include "headers/gtkFunctions.h"
 
 GtkBuilder *builder;
+char *dbname = "database.db";
 
 int main(int argc, char **argv) {
 
