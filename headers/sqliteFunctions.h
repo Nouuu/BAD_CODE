@@ -158,4 +158,83 @@ int insertUser(char *dbname, char *email, char *first_name, char *last_name, cha
     return 0;
 }
 
+int insertClass(char *dbname, char *name, int year, int apprenticeship, int sanction_fk, int user_fk) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "insert into class (name, year, apprenticeship, user_fk, sanction_fk) VALUES (?, ?, ?, ?, ?)";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_text(pStmt, 1, name, -1, 0);
+    sqlite3_bind_int(pStmt, 2, year);
+    sqlite3_bind_int(pStmt, 3, apprenticeship);
+    sqlite3_bind_int(pStmt, 4, sanction_fk);
+    sqlite3_bind_int(pStmt, 5, user_fk);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_close(db);
+    return 0;
+}
+
+int updateClass(char *dbname, int id, char *name, int year, int apprenticeship, int user_fk, int sanction_fk) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "update class set name = ?, year = ?, apprenticeship = ?, user_fk = ?, sanction_fk = ? where id = ?";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_text(pStmt, 1, name, -1, 0);
+    sqlite3_bind_int(pStmt, 2, year);
+    sqlite3_bind_int(pStmt, 3, apprenticeship);
+    sqlite3_bind_int(pStmt, 4, user_fk);
+    sqlite3_bind_int(pStmt, 5, sanction_fk);
+    sqlite3_bind_int(pStmt, 6, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_close(db);
+    return 0;
+}
+
+int deleteClass(char *dbname, int id) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "delete from class where id = ?";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_int(pStmt, 1, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_close(db);
+    return 0;
+}
+
+
 #endif //BAD_CODE_SQLITEFUNCTIONS_H
