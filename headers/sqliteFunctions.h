@@ -108,8 +108,8 @@ int insertUserImage(char *dbname, int userId, char *photo_location) {
 
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {
-
-        printf("execution failed: %s", sqlite3_errmsg(db));
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
     }
 
     free(data);
@@ -120,5 +120,42 @@ int insertUserImage(char *dbname, int userId, char *photo_location) {
     return 0;
 }
 
+
+int insertUser(char *dbname, char *email, char *first_name, char *last_name, char *photo_location, char *birthdate) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "insert into user (email, first_name, last_name, birthdate) VALUES (?, ?, ?, ?)";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_text(pStmt, 1, email, -1, 0);
+    sqlite3_bind_text(pStmt, 2, first_name, -1, 0);
+    sqlite3_bind_text(pStmt, 3, last_name, -1, 0);
+    sqlite3_bind_text(pStmt, 4, birthdate, -1, 0);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+
+    if (photo_location != NULL && strlen(photo_location) > 0) {
+        int last_id = sqlite3_last_insert_rowid(db);
+        returnCode = insertUserImage(dbname, last_id, photo_location);
+        if (returnCode) {
+            fprintf(stderr, "adding profil picture failed");
+            return 1;
+        }
+    }
+
+
+    sqlite3_close(db);
+    return 0;
+}
 
 #endif //BAD_CODE_SQLITEFUNCTIONS_H
