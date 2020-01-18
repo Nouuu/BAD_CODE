@@ -20,6 +20,24 @@
 
 ### GTK & Glade
 
-[https://gerald3d.developpez.com/tutoriels/gtk/glade3/]()\
-[https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade]()\
-[https://www.guillaumeriviere.name/estia/DRI/tp1.php]()
+#### Installer
+[https://ftp.gnome.org/pub/GNOME/binaries/win32/glade/3.8/](https://ftp.gnome.org/pub/GNOME/binaries/win32/glade/3.8/)
+
+#### Guides
+[https://gerald3d.developpez.com/tutoriels/gtk/glade3/](https://gerald3d.developpez.com/tutoriels/gtk/glade3/)\
+[https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade](https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade)\
+[https://www.guillaumeriviere.name/estia/DRI/tp1.php](https://www.guillaumeriviere.name/estia/DRI/tp1.php)
+
+### DLLs & build issue
+
+Lier le dossier **msys2/mingw64/bin** aux variables d'environnement
+système **PATH**
+
+Lors du build, si certaines librairies sont introuvable, aller dans le
+dossier **msys2/mingw64/include** et les copiers coller en dehors de
+leur dossiers de version.\
+**Exemple :** copier le dossier gtk et gdk se trouvant dans
+**msys2/mingw64/include/gtk-3-0/** directement dans
+**msys2/mingw64/include** (respecter les chemins introuvables indiqués
+dans les messages d'erreur de compilation).\
+Repeter autant de fois que nécéssaire.
