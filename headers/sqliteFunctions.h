@@ -9,15 +9,16 @@ void checkVersion() {
     printf("SQLite version: %s\n", sqlite3_version);
 }
 
-int connectDB(char *dbname, sqlite3 **db) {
-    int returnCode = sqlite3_open(dbname, db);
+sqlite3 *connectDB(char *dbname) {
+    sqlite3 *db;
+    int returnCode = sqlite3_open(dbname, &db);
     if (returnCode) {
-        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(*db));
-        return (0);
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return 0;
     } else {
         fprintf(stdout, "Opened/Created database 'test.db' successfully\n");
     }
-    return returnCode;
+    return db;
 }
 
 void getAllStudents(sqlite3 *db){
