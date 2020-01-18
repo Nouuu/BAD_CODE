@@ -20,6 +20,14 @@
 
 ### GTK & Glade
 
-[https://gerald3d.developpez.com/tutoriels/gtk/glade3/]()\
-[https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade]()\
-[https://www.guillaumeriviere.name/estia/DRI/tp1.php]()
+#### Installer
+[https://ftp.gnome.org/pub/GNOME/binaries/win32/glade/3.8/](https://ftp.gnome.org/pub/GNOME/binaries/win32/glade/3.8/)
+
+#### Guides
+[https://gerald3d.developpez.com/tutoriels/gtk/glade3/](https://gerald3d.developpez.com/tutoriels/gtk/glade3/)\
+[https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade](https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade)\
+[https://www.guillaumeriviere.name/estia/DRI/tp1.php](https://www.guillaumeriviere.name/estia/DRI/tp1.php)
+
+### DLLs issue
+
+Lier le dossier **msys2/mingw64/bin** aux variables d'environnement système **PATH**
