@@ -21,7 +21,7 @@ sqlite3 *connectDB(char *dbname) {
     return db;
 }
 
-void getAllStudents(sqlite3 *db){
+void getAllStudents(sqlite3 *db) {
     sqlite3_stmt *request;
     char *sqlSelectStudents = "SELECT * FROM students";
     int id = 0, rows = 0;
@@ -32,7 +32,7 @@ void getAllStudents(sqlite3 *db){
 
     fprintf(stdout, "Recuperation de tout les eleves\n");
 
-    returnCode = sqlite3_prepare_v2(db, sqlSelectStudents, strlen(sqlSelectStudents), &request, NULL);
+    returnCode = sqlite3_prepare_v2(db, sqlSelectStudents, (int) strlen(sqlSelectStudents), &request, NULL);
     if (!returnCode) {
         while (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
 
