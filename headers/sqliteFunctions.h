@@ -120,7 +120,7 @@ int insertUser(char *dbname, char *email, char *first_name, char *last_name, cha
         }
     }
 
-
+    sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
 }
@@ -157,6 +157,8 @@ int updateUser(char *dbname, int id, char *email, char *first_name, char *last_n
             return 1;
         }
     }
+
+    sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
 }
@@ -184,6 +186,7 @@ int insertClass(char *dbname, char *name, int year, int apprenticeship, int sanc
         return 1;
     }
 
+    sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
 }
@@ -212,6 +215,7 @@ int updateClass(char *dbname, int id, char *name, int year, int apprenticeship, 
         return 1;
     }
 
+    sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
 }
@@ -235,6 +239,7 @@ int deleteClass(char *dbname, int id) {
         return 1;
     }
 
+    sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
 }
