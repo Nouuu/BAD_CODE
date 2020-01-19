@@ -419,5 +419,58 @@ int addStudentBottle(char *dbname, int id) {
     return 0;
 }
 
+int updateStudent(char *dbname, int id, char *first_name, char *last_name, char *email, int class_fk) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "update student set first_name = ?, last_name= ?, email = ?, class_fk = ? where id = ?;";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_text(pStmt, 1, first_name, -1, 0);
+    sqlite3_bind_text(pStmt, 2, last_name, -1, 0);
+    sqlite3_bind_text(pStmt, 3, email, -1, 0);
+    sqlite3_bind_int(pStmt, 4, class_fk);
+    sqlite3_bind_int(pStmt, 5, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+    return 0;
+}
+
+int deleteStudent(char *dbname, int id) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "delete from student where id = ?";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_int(pStmt, 1, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+    return 0;
+}
+
+
 
 #endif //BAD_CODE_SQLITEFUNCTIONS_H
