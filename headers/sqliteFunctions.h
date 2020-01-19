@@ -125,8 +125,7 @@ int insertUser(char *dbname, char *email, char *first_name, char *last_name, cha
     return 0;
 }
 
-int updateUser(char *dbname, int id, char *email, char *first_name, char *last_name, char *photo_location,
-               char *birthdate) {
+int updateUser(char *dbname, int id, char *email, char *first_name, char *last_name, char *birthdate) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update user set email = ?, first_name = ?, last_name = ?, birthdate = ? where id = ?;";
@@ -147,15 +146,6 @@ int updateUser(char *dbname, int id, char *email, char *first_name, char *last_n
     if (returnCode != SQLITE_DONE) {
         fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
         return 1;
-    }
-
-
-    if (photo_location != NULL && strlen(photo_location) > 0) {
-        returnCode = insertUserImage(dbname, id, photo_location);
-        if (returnCode) {
-            fprintf(stderr, "adding profil picture failed");
-            return 1;
-        }
     }
 
     sqlite3_finalize(pStmt);
@@ -405,7 +395,7 @@ int insertStudent(char *dbname, char *first_name, char *last_name, char *photo_l
     return 0;
 }
 
-int addStudentBottle(char *dbname, int id){
+int addStudentBottle(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update student set nb_bottles = nb_bottles + 1 where id = ?;";
