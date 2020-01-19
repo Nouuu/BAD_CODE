@@ -8,7 +8,7 @@ create table user
     photo_name text,
     birthdate  text,
     constraint user_pk
-        primary key (id)
+        primary key (id autoincrement)
 );
 
 create table sanction
@@ -18,7 +18,7 @@ create table sanction
     description text,
     user_fk     integer,
     constraint sanction_pk
-        primary key (id),
+        primary key (id autoincrement),
     foreign key (user_fk) references user
 );
 
@@ -32,7 +32,7 @@ create table class
     user_fk        integer,
     sanction_fk    integer,
     constraint class_pk
-        primary key (id),
+        primary key (id autoincrement),
     foreign key (user_fk) references user,
     foreign key (sanction_fk) references sanction
 );
@@ -48,7 +48,7 @@ create table student
     nb_bottles integer,
     class_fk   integer,
     constraint student_pk
-        primary key (id),
+        primary key (id autoincrement),
     foreign key (class_fk) references class
 );
 
@@ -68,7 +68,7 @@ create table deliverable
     status                text,
     student_fk            integer,
     constraint deliverable_pk
-        primary key (id),
+        primary key (id autoincrement),
     foreign key (student_fk) references student
 );
 
