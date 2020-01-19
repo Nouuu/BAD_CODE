@@ -31,3 +31,7 @@
 ### DLLs issue
 
 Lier le dossier **msys2/mingw64/bin** aux variables d'environnement système **PATH**
+
+## SQLite
+
+[http://zetcode.com/db/sqlitec/](http://zetcode.com/db/sqlitec/)
