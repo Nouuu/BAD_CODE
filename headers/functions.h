@@ -5,6 +5,7 @@
 #ifndef BAD_CODE_FUNCTIONS_H
 #define BAD_CODE_FUNCTIONS_H
 
+
 void createPath(char *path) {
     char buffer[20];
     int i;
@@ -50,6 +51,27 @@ int copyFile(char *src, char *dest) {
 
     fclose(file);
     fclose(target);
+    return 0;
+}
+
+int removeDirectory(char *src){
+    struct dirent *dir;
+    char *filePathBuffer = malloc(strlen(src) + 100);
+    DIR *d = opendir(src);
+    if (d) {
+        while ((dir = readdir(d)) != NULL)
+        {
+            if (!strcmp(dir->d_name,".") || !strcmp(dir->d_name,".."))
+                continue;
+            strcat(strcat(strcpy(filePathBuffer, src),"/"),dir->d_name);
+            printf("%s\n", filePathBuffer);
+            remove(filePathBuffer);
+        }
+        closedir(d);
+        rmdir(src);
+    }
+
+    free(filePathBuffer);
     return 0;
 }
 
