@@ -255,10 +255,11 @@ void listClass(char *dbname, char **data) {
         exit(1);
     }
 
-    char *result = malloc(0);
+    size_t rowStringSize = 1;
+    char *result = malloc(rowStringSize* sizeof(char));
+    strcpy(result, "");
 
     char intBuffer[6];
-    unsigned int rowStringSize = 0;
     while (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
         returnCode = sqlite3_step(pStmt);
         if (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
@@ -299,10 +300,10 @@ void listClass(char *dbname, char **data) {
             strcat(result, ",");
 
             //Colonne 6
-            rowStringSize += sqlite3_column_bytes(pStmt, 6) + 1;
+            rowStringSize += sqlite3_column_bytes(pStmt, 6) + 2;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 6) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 6));
-            strcat(result, ";");
+            strcat(result, ";\n");
         }
     }
     *data = result;
@@ -442,9 +443,11 @@ void listStudent(char *dbname, char **data) {
         exit(1);
     }
 
-    char *result = malloc(0);
-    char intBuffer[6];
-    unsigned int rowStringSize = 0;
+    size_t rowStringSize = 1;
+    char *result = malloc(rowStringSize* sizeof(char));
+    strcpy(result, "");
+
+    char intBuffer[10];
     while (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
         returnCode = sqlite3_step(pStmt);
         if (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
@@ -492,10 +495,10 @@ void listStudent(char *dbname, char **data) {
             strcat(result, strcat(intBuffer, ","));
 
             //Colonne 7
-            rowStringSize += sqlite3_column_bytes(pStmt, 7) + 1;
+            rowStringSize += sqlite3_column_bytes(pStmt, 7) + 2;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 7) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 7));
-            strcat(result, ";");
+            strcat(result, ";\n");
         }
     }
     *data = result;
