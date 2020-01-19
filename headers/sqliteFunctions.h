@@ -22,6 +22,7 @@ sqlite3 *connectDB(char *dbname) {
 }
 
 int insertTableImage(char *dbname, char *table, int id, char *photo_location) {
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////    PARTIE FICHIER 1 ///////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -416,6 +417,14 @@ int deleteStudent(char *dbname, int id) {
         fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
         return 1;
     }
+
+    char *studentIdBuffer = malloc(4);
+    itoa(id, studentIdBuffer, 10);
+    char *studentStoragePathBuffer = malloc(14 + strlen(studentIdBuffer));
+    strcat(strcat(strcpy(studentStoragePathBuffer, "storage/user/"), studentIdBuffer), "/");
+    removeDirectory(studentStoragePathBuffer);
+    free(studentIdBuffer);
+    free(studentStoragePathBuffer);
 
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
