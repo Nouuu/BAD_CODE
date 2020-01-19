@@ -309,7 +309,124 @@ void listClass(char *dbname, char **data) {
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
 }
+
+int insertStudentImage(char *dbname, int studentId, char *photo_location) {
+    FILE *file = fopen(photo_location, "rb");
+    if (file == NULL) {
+        fprintf(stderr, "Cannot open image\n");
+        return 1;
+    }
+
+    fseek(file, 0, SEEK_END);
+    int flen = ftell(file);
+    if (flen == -1) {
+        fprintf(stderr, "Cannot get filesize");
+        fclose(file);
+        return 1;
+    }
+    fseek(file, 0, SEEK_SET);
+
+    char *data = malloc(flen);
+    unsigned long long size = fread(data, sizeof(char), flen, file);
+    //data contient maintenant tout le binaire du fichier, on peut donc fermer le fichier
+
+    int r = fclose(file);
+    if (r == EOF) {
+        fprintf(stderr, "Cannot close file handler\n");
+    }
+
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "UPDATE student SET photo = ?, photo_name = ? WHERE id = ?";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    char *filePath = malloc(strlen(photo_location));
+    strcpy(filePath, photo_location);
+
+    sqlite3_bind_blob(pStmt, 1, data, (int) size, SQLITE_STATIC);
+    //remplace le parametre 1 ('?' n°1) par un blob
+    sqlite3_bind_text(pStmt, 2, basename(filePath), -1, 0);
+    sqlite3_bind_int(pStmt, 3, studentId);
+    //remplace le parametre 3 ('?' n°3) par un entier
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    free(data);
+    free(filePath);
+    sqlite3_finalize(pStmt);
     sqlite3_close(db);
+
+    return 0;
+}
+
+int insertStudent(char *dbname, char *first_name, char *last_name, char *photo_location, char *email, int class_fk) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "insert into student (first_name, last_name, email, nb_bottles, class_fk) VALUES (?, ?, ?, 0, ?);";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_text(pStmt, 1, first_name, -1, 0);
+    sqlite3_bind_text(pStmt, 2, last_name, -1, 0);
+    sqlite3_bind_text(pStmt, 3, email, -1, 0);
+    sqlite3_bind_int(pStmt, 4, class_fk);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+
+    if (photo_location != NULL && strlen(photo_location) > 0) {
+        int last_id = sqlite3_last_insert_rowid(db);
+        returnCode = insertStudentImage(dbname, last_id, photo_location);
+        if (returnCode) {
+            fprintf(stderr, "adding profil picture failed");
+            return 1;
+        }
+    }
+
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+    return 0;
+}
+
+int addStudentBottle(char *dbname, int id){
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "update student set nb_bottles = nb_bottles + 1 where id = ?;";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_int(pStmt, 1, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+    return 0;
 }
 
 
