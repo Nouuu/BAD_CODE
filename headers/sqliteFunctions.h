@@ -305,8 +305,10 @@ void listClass(char *dbname, char **data) {
             strcat(result, strcat(buffer, ";"));
         }
     }
-    sqlite3_finalize(pStmt);
     *data = result;
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+}
     sqlite3_close(db);
 }
 
