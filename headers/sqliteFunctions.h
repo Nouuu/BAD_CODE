@@ -431,5 +431,77 @@ int deleteStudent(char *dbname, int id) {
     return 0;
 }
 
+void listStudent(char *dbname, char **data) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "select student.id, first_name, last_name, photo, email,(select count(*) from deliverable where student_fk = student.id) as bad_code, nb_bottles, c.name as class from student left join class c on student.class_fk = c.id;";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        exit(1);
+    }
+
+    char *result = malloc(0);
+    char intBuffer[6];
+    unsigned int rowStringSize = 0;
+    while (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
+        returnCode = sqlite3_step(pStmt);
+        if (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
+
+            //Colonne 0
+            itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
+            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            result = realloc(result, rowStringSize);
+            strcat(result, strcat(intBuffer, ","));
+
+            //Colonne 1
+            rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
+            result = realloc(result, rowStringSize);
+            strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
+            strcat(result, ",");
+
+            //Colonne 2
+            rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
+            result = realloc(result, rowStringSize);
+            strcat(result, sqlite3_column_text(pStmt, 2) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 2));
+            strcat(result, ",");
+
+            //Colonne 3
+            rowStringSize += sqlite3_column_bytes(pStmt, 3) + 1;
+            result = realloc(result, rowStringSize);
+            strcat(result, sqlite3_column_text(pStmt, 3) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 3));
+            strcat(result, ",");
+
+            //Colonne 4
+            rowStringSize += sqlite3_column_bytes(pStmt, 4) + 1;
+            result = realloc(result, rowStringSize);
+            strcat(result, sqlite3_column_text(pStmt, 4) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 4));
+            strcat(result, ",");
+
+            //Colonne 5
+            itoa(sqlite3_column_int(pStmt, 5), intBuffer, 10);
+            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            result = realloc(result, rowStringSize);
+            strcat(result, strcat(intBuffer, ","));
+
+            //Colonne 6
+            itoa(sqlite3_column_int(pStmt, 6), intBuffer, 10);
+            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            result = realloc(result, rowStringSize);
+            strcat(result, strcat(intBuffer, ","));
+
+            //Colonne 7
+            rowStringSize += sqlite3_column_bytes(pStmt, 7) + 1;
+            result = realloc(result, rowStringSize);
+            strcat(result, sqlite3_column_text(pStmt, 7) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 7));
+            strcat(result, ";");
+        }
+    }
+    *data = result;
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+}
+
 
 #endif //BAD_CODE_SQLITEFUNCTIONS_H
