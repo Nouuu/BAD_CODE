@@ -8,3 +8,5 @@ cmake-build-debug-mingw-gtk/
 cmake-build-debug-wsl/
 
 cmake-build-debug/
+
+dlls.7z
