@@ -16,7 +16,7 @@ sqlite3 *connectDB(char *dbname) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return 0;
     } else {
-        fprintf(stdout, "Opened/Created database 'test.db' successfully\n");
+        fprintf(stdout, "Opened/Created database '%s' successfully\n",dbname);
     }
     return db;
 }
