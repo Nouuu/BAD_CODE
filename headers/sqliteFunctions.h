@@ -16,7 +16,7 @@ sqlite3 *connectDB(char *dbname) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return 0;
     } else {
-        fprintf(stdout, "Opened/Created database '%s' successfully\n",dbname);
+        fprintf(stdout, "Opened/Created database '%s' successfully\n", dbname);
     }
     return db;
 }
@@ -631,6 +631,11 @@ void listSanction(char *dbname, char **data) {
     *data = result;
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
+}
+
+int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_record_path, char *video_reccord_path,
+                      char *bad_code_path, char *deliverable_file_path, char *status, int student_fk) {
+    return 0;
 }
 
 
