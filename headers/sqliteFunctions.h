@@ -835,6 +835,33 @@ int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_r
 
     return 0;
 }
+int updateDeliverable(char *dbname, int id, char *due_date, char *subject, char *status, int student_fk) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "update deliverable set due_date = ?, subject = ?, status = ?, student_fk = ? where id = ?;";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_text(pStmt, 1, due_date, -1, 0);
+    sqlite3_bind_text(pStmt, 2, subject, -1, 0);
+    sqlite3_bind_text(pStmt, 3, status, -1, 0);
+    sqlite3_bind_int(pStmt, 4, student_fk);
+    sqlite3_bind_int(pStmt, 5, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+    return 0;
+}
     return 0;
 }
 
