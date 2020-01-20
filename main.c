@@ -8,10 +8,11 @@
 #include "headers/gtkFunctions.h"
 
 GtkBuilder *builder;
+char *gladeFile = "test.glade";
 
 int main(int argc, char **argv) {
 
-    startGTK(&argc, &argv);
+    startGTK(&argc, &argv? gladeFile);
 
     printf("Exit program");
 
