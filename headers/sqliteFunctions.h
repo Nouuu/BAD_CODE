@@ -33,7 +33,7 @@ int insertTableImage(char *dbname, char *table, int id, char *photo_location) {
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         exit(1);
     }
 
@@ -76,7 +76,7 @@ int insertTableImage(char *dbname, char *table, int id, char *photo_location) {
 
     returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -105,7 +105,7 @@ int insertUser(char *dbname, char *email, char *first_name, char *last_name, cha
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -142,7 +142,7 @@ int updateUser(char *dbname, int id, char *email, char *first_name, char *last_n
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -170,7 +170,7 @@ int insertClass(char *dbname, char *name, int year, int apprenticeship, int sanc
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -198,7 +198,7 @@ int updateClass(char *dbname, int id, char *name, int year, int apprenticeship, 
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -227,7 +227,7 @@ int deleteClass(char *dbname, int id) {
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -251,12 +251,12 @@ void listClass(char *dbname, char **data) {
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         exit(1);
     }
 
     size_t rowStringSize = 1;
-    char *result = malloc(rowStringSize* sizeof(char));
+    char *result = malloc(rowStringSize * sizeof(char));
     strcpy(result, "");
 
     char intBuffer[6];
@@ -318,7 +318,7 @@ int insertStudent(char *dbname, char *first_name, char *last_name, char *photo_l
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -355,7 +355,7 @@ int addStudentBottle(char *dbname, int id) {
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -379,7 +379,7 @@ int updateStudent(char *dbname, int id, char *first_name, char *last_name, char 
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -407,7 +407,7 @@ int deleteStudent(char *dbname, int id) {
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         return 1;
     }
 
@@ -439,12 +439,12 @@ void listStudent(char *dbname, char **data) {
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
-        fprintf(stderr, "Cannot prepare sql request stattement: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
         exit(1);
     }
 
     size_t rowStringSize = 1;
-    char *result = malloc(rowStringSize* sizeof(char));
+    char *result = malloc(rowStringSize * sizeof(char));
     strcpy(result, "");
 
     char intBuffer[10];
