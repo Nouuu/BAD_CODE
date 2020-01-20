@@ -558,6 +558,7 @@ int updateSanction(char *dbname, int id, char *name, char *description, int user
     sqlite3_close(db);
     return 0;
 }
+
 int deleteSanction(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -581,4 +582,56 @@ int deleteSanction(char *dbname, int id) {
     sqlite3_close(db);
     return 0;
 }
+
+void listSanction(char *dbname, char **data) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "select sanction.id, name, description, u.first_name || ' '|| u.last_name as user from sanction left join user u on sanction.user_fk = u.id;";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        exit(1);
+    }
+
+    size_t rowStringSize = 1;
+    char *result = malloc(rowStringSize * sizeof(char));
+    strcpy(result, "");
+
+    char intBuffer[10];
+    while (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
+        returnCode = sqlite3_step(pStmt);
+        if (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
+
+            //Colonne 0
+            itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
+            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            result = realloc(result, rowStringSize);
+            strcat(result, strcat(intBuffer, ","));
+
+            //Colonne 1
+            rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
+            result = realloc(result, rowStringSize);
+            strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
+            strcat(result, ",");
+
+            //Colonne 2
+            rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
+            result = realloc(result, rowStringSize);
+            strcat(result, sqlite3_column_text(pStmt, 2) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 2));
+            strcat(result, ",");
+
+            //Colonne 3
+            rowStringSize += sqlite3_column_bytes(pStmt, 3) + 2;
+            result = realloc(result, rowStringSize);
+            strcat(result, sqlite3_column_text(pStmt, 3) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 3));
+            strcat(result, ";\n");
+        }
+    }
+    *data = result;
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+}
+
+
 #endif //BAD_CODE_SQLITEFUNCTIONS_H
