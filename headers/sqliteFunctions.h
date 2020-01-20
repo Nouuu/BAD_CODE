@@ -532,4 +532,30 @@ int insertSanction(char *dbname, char *name, char *description, int user_fk) {
     return 0;
 }
 
+int updateSanction(char *dbname, int id, char *name, char *description, int user_fk) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "update sanction set name = ?, description = ?, user_fk = ? where id = ?;";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_text(pStmt, 1, name, -1, 0);
+    sqlite3_bind_text(pStmt, 2, description, -1, 0);
+    sqlite3_bind_int(pStmt, 3, user_fk);
+    sqlite3_bind_int(pStmt, 4, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+    return 0;
+}
 #endif //BAD_CODE_SQLITEFUNCTIONS_H
