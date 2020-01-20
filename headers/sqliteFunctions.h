@@ -163,6 +163,8 @@ int updateUser(char *dbname, int id, char *email, char *first_name, char *last_n
     return 0;
 }
 
+//TODO getUser(id){}
+
 int insertClass(char *dbname, char *name, int year, int apprenticeship, int sanction_fk, int user_fk) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -366,6 +368,8 @@ void listClass(char *dbname, char **data) {
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
 }
+
+//TODO getClass(id){}
 
 int insertStudent(char *dbname, char *first_name, char *last_name, char *photo_location, char *email, int class_fk) {
     sqlite3 *db = connectDB(dbname);
@@ -612,6 +616,8 @@ void listStudent(char *dbname, char **data) {
     sqlite3_close(db);
 }
 
+//TODO getStudent(id){}
+
 int insertSanction(char *dbname, char *name, char *description, int user_fk) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -778,6 +784,8 @@ void listSanction(char *dbname, char **data) {
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
 }
+
+//TODO getSanction(id){}
 
 int insertDeliverableFile(char *dbname, char *column, int id, int student_fk, char *file_location) {
 
@@ -995,5 +1003,6 @@ int deleteDeliverable(char *dbname, int id) {
     return 0;
 }
 
+//TODO getDeliverable(id){}
 
 #endif //BAD_CODE_SQLITEFUNCTIONS_H
