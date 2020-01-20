@@ -835,6 +835,7 @@ int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_r
 
     return 0;
 }
+
 int updateDeliverable(char *dbname, int id, char *due_date, char *subject, char *status, int student_fk) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -862,6 +863,62 @@ int updateDeliverable(char *dbname, int id, char *due_date, char *subject, char 
     sqlite3_close(db);
     return 0;
 }
+
+int deleteDeliverable(char *dbname, int id) {
+    //////////////////// DELETE FILES //////////////////////////////////////////////////////////////////////////////////
+
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = malloc(60);
+
+    char *column[4][16] = {{"audio_record"},
+                           {"video_record"},
+                           {"bad_code"},
+                           {"deliverable_file"}};
+    for (int i = 0; i < 4; ++i) {
+        sprintf(sqlRequest, "select %s from deliverable WHERE id = ?", *column[i]);
+
+        int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+        if (returnCode != SQLITE_OK) {
+            fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+            exit(1);
+        }
+
+        sqlite3_bind_int(pStmt, 1, id);
+        returnCode = sqlite3_step(pStmt);
+        if (returnCode != SQLITE_ROW) {
+            fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+            return 1;
+        }
+
+        char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0));
+        strcpy(filePathBuffer, sqlite3_column_text(pStmt, 0) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 0));
+        if (strlen(filePathBuffer) > 0) {
+            remove(filePathBuffer);
+        }
+        free(filePathBuffer);
+    }
+
+    //////////////////// DELETE SQL LINE ///////////////////////////////////////////////////////////////////////////////
+
+    strcpy(sqlRequest, "delete from deliverable where id = ?;");
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_int(pStmt, 1, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
     return 0;
 }
 
