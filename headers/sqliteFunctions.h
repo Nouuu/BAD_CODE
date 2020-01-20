@@ -665,7 +665,30 @@ int updateSanction(char *dbname, int id, char *name, char *description, int user
     return 0;
 }
 
-//TODO set class sanction_fk to null
+int classNullSanction(char *dbname, int sanction_fk) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "update class set sanction_fk = null where sanction_fk = ?;";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_int(pStmt, 1, sanction_fk);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+    return 0;
+}
+
 int deleteSanction(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -685,6 +708,7 @@ int deleteSanction(char *dbname, int id) {
         return 1;
     }
 
+    classNullSanction(dbname, id);
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
