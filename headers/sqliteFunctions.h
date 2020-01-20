@@ -220,6 +220,7 @@ int updateClass(char *dbname, int id, char *name, int year, int apprenticeship, 
     return 0;
 }
 
+//TODO set student class_fk to null
 int deleteClass(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -244,10 +245,28 @@ int deleteClass(char *dbname, int id) {
     return 0;
 }
 
+/**
+ * @name listClass
+ * @param dbname
+ * @param data
+ *
+ * @data = "id, name, year, apprenticeship, major, user(first_name + last_name), user_fk, sanction(name), sanction_fk;\n..."
+ */
 void listClass(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
-    char *sqlRequest = "select class.id, class.name, year, apprenticeship, major, u.first_name || ' ' || u.last_name as user, s.name as sanction from class left join user u on class.user_fk = u.id left join sanction s on class.sanction_fk = s.id;";
+    char *sqlRequest = "select class.id,\n"
+                       "       class.name,\n"
+                       "       year,\n"
+                       "       apprenticeship,\n"
+                       "       major,\n"
+                       "       u.first_name || ' ' || u.last_name as user,\n"
+                       "       class.user_fk,\n"
+                       "       s.name                             as sanction,\n"
+                       "       class.sanction_fk\n"
+                       "from class\n"
+                       "         left join user u on class.user_fk = u.id\n"
+                       "         left join sanction s on class.sanction_fk = s.id;";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
@@ -300,10 +319,23 @@ void listClass(char *dbname, char **data) {
             strcat(result, ",");
 
             //Colonne 6
-            rowStringSize += sqlite3_column_bytes(pStmt, 6) + 2;
+            itoa(sqlite3_column_int(pStmt, 6), intBuffer, 10);
+            rowStringSize += strlen(intBuffer) + 1;// pour le ","
             result = realloc(result, rowStringSize);
-            strcat(result, sqlite3_column_text(pStmt, 6) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 6));
-            strcat(result, ";\n");
+            strcat(result, strcat(intBuffer, ","));
+
+
+            //Colonne 7
+            rowStringSize += sqlite3_column_bytes(pStmt, 7) + 1;
+            result = realloc(result, rowStringSize);
+            strcat(result, sqlite3_column_text(pStmt, 7) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 7));
+            strcat(result, ",");
+
+            //Colonne 8
+            itoa(sqlite3_column_int(pStmt, 8), intBuffer, 10);
+            rowStringSize += strlen(intBuffer) + 2;// pour le ";\n"
+            result = realloc(result, rowStringSize);
+            strcat(result, strcat(intBuffer, ";\n"));
         }
     }
     *data = result;
@@ -400,6 +432,7 @@ int updateStudent(char *dbname, int id, char *first_name, char *last_name, char 
     return 0;
 }
 
+//TODO remove deliverables
 int deleteStudent(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -432,10 +465,27 @@ int deleteStudent(char *dbname, int id) {
     return 0;
 }
 
+/**
+ * @name listStudent
+ * @param dbname
+ * @param data
+ *
+ * @data = "id, first_name, last_name, photo, email, bad_code(count), nb_bottles, class(name), class_fk;\n..."
+ */
 void listStudent(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
-    char *sqlRequest = "select student.id, first_name, last_name, photo, email,(select count(*) from deliverable where student_fk = student.id) as bad_code, nb_bottles, c.name as class from student left join class c on student.class_fk = c.id;";
+    char *sqlRequest = "select student.id,\n"
+                       "       first_name,\n"
+                       "       last_name,\n"
+                       "       photo,\n"
+                       "       email,\n"
+                       "       (select count(*) from deliverable where student_fk = student.id) as bad_code,\n"
+                       "       nb_bottles,\n"
+                       "       c.name                                                           as class,\n"
+                       "       class_fk\n"
+                       "from student\n"
+                       "         left join class c on student.class_fk = c.id;";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
@@ -495,10 +545,17 @@ void listStudent(char *dbname, char **data) {
             strcat(result, strcat(intBuffer, ","));
 
             //Colonne 7
-            rowStringSize += sqlite3_column_bytes(pStmt, 7) + 2;
+            rowStringSize += sqlite3_column_bytes(pStmt, 7) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 7) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 7));
-            strcat(result, ";\n");
+            strcat(result, ",");
+
+            //Colonne 8
+            itoa(sqlite3_column_int(pStmt, 8), intBuffer, 10);
+            rowStringSize += strlen(intBuffer) + 2;// pour le ";\n"
+            result = realloc(result, rowStringSize);
+            strcat(result, strcat(intBuffer, ";\n"));
+
         }
     }
     *data = result;
@@ -559,6 +616,7 @@ int updateSanction(char *dbname, int id, char *name, char *description, int user
     return 0;
 }
 
+//TODO set class sanction_fk to null
 int deleteSanction(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -583,10 +641,19 @@ int deleteSanction(char *dbname, int id) {
     return 0;
 }
 
+/**
+ * @name  listSanction
+ * @param dbname
+ * @param data
+ *
+ * @data = "id, name, description, user(first_name + last_name), user_fk;\n"
+ */
 void listSanction(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
-    char *sqlRequest = "select sanction.id, name, description, u.first_name || ' '|| u.last_name as user from sanction left join user u on sanction.user_fk = u.id;";
+    char *sqlRequest = "select sanction.id, name, description, u.first_name || ' ' || u.last_name as user, user_fk\n"
+                       "from sanction\n"
+                       "         left join user u on sanction.user_fk = u.id;";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
@@ -622,10 +689,16 @@ void listSanction(char *dbname, char **data) {
             strcat(result, ",");
 
             //Colonne 3
-            rowStringSize += sqlite3_column_bytes(pStmt, 3) + 2;
+            rowStringSize += sqlite3_column_bytes(pStmt, 3) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 3) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 3));
-            strcat(result, ";\n");
+            strcat(result, ",");
+
+            //Colonne 4
+            itoa(sqlite3_column_int(pStmt, 4), intBuffer, 10);
+            rowStringSize += strlen(intBuffer) + 2;// pour le ","
+            result = realloc(result, rowStringSize);
+            strcat(result, strcat(intBuffer, ";\n"));
         }
     }
     *data = result;
