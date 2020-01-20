@@ -220,7 +220,30 @@ int updateClass(char *dbname, int id, char *name, int year, int apprenticeship, 
     return 0;
 }
 
-//TODO set student class_fk to null
+int studentNullClass(char *dbname, int class_fk) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "update student set class_fk = null where class_fk = ?;";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_int(pStmt, 1, class_fk);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+    return 0;
+}
+
 int deleteClass(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -240,6 +263,7 @@ int deleteClass(char *dbname, int id) {
         return 1;
     }
 
+    studentNullClass(dbname, id);
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
