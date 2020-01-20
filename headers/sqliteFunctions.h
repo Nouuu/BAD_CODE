@@ -432,6 +432,7 @@ int updateStudent(char *dbname, int id, char *first_name, char *last_name, char 
     return 0;
 }
 
+//TODO remove deliverables
 int deleteStudent(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
@@ -615,6 +616,7 @@ int updateSanction(char *dbname, int id, char *name, char *description, int user
     return 0;
 }
 
+//TODO set class sanction_fk to null
 int deleteSanction(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
