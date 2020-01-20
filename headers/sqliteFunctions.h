@@ -64,9 +64,9 @@ int insertTableImage(char *dbname, char *table, int id, char *photo_location) {
     sprintf(targetFileBuffer, "storage/%s/%d/%s", table, id, basename(fileName));
 
     returnCode = copyFile(photo_location, targetFileBuffer);
-    if (returnCode) {
+    if (returnCode)
         return 1;
-    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////    PARTIE SQL /////////////////////////////////////////////////////////////////////////////////
@@ -704,6 +704,75 @@ void listSanction(char *dbname, char **data) {
     *data = result;
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
+}
+
+int insertDeliverableFile(char *dbname, char *column, int id, int student_fk, char *file_location) {
+
+    /////////////// DELETE OLDER FILE //////////////////////////////////////////////////////////////////////////////////
+
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = malloc(60);
+    sprintf(sqlRequest, "select %s from deliverable WHERE id = ?", column);
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        exit(1);
+    }
+
+    sqlite3_bind_int(pStmt, 1, id);
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_ROW) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0));
+    strcpy(filePathBuffer, sqlite3_column_text(pStmt, 0) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 0));
+    if (strlen(filePathBuffer) > 0) {
+        remove(filePathBuffer);
+    }
+    free(filePathBuffer);
+
+    /////////////////// COPY NEW FILE //////////////////////////////////////////////////////////////////////////////////
+
+    char fileName[strlen(file_location)];
+    strcpy(fileName, file_location);
+
+    char *targetFileBuffer = malloc(strlen(basename(fileName)) + strlen(column) + 50);
+    // 11 for "deliverable", 3 for "_" * 3
+    sprintf(targetFileBuffer, "storage/student/%d/deliverable_%d_%s_%s", student_fk, id, column, basename(fileName));
+
+    returnCode = copyFile(file_location, targetFileBuffer);
+    if (returnCode)
+        return 1;
+
+    /////////////////// UPDATE SQL WITH LOCATION ///////////////////////////////////////////////////////////////////////
+
+    sprintf(sqlRequest, "update deliverable set %s = ? where id = ?;", column);
+
+    returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_text(pStmt, 1, targetFileBuffer, -1, 0);
+    sqlite3_bind_int(pStmt, 2, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    free(sqlRequest);
+    free(targetFileBuffer);
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+
+    return 0;
 }
 
 int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_record_path, char *video_reccord_path,
