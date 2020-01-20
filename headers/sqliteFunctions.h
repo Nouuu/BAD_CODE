@@ -220,6 +220,7 @@ int updateClass(char *dbname, int id, char *name, int year, int apprenticeship, 
     return 0;
 }
 
+//TODO set student class_fk to null
 int deleteClass(char *dbname, int id) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
