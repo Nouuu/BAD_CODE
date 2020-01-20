@@ -777,6 +777,64 @@ int insertDeliverableFile(char *dbname, char *column, int id, int student_fk, ch
 
 int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_record_path, char *video_reccord_path,
                       char *bad_code_path, char *deliverable_file_path, char *status, int student_fk) {
+
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "insert into deliverable (due_date, subject, status, student_fk) values (?, ?, ?, ?);";
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    sqlite3_bind_text(pStmt, 1, due_date, -1, 0);
+    sqlite3_bind_text(pStmt, 2, subject, -1, 0);
+    sqlite3_bind_text(pStmt, 3, status, -1, 0);
+    sqlite3_bind_int(pStmt, 4, student_fk);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_DONE) {
+        fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
+        return 1;
+    }
+
+    int last_id = sqlite3_last_insert_rowid(db);
+
+    if (audio_record_path != NULL && strlen(audio_record_path) > 0) {
+        returnCode = insertDeliverableFile(dbname, "audio_record", last_id, student_fk, audio_record_path);
+        if (returnCode) {
+            fprintf(stderr, "adding deliverable audio record failed");
+            return 1;
+        }
+    }
+
+    if (video_reccord_path != NULL && strlen(video_reccord_path) > 0) {
+        returnCode = insertDeliverableFile(dbname, "video_record", last_id, student_fk, video_reccord_path);
+        if (returnCode) {
+            fprintf(stderr, "adding deliverable audio record failed");
+            return 1;
+        }
+    }
+
+    if (bad_code_path != NULL && strlen(bad_code_path) > 0) {
+        returnCode = insertDeliverableFile(dbname, "bad_code", last_id, student_fk, bad_code_path);
+        if (returnCode) {
+            fprintf(stderr, "adding deliverable audio record failed");
+            return 1;
+        }
+    }
+
+    if (deliverable_file_path != NULL && strlen(deliverable_file_path) > 0) {
+        returnCode = insertDeliverableFile(dbname, "deliverable_file", last_id, student_fk, deliverable_file_path);
+        if (returnCode) {
+            fprintf(stderr, "adding deliverable audio record failed");
+            return 1;
+        }
+    }
+
+    return 0;
+}
     return 0;
 }
 
