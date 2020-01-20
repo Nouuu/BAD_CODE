@@ -16,7 +16,7 @@ sqlite3 *connectDB(char *dbname) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return 0;
     } else {
-        fprintf(stdout, "Opened/Created database '%s' successfully\n",dbname);
+        fprintf(stdout, "Opened/Created database '%s' successfully\n", dbname);
     }
     return db;
 }
@@ -250,7 +250,7 @@ int deleteClass(char *dbname, int id) {
  * @param dbname
  * @param data
  *
- * @data = "id, name, year, apprenticeship, major, user(firstname + lastname), user_fk, sanction(name), sanction_fk;\n..."
+ * @data = "id, name, year, apprenticeship, major, user(first_name + last_name), user_fk, sanction(name), sanction_fk;\n..."
  */
 void listClass(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
@@ -464,10 +464,27 @@ int deleteStudent(char *dbname, int id) {
     return 0;
 }
 
+/**
+ * @name listStudent
+ * @param dbname
+ * @param data
+ *
+ * @data = "id, first_name, last_name, photo, email, bad_code(count), nb_bottles, class(name), class_fk;\n..."
+ */
 void listStudent(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
-    char *sqlRequest = "select student.id, first_name, last_name, photo, email,(select count(*) from deliverable where student_fk = student.id) as bad_code, nb_bottles, c.name as class from student left join class c on student.class_fk = c.id;";
+    char *sqlRequest = "select student.id,\n"
+                       "       first_name,\n"
+                       "       last_name,\n"
+                       "       photo,\n"
+                       "       email,\n"
+                       "       (select count(*) from deliverable where student_fk = student.id) as bad_code,\n"
+                       "       nb_bottles,\n"
+                       "       c.name                                                           as class,\n"
+                       "       class_fk\n"
+                       "from student\n"
+                       "         left join class c on student.class_fk = c.id;";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
@@ -527,10 +544,17 @@ void listStudent(char *dbname, char **data) {
             strcat(result, strcat(intBuffer, ","));
 
             //Colonne 7
-            rowStringSize += sqlite3_column_bytes(pStmt, 7) + 2;
+            rowStringSize += sqlite3_column_bytes(pStmt, 7) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 7) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 7));
-            strcat(result, ";\n");
+            strcat(result, ",");
+
+            //Colonne 8
+            itoa(sqlite3_column_int(pStmt, 8), intBuffer, 10);
+            rowStringSize += strlen(intBuffer) + 2;// pour le ";\n"
+            result = realloc(result, rowStringSize);
+            strcat(result, strcat(intBuffer, ";\n"));
+
         }
     }
     *data = result;
