@@ -779,7 +779,102 @@ void listStudent(char *dbname, char **data) {
     sqlite3_close(db);
 }
 
-//TODO getStudent(id){}
+/**
+ * @name getStudent
+ *
+ * @param dbname
+ * @param data
+ * @param id
+ *
+ * @data = "id|first_name|last_name|photo|email|bad_code(count)|nb_bottles|class|class_fk;\n"
+ */
+void getStudent(char *dbname, char **data, int id) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "select student.id,\n"
+                       "       first_name,\n"
+                       "       last_name,\n"
+                       "       photo,\n"
+                       "       email,\n"
+                       "       (select count(*) from deliverable where student_fk = student.id) as bad_code,\n"
+                       "       nb_bottles,\n"
+                       "       c.name                                                           as class,\n"
+                       "       class_fk\n"
+                       "from student\n"
+                       "         left join class c on student.class_fk = c.id\n"
+                       "where student.id = ?;";
+    size_t rowStringSize = 1;
+    char *result = malloc(rowStringSize * sizeof(char));
+    strcpy(result, "");
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        *data = result;
+        return;
+    }
+
+    sqlite3_bind_int(pStmt, 1, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_ROW) {
+        *data = result;
+        return;
+    }
+
+    char intBuffer[6];
+
+    //Colonne 0 (id)
+    itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
+    rowStringSize += strlen(intBuffer) + 1;// pour le "|"
+    result = realloc(result, rowStringSize);
+    strcat(result, strcat(intBuffer, "|"));
+    //Colonne 1 (first_name)
+    rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
+    strcat(result, "|");
+    //Colonne 2(last_name)
+    rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 2) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 2));
+    strcat(result, "|");
+    //Colonne 3(photo)
+    rowStringSize += sqlite3_column_bytes(pStmt, 3) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 3) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 3));
+    strcat(result, "|");
+    //Colonne 4(email)
+    rowStringSize += sqlite3_column_bytes(pStmt, 4) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 4) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 4));
+    strcat(result, "|");
+    //Colonne 5 (bad_code count)
+    itoa(sqlite3_column_int(pStmt, 5), intBuffer, 10);
+    rowStringSize += strlen(intBuffer) + 1;// pour le "|"
+    result = realloc(result, rowStringSize);
+    strcat(result, strcat(intBuffer, "|"));
+    //Colonne 6 (nb_bottles)
+    itoa(sqlite3_column_int(pStmt, 6), intBuffer, 10);
+    rowStringSize += strlen(intBuffer) + 1;// pour le "|"
+    result = realloc(result, rowStringSize);
+    strcat(result, strcat(intBuffer, "|"));
+    //Colonne 7(class)
+    rowStringSize += sqlite3_column_bytes(pStmt, 7) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 7) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 7));
+    strcat(result, "|");
+    //Colonne 8 (class_fk)
+    itoa(sqlite3_column_int(pStmt, 8), intBuffer, 10);
+    rowStringSize += strlen(intBuffer) + 1;// pour le "|"
+    result = realloc(result, rowStringSize);
+    strcat(result, strcat(intBuffer, "|"));
+
+    *data = result;
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+}
+
 
 int insertSanction(char *dbname, char *name, char *description, int user_fk) {
     sqlite3 *db = connectDB(dbname);
