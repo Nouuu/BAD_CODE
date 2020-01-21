@@ -1327,6 +1327,10 @@ int deleteDeliverable(char *dbname, int id) {
     return 0;
 }
 
+//TODO listDeliverables
+
+//TODO listStudentDeliverables
+
 //TODO getDeliverable(id){}
 
 #endif //BAD_CODE_SQLITEFUNCTIONS_H
