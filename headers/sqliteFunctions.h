@@ -1043,7 +1043,73 @@ void listSanction(char *dbname, char **data) {
     sqlite3_close(db);
 }
 
-//TODO getSanction(id){}
+/**
+ * @name  getSanction
+ * @param dbname
+ * @param data
+ * @param id
+ *
+ * @data = "id| name| description| user(first_name + last_name)| user_fk;\n"
+ */
+void getSanction(char *dbname, char **data, int id) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "select sanction.id, name, description, u.first_name || ' ' || u.last_name as user, user_fk\n"
+                       "from sanction\n"
+                       "         left join user u on sanction.user_fk = u.id\n"
+                       "where sanction.id = ?;";
+    size_t rowStringSize = 1;
+    char *result = malloc(rowStringSize * sizeof(char));
+    strcpy(result, "");
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        *data = result;
+        return;
+    }
+
+    sqlite3_bind_int(pStmt, 1, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_ROW) {
+        *data = result;
+        return;
+    }
+
+    char intBuffer[6];
+
+    //Colonne 0 (id)
+    itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
+    rowStringSize += strlen(intBuffer) + 1;// pour le "|"
+    result = realloc(result, rowStringSize);
+    strcat(result, strcat(intBuffer, "|"));
+    //Colonne 1 (name)
+    rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
+    strcat(result, "|");
+    //Colonne 2 (description)
+    rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 2) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 2));
+    strcat(result, "|");
+    //Colonne 3 (user (name))
+    rowStringSize += sqlite3_column_bytes(pStmt, 3) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 3) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 3));
+    strcat(result, "|");
+    //Colonne 4 (user_fk)
+    itoa(sqlite3_column_int(pStmt, 4), intBuffer, 10);
+    rowStringSize += strlen(intBuffer) + 2;// pour le ";\n"
+    result = realloc(result, rowStringSize);
+    strcat(result, strcat(intBuffer, ";\n"));
+
+    *data = result;
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+}
+
 
 int insertDeliverableFile(char *dbname, char *column, int id, int student_fk, char *file_location) {
 
