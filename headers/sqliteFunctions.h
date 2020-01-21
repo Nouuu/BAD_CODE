@@ -276,7 +276,7 @@ int deleteClass(char *dbname, int id) {
  * @param dbname
  * @param data
  *
- * @data = "id, name, year, apprenticeship, major, user(first_name + last_name), user_fk, sanction(name), sanction_fk;\n..."
+ * @data = "id| name| year| apprenticeship| major| user(first_name + last_name)| user_fk| sanction(name)| sanction_fk;\n..."
  */
 void listClass(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
@@ -310,52 +310,52 @@ void listClass(char *dbname, char **data) {
         if (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
             //Colonne 0
             itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
-            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            rowStringSize += strlen(intBuffer) + 1;// pour le "|"
             result = realloc(result, rowStringSize);
-            strcat(result, strcat(intBuffer, ","));
+            strcat(result, strcat(intBuffer, "|"));
 
             //Colonne 1
             rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 2
             itoa(sqlite3_column_int(pStmt, 2), intBuffer, 10);
-            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            rowStringSize += strlen(intBuffer) + 1;// pour le "|"
             result = realloc(result, rowStringSize);
-            strcat(result, strcat(intBuffer, ","));
+            strcat(result, strcat(intBuffer, "|"));
 
             //Colonne 3
             itoa(sqlite3_column_int(pStmt, 3), intBuffer, 10);
             rowStringSize += strlen(intBuffer) + 1;// pour le ","
             result = realloc(result, rowStringSize);
-            strcat(result, strcat(intBuffer, ","));
+            strcat(result, strcat(intBuffer, "|"));
 
             //Colonne 4
             rowStringSize += sqlite3_column_bytes(pStmt, 4) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 4) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 4));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 5
             rowStringSize += sqlite3_column_bytes(pStmt, 5) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 5) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 5));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 6
             itoa(sqlite3_column_int(pStmt, 6), intBuffer, 10);
-            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            rowStringSize += strlen(intBuffer) + 1;// pour le "|"
             result = realloc(result, rowStringSize);
-            strcat(result, strcat(intBuffer, ","));
+            strcat(result, strcat(intBuffer, "|"));
 
 
             //Colonne 7
             rowStringSize += sqlite3_column_bytes(pStmt, 7) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 7) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 7));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 8
             itoa(sqlite3_column_int(pStmt, 8), intBuffer, 10);
@@ -523,7 +523,7 @@ int deleteStudent(char *dbname, int id) {
  * @param dbname
  * @param data
  *
- * @data = "id, first_name, last_name, photo, email, bad_code(count), nb_bottles, class(name), class_fk;\n..."
+ * @data = "id| first_name| last_name| photo| email| bad_code(count)| nb_bottles| class(name)| class_fk;\n..."
  */
 void listStudent(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
@@ -557,51 +557,51 @@ void listStudent(char *dbname, char **data) {
 
             //Colonne 0
             itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
-            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            rowStringSize += strlen(intBuffer) + 1;// pour le "|"
             result = realloc(result, rowStringSize);
-            strcat(result, strcat(intBuffer, ","));
+            strcat(result, strcat(intBuffer, "|"));
 
             //Colonne 1
             rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 2
             rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 2) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 2));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 3
             rowStringSize += sqlite3_column_bytes(pStmt, 3) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 3) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 3));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 4
             rowStringSize += sqlite3_column_bytes(pStmt, 4) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 4) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 4));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 5
             itoa(sqlite3_column_int(pStmt, 5), intBuffer, 10);
-            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            rowStringSize += strlen(intBuffer) + 1;// pour le "|"
             result = realloc(result, rowStringSize);
-            strcat(result, strcat(intBuffer, ","));
+            strcat(result, strcat(intBuffer, "|"));
 
             //Colonne 6
             itoa(sqlite3_column_int(pStmt, 6), intBuffer, 10);
-            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            rowStringSize += strlen(intBuffer) + 1;// pour le "|"
             result = realloc(result, rowStringSize);
-            strcat(result, strcat(intBuffer, ","));
+            strcat(result, strcat(intBuffer, "|"));
 
             //Colonne 7
             rowStringSize += sqlite3_column_bytes(pStmt, 7) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 7) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 7));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 8
             itoa(sqlite3_column_int(pStmt, 8), intBuffer, 10);
@@ -725,7 +725,7 @@ int deleteSanction(char *dbname, int id) {
  * @param dbname
  * @param data
  *
- * @data = "id, name, description, user(first_name + last_name), user_fk;\n"
+ * @data = "id| name| description| user(first_name + last_name)| user_fk;\n"
  */
 void listSanction(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
@@ -751,31 +751,31 @@ void listSanction(char *dbname, char **data) {
 
             //Colonne 0
             itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
-            rowStringSize += strlen(intBuffer) + 1;// pour le ","
+            rowStringSize += strlen(intBuffer) + 1;// pour le "|"
             result = realloc(result, rowStringSize);
-            strcat(result, strcat(intBuffer, ","));
+            strcat(result, strcat(intBuffer, "|"));
 
             //Colonne 1
             rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 2
             rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 2) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 2));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 3
             rowStringSize += sqlite3_column_bytes(pStmt, 3) + 1;
             result = realloc(result, rowStringSize);
             strcat(result, sqlite3_column_text(pStmt, 3) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 3));
-            strcat(result, ",");
+            strcat(result, "|");
 
             //Colonne 4
             itoa(sqlite3_column_int(pStmt, 4), intBuffer, 10);
-            rowStringSize += strlen(intBuffer) + 2;// pour le ","
+            rowStringSize += strlen(intBuffer) + 2;// pour le ";\n"
             result = realloc(result, rowStringSize);
             strcat(result, strcat(intBuffer, ";\n"));
         }
