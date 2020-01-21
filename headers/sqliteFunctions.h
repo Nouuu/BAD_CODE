@@ -163,7 +163,75 @@ int updateUser(char *dbname, int id, char *email, char *first_name, char *last_n
     return 0;
 }
 
-//TODO getUser(id){}
+/**
+ * @name getUser
+ *
+ * @param dbname
+ * @param data
+ * @param id
+ *
+ * @data = "id|email|first_name|last_name|photo|birthdate;\n"
+ */
+void getUser(char *dbname, char **data, int id) {
+    sqlite3 *db = connectDB(dbname);
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "select * from user where id = ?;";
+    size_t rowStringSize = 1;
+    char *result = malloc(rowStringSize * sizeof(char));
+    strcpy(result, "");
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        *data = result;
+        return;
+    }
+
+    sqlite3_bind_int(pStmt, 1, id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_ROW) {
+        *data = result;
+        return;
+    }
+
+    char intBuffer[6];
+
+    //Colonne 0 (id)
+    itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
+    rowStringSize += strlen(intBuffer) + 1;// pour le "|"
+    result = realloc(result, rowStringSize);
+    strcat(result, strcat(intBuffer, "|"));
+    //Colonne 1 (email)
+    rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
+    strcat(result, "|");
+    //Colonne 2 (first_name)
+    rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 2) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 2));
+    strcat(result, "|");
+    //Colonne 3 (last_name)
+    rowStringSize += sqlite3_column_bytes(pStmt, 3) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 3) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 3));
+    strcat(result, "|");
+    //Colonne 4 (photo)
+    rowStringSize += sqlite3_column_bytes(pStmt, 4) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 4) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 4));
+    strcat(result, "|");
+    //Colonne 5 (birthdate)
+    rowStringSize += sqlite3_column_bytes(pStmt, 5) + 2;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 5) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 5));
+    strcat(result, ";\n");
+
+    *data = result;
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+}
 
 int insertClass(char *dbname, char *name, int year, int apprenticeship, int sanction_fk, int user_fk) {
     sqlite3 *db = connectDB(dbname);
