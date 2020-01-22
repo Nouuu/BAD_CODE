@@ -779,6 +779,7 @@ void listStudent(char *dbname, char **data) {
     sqlite3_close(db);
 }
 
+//TODO listStudent's class
 /**
  * @name getStudent
  *
@@ -1049,7 +1050,7 @@ void listSanction(char *dbname, char **data) {
  * @param data
  * @param id
  *
- * @data = "id| name| description| user(first_name + last_name)| user_fk;\n"
+ * @data = "id|name|description|user(first_name + last_name)|user_fk;\n"
  */
 void getSanction(char *dbname, char **data, int id) {
     sqlite3 *db = connectDB(dbname);
