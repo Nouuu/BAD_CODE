@@ -13,7 +13,7 @@ G_MODULE_EXPORT void on_Bad_Code_destroy(GtkWidget *widget, gpointer user_data);
 
 G_MODULE_EXPORT void on_button_name_clicked(GtkWidget *widget, gpointer user_data);
 
-void startGTK(int *argc, char ***argv) {
+void startGTK(int *argc, char ***argv, char *gladeFile) {
     GtkWidget *window;
 
 //Init GTK
@@ -21,7 +21,7 @@ void startGTK(int *argc, char ***argv) {
 
     //Create gtk window from glade file
     builder = gtk_builder_new();
-    if (gtk_builder_add_from_file(builder, "test.glade", NULL) == 0) {
+    if (gtk_builder_add_from_file(builder, gladeFile, NULL) == 0) {
         fprintf(stderr, "Error: can't open glade file\n");
         exit(EXIT_FAILURE);
     }

@@ -13,13 +13,11 @@
 
 GtkBuilder *builder;
 char *dbname = "database.db";
+char *gladeFile = "test.glade";
 
 int main(int argc, char **argv) {
 
-//    startGTK(&argc, &argv);
-//    insertTableImage(dbname, "user", 21, "C:\\Users\\Unknow\\Downloads\\jojo.jfif");
-    char *ch;
-    for (int i = 0; i < 50; ++i) {
+    startGTK(&argc, &argv? gladeFile);
 
         listStudent(dbname, &ch);
         printf("%s\n", ch);
