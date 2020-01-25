@@ -701,7 +701,8 @@ void listStudents(char *dbname, char **data) {
                        "       c.name                                                           as class,\n"
                        "       class_fk\n"
                        "from student\n"
-                       "         left join class c on student.class_fk = c.id;";
+                       "         left join class c on student.class_fk = c.id\n"
+                       "order by last_name ASC;";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
