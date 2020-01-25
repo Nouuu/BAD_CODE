@@ -13,6 +13,8 @@ G_MODULE_EXPORT void on_Bad_Code_destroy(GtkWidget *widget, gpointer user_data);
 
 G_MODULE_EXPORT void on_button_name_clicked(GtkWidget *widget, gpointer user_data);
 
+G_MODULE_EXPORT void on_select_changed(GtkWidget *widget);
+
 void on_destroy() {
     gtk_main_quit();
 }
@@ -75,6 +77,42 @@ void on_button_name_clicked(GtkWidget *widget, gpointer user_data) {
 
     gtk_label_set_text(label_name, msg);
     free(msg);
+}
+
+void on_select_changed(GtkWidget *c) {
+    gchar * cValue;
+    guint iValue;
+    GtkTreeIter iter;
+    GtkTreeModel *model;
+
+    if (gtk_tree_selection_get_selected(GTK_TREE_SELECTION(c), &model, &iter) == FALSE)
+        return;
+
+    gtk_tree_model_get(model, &iter, 0, &iValue, -1);
+    printf("id: %d, ", iValue);
+
+    gtk_tree_model_get(model, &iter, 1, &cValue, -1);
+    printf("first_name: %s, ", cValue);
+
+    gtk_tree_model_get(model, &iter, 2, &cValue, -1);
+    printf("last_name: %s, ", cValue);
+
+    gtk_tree_model_get(model, &iter, 4, &cValue, -1);
+    printf("email: %s, ", cValue);
+
+    gtk_tree_model_get(model, &iter, 5, &iValue, -1);
+    printf("bad_code: %d, ", iValue);
+
+    gtk_tree_model_get(model, &iter, 6, &iValue, -1);
+    printf("nb_bottles: %d, ", iValue);
+
+    gtk_tree_model_get(model, &iter, 7, &cValue, -1);
+    printf("class: %s, ", cValue);
+
+    gtk_tree_model_get(model, &iter, 8, &iValue, -1);
+    printf("class_fk: %d\n", iValue);
+
+
 }
 
 void GTKListStudents(GtkTreeStore *treeStore) {
@@ -223,7 +261,7 @@ void startGTK2(int *argc, char ***argv, char *gladeFile) {
     GtkTreeViewColumn *cx7;
     GtkTreeViewColumn *cx8;
     GtkTreeViewColumn *cx9;
-    GtkTreeSelection *select;
+    GtkTreeSelection *selection;
     GtkCellRenderer *cr1;
     GtkCellRenderer *cr2;
     GtkCellRenderer *cr3;
@@ -266,7 +304,7 @@ void startGTK2(int *argc, char ***argv, char *gladeFile) {
     cr7 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "cr7"));
     cr8 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "cr8"));
     cr9 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "cr9"));
-    select = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "select"));
+    selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "selection"));
 
     gtk_tree_view_column_add_attribute(cx1, cr1, "text", 0);
     gtk_tree_view_column_add_attribute(cx2, cr2, "text", 1);
@@ -281,7 +319,7 @@ void startGTK2(int *argc, char ***argv, char *gladeFile) {
     GTKListStudents(treeStore);
 
 
-    select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tv1));
+    selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tv1));
 
     gtk_widget_show_all(window);
     gtk_main();
