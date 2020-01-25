@@ -17,17 +17,11 @@ char *gladeFile = "test.glade";
 
 int main(int argc, char **argv) {
 
-    startGTK(&argc, &argv? gladeFile);
+    startGTK(&argc, &argv, gladeFile);
 
-        listStudent(dbname, &ch);
-        printf("%s\n", ch);
-        free(ch);
-        listClass(dbname, &ch);
-        printf("%s\n", ch);
-        free(ch);
 
-    }
+
+
     printf("Exit program");
-
     return EXIT_SUCCESS;
 }
