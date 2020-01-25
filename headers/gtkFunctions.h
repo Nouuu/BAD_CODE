@@ -7,11 +7,15 @@
 
 // link builder to the one in main.c
 extern GtkBuilder *builder;
-
+extern char *dbname;
 //Event listener
 G_MODULE_EXPORT void on_Bad_Code_destroy(GtkWidget *widget, gpointer user_data);
 
 G_MODULE_EXPORT void on_button_name_clicked(GtkWidget *widget, gpointer user_data);
+
+void on_destroy() {
+    gtk_main_quit();
+}
 
 void startGTK(int *argc, char ***argv, char *gladeFile) {
     GtkWidget *window;
