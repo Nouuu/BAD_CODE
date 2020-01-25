@@ -17,7 +17,7 @@ char *gladeFile = "test.glade";
 
 int main(int argc, char **argv) {
 
-    startGTK(&argc, &argv, gladeFile);
+    startGTK2(&argc, &argv, gladeFile);
 
 
 

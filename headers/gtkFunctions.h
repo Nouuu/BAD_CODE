@@ -77,6 +77,136 @@ void on_button_name_clicked(GtkWidget *widget, gpointer user_data) {
     free(msg);
 }
 
+void GTKListStudents(GtkTreeStore *treeStore) {
+    char *students, *result, *firstAddress;
+    int nbStudents = 0;
+    listStudents(dbname, &students);
+    firstAddress = students;
+    result = students;
+
+    while ((result = strstr(result, ";\n"))) {
+        nbStudents++;
+        result++;
+    }
+
+
+    GtkTreeIter iter;
+
+    for (int i = 0; i < nbStudents; ++i) {
+        gtk_tree_store_append(treeStore, &iter, NULL);
+
+        //ID
+        result = strchr(students, '|');
+        size_t columnSize = result - students;
+        char *buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, students, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(treeStore, &iter, 0, atoi(buffer), -1);
+        students += columnSize + 1;
+
+        //FIRST_NAME
+        free(buffer);
+        result = strchr(students, '|');
+        columnSize = result - students;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, students, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(treeStore, &iter, 1, buffer, -1);
+        students += columnSize + 1;
+
+        //LAST_NAME
+        free(buffer);
+        result = strchr(students, '|');
+        columnSize = result - students;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, students, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(treeStore, &iter, 2, buffer, -1);
+        students += columnSize + 1;
+
+        //TODO PHOTO
+        free(buffer);
+        result = strchr(students, '|');
+        columnSize = result - students;
+        buffer = malloc(columnSize + 1);
+//
+//        strncpy(buffer, students, columnSize);
+//        buffer[columnSize] = '\0';
+//
+//        gtk_tree_store_set(treeStore, &iter, 3, buffer, -1);
+        students += columnSize + 1;
+
+        //EMAIL
+        free(buffer);
+        result = strchr(students, '|');
+        columnSize = result - students;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, students, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(treeStore, &iter, 4, buffer, -1);
+        students += columnSize + 1;
+
+        //BAD_CODE
+        free(buffer);
+        result = strchr(students, '|');
+        columnSize = result - students;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, students, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(treeStore, &iter, 5, atoi(buffer), -1);
+        students += columnSize + 1;
+
+        //NB_BOTTLES
+        free(buffer);
+        result = strchr(students, '|');
+        columnSize = result - students;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, students, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(treeStore, &iter, 6, atoi(buffer), -1);
+        students += columnSize + 1;
+
+        //CLASS
+        free(buffer);
+        result = strchr(students, '|');
+        columnSize = result - students;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, students, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(treeStore, &iter, 7, buffer, -1);
+        students += columnSize + 1;
+
+        //CLASS_FK
+        free(buffer);
+        result = strstr(students, ";\n");
+        columnSize = result - students;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, students, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(treeStore, &iter, 8, atoi(buffer), -1);
+        students += columnSize + 2;
+
+    }
+
+    free(firstAddress);
+}
+
 void startGTK2(int *argc, char ***argv, char *gladeFile) {
 
     GtkWidget *window;
@@ -147,6 +277,8 @@ void startGTK2(int *argc, char ***argv, char *gladeFile) {
     gtk_tree_view_column_add_attribute(cx7, cr7, "text", 6);
     gtk_tree_view_column_add_attribute(cx8, cr8, "text", 7);
     gtk_tree_view_column_add_attribute(cx9, cr9, "text", 8);
+
+    GTKListStudents(treeStore);
 
 
     select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tv1));
