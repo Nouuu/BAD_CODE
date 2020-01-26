@@ -8,75 +8,22 @@
 // link builder to the one in main.c
 extern GtkBuilder *builder;
 extern char *dbname;
-//Event listener
-G_MODULE_EXPORT void on_Bad_Code_destroy(GtkWidget *widget, gpointer user_data);
 
-G_MODULE_EXPORT void on_button_name_clicked(GtkWidget *widget, gpointer user_data);
+typedef struct {
+    GtkWidget *rb_classes;
+    GtkWidget *rb_students;
+    GtkWidget *rb_sanctions;
+    GtkWidget *rb_deliverables;
+    GtkWidget *rb_settings;
+    GtkWidget *lbl_button_state;
+} app_widgets;
 
+//Event listeners
 G_MODULE_EXPORT void on_select_changed(GtkWidget *widget);
+G_MODULE_EXPORT void on_category_selection(GtkToggleButton *togglebutton, app_widgets *app_wdgts);
 
 void on_destroy() {
     gtk_main_quit();
-}
-
-void startGTK(int *argc, char ***argv, char *gladeFile) {
-    GtkWidget *window;
-
-//Init GTK
-    gtk_init(argc, argv);
-
-    //Create gtk window from glade file
-    builder = gtk_builder_new();
-    if (gtk_builder_add_from_file(builder, gladeFile, NULL) == 0) {
-        fprintf(stderr, "Error: can't open glade file\n");
-        exit(EXIT_FAILURE);
-    }
-
-    //Get main window by name
-    window = GTK_WIDGET(gtk_builder_get_object(builder, "Bad_Code"));
-
-    //Connect signals
-    gtk_builder_connect_signals(builder, NULL);
-
-    //Show main window
-    gtk_widget_show(window);
-
-    //GTK loop
-    gtk_main();
-    g_object_unref(G_OBJECT(builder));
-}
-
-void on_Bad_Code_destroy(GtkWidget *widget, gpointer user_data) {
-    printf("Close window\n");
-    gtk_main_quit();
-}
-
-void on_button_name_clicked(GtkWidget *widget, gpointer user_data) {
-    int max_name_size = 20;
-    const char *error_message = "Pas de nom";
-    const char *name_message = "Votre nom est : ";
-    const char *name;
-    char *msg = NULL;
-
-    GtkLabel *label_name = GTK_LABEL(gtk_builder_get_object(builder, "label_name"));
-    GtkEntry *entry_name = GTK_ENTRY(gtk_builder_get_object(builder, "entry_name"));
-
-    name = gtk_entry_get_text(entry_name);
-
-    if (!strcmp(name, "")) {
-        msg = malloc(strlen(error_message) * sizeof(char));
-        strcpy(msg, error_message);
-    } else {
-        msg = malloc((strlen(name_message) + max_name_size) * sizeof(char));
-        strcpy(msg, "Votre nom est : ");
-        strncpy(msg, name, max_name_size);
-        msg[strlen(name) >= max_name_size
-            ? strlen(name_message) + max_name_size - 1
-            : strlen(name_message) + strlen(name)] = '\0';
-    }
-
-    gtk_label_set_text(label_name, msg);
-    free(msg);
 }
 
 void on_select_changed(GtkWidget *c) {
@@ -126,7 +73,6 @@ void GTKListStudents(GtkTreeStore *treeStore) {
         nbStudents++;
         result++;
     }
-
 
     GtkTreeIter iter;
 
@@ -325,5 +271,51 @@ void startGTK2(int *argc, char ***argv, char *gladeFile) {
     gtk_main();
 
 }
+
+void on_category_selection(GtkToggleButton *togglebutton, app_widgets *app_wdgts) {
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_classes))) {
+        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "classes");
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_students))) {
+        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "students");
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_sanctions))) {
+        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "sanctions");
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_deliverables))) {
+        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "deliverables");
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_settings))) {
+        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "settings");
+    }
+}
+
+void dashboardGTK(int *argc, char ***argv) {
+    // Déclaration des variables
+    GtkWidget *window_dashboard;
+    app_widgets *widgets = g_slice_new(app_widgets);
+
+    gtk_init(argc, argv);
+
+    builder = gtk_builder_new_from_file("D:\\ESGI\\Projet_C\\BAD_CODE\\glade\\dashboard2.glade"); // Chemin absolu à modifier
+
+    window_dashboard = GTK_WIDGET(gtk_builder_get_object(builder, "window_dashboard"));
+    g_signal_connect(window_dashboard, "destroy", G_CALLBACK(on_destroy), NULL);
+
+    // get pointers to radio button widgets
+    widgets->rb_classes = GTK_WIDGET(gtk_builder_get_object(builder, "rb_classes"));
+    widgets->rb_students = GTK_WIDGET(gtk_builder_get_object(builder, "rb_students"));
+    widgets->rb_sanctions = GTK_WIDGET(gtk_builder_get_object(builder, "rb_sanctions"));
+    widgets->rb_deliverables = GTK_WIDGET(gtk_builder_get_object(builder, "rb_deliverables"));
+    widgets->rb_settings = GTK_WIDGET(gtk_builder_get_object(builder, "rb_settings"));
+    widgets->lbl_button_state = GTK_WIDGET(gtk_builder_get_object(builder, "lbl_button_state"));
+
+    gtk_builder_connect_signals(builder, widgets);
+    g_object_unref(builder); // Decreases the reference count of builder : if count = 0, memory is freed
+
+    gtk_widget_show_all(window_dashboard);
+
+    gtk_main();
+
+    g_slice_free(app_widgets, widgets);
+}
+
+
 
 #endif //BAD_CODE_GTKFUNCTIONS_H
