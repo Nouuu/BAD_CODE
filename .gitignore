@@ -10,3 +10,7 @@ cmake-build-debug-wsl/
 cmake-build-debug/
 
 dlls.7z
+
+glade/dashboard.glade~
+
+glade/#listStudents.glade#
