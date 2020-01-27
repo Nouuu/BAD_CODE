@@ -92,7 +92,7 @@ void on_select_changed(GtkWidget *c) {
 
 }
 
-void GTKListStudents(GtkTreeStore *treeStore) {
+void GTKListStudents() {
     char *students, *result, *firstAddress;
     int nbStudents = 0;
     listStudents(dbname, &students);
@@ -105,9 +105,10 @@ void GTKListStudents(GtkTreeStore *treeStore) {
     }
 
     GtkTreeIter iter;
+    gtk_tree_store_clear(widgets->view_students->students_tree_store);
 
     for (int i = 0; i < nbStudents; ++i) {
-        gtk_tree_store_append(treeStore, &iter, NULL);
+        gtk_tree_store_append(widgets->view_students->students_tree_store, &iter, NULL);
 
         //ID
         result = strchr(students, '|');
@@ -117,7 +118,7 @@ void GTKListStudents(GtkTreeStore *treeStore) {
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
 
-        gtk_tree_store_set(treeStore, &iter, 0, atoi(buffer), -1);
+        gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 0, atoi(buffer), -1);
         students += columnSize + 1;
 
         //FIRST_NAME
@@ -129,7 +130,7 @@ void GTKListStudents(GtkTreeStore *treeStore) {
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
 
-        gtk_tree_store_set(treeStore, &iter, 1, buffer, -1);
+        gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 1, buffer, -1);
         students += columnSize + 1;
 
         //LAST_NAME
@@ -141,7 +142,7 @@ void GTKListStudents(GtkTreeStore *treeStore) {
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
 
-        gtk_tree_store_set(treeStore, &iter, 2, buffer, -1);
+        gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 2, buffer, -1);
         students += columnSize + 1;
 
         //TODO PHOTO
@@ -165,7 +166,7 @@ void GTKListStudents(GtkTreeStore *treeStore) {
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
 
-        gtk_tree_store_set(treeStore, &iter, 4, buffer, -1);
+        gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 4, buffer, -1);
         students += columnSize + 1;
 
         //BAD_CODE
@@ -177,7 +178,7 @@ void GTKListStudents(GtkTreeStore *treeStore) {
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
 
-        gtk_tree_store_set(treeStore, &iter, 5, atoi(buffer), -1);
+        gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 5, atoi(buffer), -1);
         students += columnSize + 1;
 
         //NB_BOTTLES
@@ -189,7 +190,7 @@ void GTKListStudents(GtkTreeStore *treeStore) {
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
 
-        gtk_tree_store_set(treeStore, &iter, 6, atoi(buffer), -1);
+        gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 6, atoi(buffer), -1);
         students += columnSize + 1;
 
         //CLASS
@@ -201,7 +202,7 @@ void GTKListStudents(GtkTreeStore *treeStore) {
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
 
-        gtk_tree_store_set(treeStore, &iter, 7, buffer, -1);
+        gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 7, buffer, -1);
         students += columnSize + 1;
 
         //CLASS_FK
@@ -213,7 +214,7 @@ void GTKListStudents(GtkTreeStore *treeStore) {
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
 
-        gtk_tree_store_set(treeStore, &iter, 8, atoi(buffer), -1);
+        gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 8, atoi(buffer), -1);
         students += columnSize + 2;
 
     }
@@ -221,42 +222,34 @@ void GTKListStudents(GtkTreeStore *treeStore) {
     free(firstAddress);
 }
 
-void startGTK2(int *argc, char ***argv, char *gladeFile) {
+void on_menu_stack_visible_child_notify(GtkStack *stack) {
+    printf("%d\n", *widgets->test);
+    if (gtk_stack_get_visible_child_name(stack) != NULL) {
+        const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack);
+        if (!strcmp(menu, "view_classes")) {
+            printf("Classes !\n");
 
-    GtkWidget *window;
-    GtkWidget *fixed1;
-    GtkWidget *view1;
-    GtkTreeStore *treeStore;
-    GtkTreeView *tv1;
-    GtkTreeViewColumn *cx1;
-    GtkTreeViewColumn *cx2;
-    GtkTreeViewColumn *cx3;
-    GtkTreeViewColumn *cx4;
-    GtkTreeViewColumn *cx5;
-    GtkTreeViewColumn *cx6;
-    GtkTreeViewColumn *cx7;
-    GtkTreeViewColumn *cx8;
-    GtkTreeViewColumn *cx9;
-    GtkTreeSelection *selection;
-    GtkCellRenderer *cr1;
-    GtkCellRenderer *cr2;
-    GtkCellRenderer *cr3;
-    GtkCellRenderer *cr4;
-    GtkCellRenderer *cr5;
-    GtkCellRenderer *cr6;
-    GtkCellRenderer *cr7;
-    GtkCellRenderer *cr8;
-    GtkCellRenderer *cr9;
+        } else if (!strcmp(menu, "view_students")) {
+            printf("Students !\n");
+            GTKListStudents(widgets);
 
-    gtk_init(argc, argv);
+        } else if (!strcmp(menu, "view_sanctions")) {
+            printf("Sanctions !\n");
 
-    builder = gtk_builder_new_from_file("listStudents.glade");
+        } else if (!strcmp(menu, "view_deliverables")) {
+            printf("Deliverables !\n");
 
-    window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
+        } else if (!strcmp(menu, "view_settings")) {
+            printf("Settings !\n");
 
-    g_signal_connect(window, "destroy", G_CALLBACK(on_destroy), NULL);
+        }
+    }
+}
 
-    gtk_builder_connect_signals(builder, NULL);
+void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher) {
+    if (gtk_stack_switcher_get_stack(stackSwitcher) != NULL)
+        on_menu_stack_visible_child_notify(gtk_stack_switcher_get_stack(stackSwitcher));
+}
 
 void connectWidgets() {
 
@@ -309,17 +302,9 @@ void connectWidgets() {
     gtk_tree_view_column_add_attribute(widgets->view_students->students_cx_9, widgets->view_students->students_cr_9,
                                        "text", 8);
 
+
 }
 
-void on_menu_stack_visible_child_notify(GtkStack *stack, app_widgets *app_wdgts) {
-    if (gtk_stack_get_visible_child_name(stack) != NULL)
-        printf("%s\n", gtk_stack_get_visible_child_name(stack));
-}
-
-void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher, app_widgets *app_wdgts) {
-    if (gtk_stack_switcher_get_stack(stackSwitcher) != NULL)
-        printf("%s\n", gtk_stack_get_visible_child_name(gtk_stack_switcher_get_stack(stackSwitcher)));
-}
 
 void dashboardGTK(int *argc, char ***argv) {
     // Déclaration des variables
@@ -346,6 +331,5 @@ void dashboardGTK(int *argc, char ***argv) {
     g_slice_free(View_students, widgets->view_students);
     g_slice_free(App_widgets, widgets);
 }
-
 
 #endif //BAD_CODE_GTKFUNCTIONS_H
