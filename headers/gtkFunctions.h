@@ -20,14 +20,18 @@ typedef struct {
 
 //Event listeners
 G_MODULE_EXPORT void on_select_changed(GtkWidget *widget);
-G_MODULE_EXPORT void on_category_selection(GtkToggleButton *togglebutton, app_widgets *app_wdgts);
+
+G_MODULE_EXPORT void on_menu_stack_visible_child_notify(GtkStack *stack, app_widgets *app_wdgts);
+
+G_MODULE_EXPORT void
+on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher, app_widgets *app_wdgts);
 
 void on_destroy() {
     gtk_main_quit();
 }
 
 void on_select_changed(GtkWidget *c) {
-    gchar * cValue;
+    gchar *cValue;
     guint iValue;
     GtkTreeIter iter;
     GtkTreeModel *model;
@@ -272,18 +276,14 @@ void startGTK2(int *argc, char ***argv, char *gladeFile) {
 
 }
 
-void on_category_selection(GtkToggleButton *togglebutton, app_widgets *app_wdgts) {
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_classes))) {
-        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "classes");
-    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_students))) {
-        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "students");
-    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_sanctions))) {
-        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "sanctions");
-    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_deliverables))) {
-        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "deliverables");
-    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app_wdgts->rb_settings))) {
-        gtk_label_set_text(GTK_LABEL(app_wdgts->lbl_button_state), "settings");
-    }
+void on_menu_stack_visible_child_notify(GtkStack *stack, app_widgets *app_wdgts) {
+    if (gtk_stack_get_visible_child_name(stack) != NULL)
+        printf("%s\n", gtk_stack_get_visible_child_name(stack));
+}
+
+void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher, app_widgets *app_wdgts) {
+    if (gtk_stack_switcher_get_stack(stackSwitcher) != NULL)
+        printf("%s\n", gtk_stack_get_visible_child_name(gtk_stack_switcher_get_stack(stackSwitcher)));
 }
 
 void dashboardGTK(int *argc, char ***argv) {
@@ -293,7 +293,7 @@ void dashboardGTK(int *argc, char ***argv) {
 
     gtk_init(argc, argv);
 
-    builder = gtk_builder_new_from_file("D:\\ESGI\\Projet_C\\BAD_CODE\\glade\\dashboard2.glade"); // Chemin absolu à modifier
+    builder = gtk_builder_new_from_file("D:\\Projets\\BAD_CODE\\glade\\dashboard.glade"); // Chemin absolu à modifier
 
     window_dashboard = GTK_WIDGET(gtk_builder_get_object(builder, "window_dashboard"));
     g_signal_connect(window_dashboard, "destroy", G_CALLBACK(on_destroy), NULL);
@@ -315,7 +315,6 @@ void dashboardGTK(int *argc, char ***argv) {
 
     g_slice_free(app_widgets, widgets);
 }
-
 
 
 #endif //BAD_CODE_GTKFUNCTIONS_H
