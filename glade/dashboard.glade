@@ -11,6 +11,9 @@
     <property name="resizable">False</property>
     <property name="icon">img\icon.ico</property>
     <child>
+      <placeholder/>
+    </child>
+    <child>
       <object class="GtkFixed" id="fixed1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -20,7 +23,7 @@
             <property name="height_request">150</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="pixbuf">img/logo.png</property>
+            <property name="pixbuf">img\logo.png</property>
           </object>
           <packing>
             <property name="y">10</property>
@@ -35,35 +38,17 @@
             <property name="label" translatable="yes">Click to Change Button State</property>
           </object>
           <packing>
-            <property name="x">152</property>
+            <property name="x">320</property>
             <property name="y">262</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLinkButton" id="linkbutton1">
-            <property name="label" translatable="yes">button</property>
-            <property name="width_request">100</property>
+          <object class="GtkButtonBox">
+            <property name="width_request">900</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="has_tooltip">True</property>
-            <property name="relief">none</property>
-            <property name="uri">mailto:castelli.jo@gmail.com</property>
-          </object>
-          <packing>
-            <property name="x">483</property>
-            <property name="y">286</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkHButtonBox" id="hbuttonbox2">
-            <property name="width_request">900</property>
-            <property name="height_request">73</property>
-            <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">5</property>
-            <property name="homogeneous">True</property>
+            <property name="spacing">25</property>
             <property name="layout_style">center</property>
             <child>
               <object class="GtkRadioButton" id="rb_classes">
@@ -73,8 +58,8 @@
                 <property name="receives_default">False</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="on_category_selection" swapped="no"/>
                 <signal name="clicked" handler="on_category_selection" swapped="no"/>
+                <signal name="toggled" handler="on_category_selection" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -91,8 +76,8 @@
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">rb_classes</property>
-                <signal name="toggled" handler="on_category_selection" swapped="no"/>
                 <signal name="clicked" handler="on_category_selection" swapped="no"/>
+                <signal name="toggled" handler="on_category_selection" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -109,8 +94,8 @@
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">rb_classes</property>
-                <signal name="toggled" handler="on_category_selection" swapped="no"/>
                 <signal name="clicked" handler="on_category_selection" swapped="no"/>
+                <signal name="toggled" handler="on_category_selection" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -127,8 +112,8 @@
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">rb_classes</property>
-                <signal name="toggled" handler="on_category_selection" swapped="no"/>
                 <signal name="clicked" handler="on_category_selection" swapped="no"/>
+                <signal name="toggled" handler="on_category_selection" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -145,8 +130,8 @@
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">rb_classes</property>
-                <signal name="toggled" handler="on_category_selection" swapped="no"/>
                 <signal name="clicked" handler="on_category_selection" swapped="no"/>
+                <signal name="toggled" handler="on_category_selection" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -156,7 +141,7 @@
             </child>
           </object>
           <packing>
-            <property name="y">160</property>
+            <property name="y">154</property>
           </packing>
         </child>
       </object>
