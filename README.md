@@ -28,12 +28,24 @@
 [https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade](https://openclassrooms.com/fr/courses/1343806-pygtk/1343942-glade)\
 [https://www.guillaumeriviere.name/estia/DRI/tp1.php](https://www.guillaumeriviere.name/estia/DRI/tp1.php)
 
+### DLLs & build issue
 #### ThreeView
 [https://linuxfr.org/users/trim/journaux/utilisation-de-gtktreemodel-gtktreeview-et-consorts](https://linuxfr.org/users/trim/journaux/utilisation-de-gtktreemodel-gtktreeview-et-consorts)
 [https://gtk.developpez.com/cours/gtk2/?page=page_23](https://gtk.developpez.com/cours/gtk2/?page=page_23)
 
 ### DLLs issue
 
+Lier le dossier **msys2/mingw64/bin** aux variables d'environnement
+système **PATH**
+
+Lors du build, si certaines librairies sont introuvable, aller dans le
+dossier **msys2/mingw64/include** et les copiers coller en dehors de
+leur dossiers de version.\
+**Exemple :** copier le dossier gtk et gdk se trouvant dans
+**msys2/mingw64/include/gtk-3-0/** directement dans
+**msys2/mingw64/include** (respecter les chemins introuvables indiqués
+dans les messages d'erreur de compilation).\
+Repeter autant de fois que nécéssaire.
 Lier le dossier **msys2/mingw64/bin** aux variables d'environnement système **PATH**
 
 ## SQLite
