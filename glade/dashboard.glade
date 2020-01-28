@@ -120,10 +120,10 @@
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="students_cx_1">
+                                <property name="resizable">True</property>
                                 <property name="title" translatable="yes">id</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="reorderable">True</property>
                                 <property name="sort_indicator">True</property>
                                 <property name="sort_column_id">0</property>
                                 <child>
@@ -133,10 +133,10 @@
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="students_cx_2">
+                                <property name="resizable">True</property>
                                 <property name="title" translatable="yes">first_name</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="reorderable">True</property>
                                 <property name="sort_column_id">1</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="students_cr_2"/>
@@ -145,10 +145,10 @@
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="students_cx_3">
+                                <property name="resizable">True</property>
                                 <property name="title" translatable="yes">last_name</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="reorderable">True</property>
                                 <property name="sort_indicator">True</property>
                                 <property name="sort_column_id">2</property>
                                 <child>
@@ -159,10 +159,10 @@
                             <child>
                               <object class="GtkTreeViewColumn" id="students_cx_4">
                                 <property name="visible">False</property>
+                                <property name="resizable">True</property>
                                 <property name="title" translatable="yes">photo</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="reorderable">True</property>
                                 <property name="sort_column_id">3</property>
                                 <child>
                                   <object class="GtkCellRendererPixbuf" id="students_cr_4"/>
@@ -171,10 +171,10 @@
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="students_cx_5">
+                                <property name="resizable">True</property>
                                 <property name="title" translatable="yes">email</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="reorderable">True</property>
                                 <property name="sort_column_id">4</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="students_cr_5"/>
@@ -183,10 +183,10 @@
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="students_cx_6">
+                                <property name="resizable">True</property>
                                 <property name="title" translatable="yes">bad_code</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="reorderable">True</property>
                                 <property name="sort_column_id">5</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="students_cr_6"/>
@@ -195,10 +195,10 @@
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="students_cx_7">
+                                <property name="resizable">True</property>
                                 <property name="title" translatable="yes">nb_bottles</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="reorderable">True</property>
                                 <property name="sort_column_id">6</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="students_cr_7"/>
@@ -207,10 +207,10 @@
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="students_cx_8">
+                                <property name="resizable">True</property>
                                 <property name="title" translatable="yes">class</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="reorderable">True</property>
                                 <property name="sort_column_id">7</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="students_cr_8"/>
@@ -220,10 +220,10 @@
                             <child>
                               <object class="GtkTreeViewColumn" id="students_cx_9">
                                 <property name="visible">False</property>
+                                <property name="resizable">True</property>
                                 <property name="title" translatable="yes">class_fk</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="reorderable">True</property>
                                 <property name="sort_column_id">8</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="students_cr_9"/>
