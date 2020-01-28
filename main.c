@@ -12,7 +12,7 @@
 #include "headers/gtkFunctions.h"
 
 GtkBuilder *builder;
-char *dbname = "database.db";
+char *dbname = "..\\bdd\\database.db";
 char *gladeFile = "test.glade";
 
 int main(int argc, char **argv) {

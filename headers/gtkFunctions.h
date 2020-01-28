@@ -315,7 +315,7 @@ void dashboardGTK(int *argc, char ***argv) {
 
     gtk_init(argc, argv);
 
-    builder = gtk_builder_new_from_file("D:\\Projets\\BAD_CODE\\glade\\dashboard.glade"); // Chemin absolu à modifier
+    builder = gtk_builder_new_from_file("..\\glade\\dashboard.glade"); // Chemin absolu à modifier
 
     connectWidgets();
 
