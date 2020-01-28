@@ -346,7 +346,7 @@ int deleteClass(char *dbname, int id) {
  *
  * @data = "id| name| year| apprenticeship| major| user(first_name + last_name)| user_fk| sanction(name)| sanction_fk;\n..."
  */
-void listClass(char *dbname, char **data) {
+void listClasses(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select class.id,\n"
@@ -1081,13 +1081,13 @@ int deleteSanction(char *dbname, int id) {
 }
 
 /**
- * @name  listSanction
+ * @name  listSanctions
  * @param dbname
  * @param data
  *
  * @data = "id| name| description| user(first_name + last_name)| user_fk;\n"
  */
-void listSanction(char *dbname, char **data) {
+void listSanctions(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select sanction.id, name, description, u.first_name || ' ' || u.last_name as user, user_fk\n"
