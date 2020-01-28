@@ -346,7 +346,7 @@ int deleteClass(char *dbname, int id) {
  *
  * @data = "id| name| year| apprenticeship| major| user(first_name + last_name)| user_fk| sanction(name)| sanction_fk;\n..."
  */
-void listClass(char *dbname, char **data) {
+void listClasses(char *dbname, char **data) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select class.id,\n"

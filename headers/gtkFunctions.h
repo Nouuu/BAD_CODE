@@ -36,10 +36,36 @@ typedef struct {
 } View_students;
 
 typedef struct {
+    GtkWidget *view_classes_fixed;
+    GtkWidget *view_classes_view;
+    GtkTreeStore *classes_tree_store;
+    GtkTreeView *classes_tree_view;
+    GtkTreeSelection *classes_tree_selection;
+    GtkTreeViewColumn *classes_cx_1;
+    GtkTreeViewColumn *classes_cx_2;
+    GtkTreeViewColumn *classes_cx_3;
+    GtkTreeViewColumn *classes_cx_4;
+    GtkTreeViewColumn *classes_cx_5;
+    GtkTreeViewColumn *classes_cx_6;
+    GtkTreeViewColumn *classes_cx_7;
+    GtkTreeViewColumn *classes_cx_8;
+    GtkTreeViewColumn *classes_cx_9;
+    GtkCellRenderer *classes_cr_1;
+    GtkCellRenderer *classes_cr_2;
+    GtkCellRenderer *classes_cr_3;
+    GtkCellRenderer *classes_cr_4;
+    GtkCellRenderer *classes_cr_5;
+    GtkCellRenderer *classes_cr_6;
+    GtkCellRenderer *classes_cr_7;
+    GtkCellRenderer *classes_cr_8;
+    GtkCellRenderer *classes_cr_9;
+} View_classes;
+
+typedef struct {
     GtkWidget *window_dashboard;
     GtkStack *menu_stack;
-    int *test;
     View_students *view_students;
+    View_classes *view_classes;
 } App_widgets;
 
 App_widgets *widgets;
@@ -222,16 +248,154 @@ void GTKListStudents() {
     free(firstAddress);
 }
 
+void GTKListClasses() {
+    char *classes, *result, *firstAddress;
+    int nbClasses = 0;
+    listClasses(dbname, &classes);
+    firstAddress = classes;
+    result = classes;
+
+    while ((result = strstr(result, ";\n"))) {
+        nbClasses++;
+        result++;
+    }
+
+    GtkTreeIter iter;
+    gtk_tree_store_clear(widgets->view_classes->classes_tree_store);
+
+    for (int i = 0; i < nbClasses; ++i) {
+        gtk_tree_store_append(widgets->view_classes->classes_tree_store, &iter, NULL);
+
+        //ID
+        result = strchr(classes, '|');
+        size_t columnSize = result - classes;
+        char *buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, classes, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 0, atoi(buffer), -1);
+        classes += columnSize + 1;
+
+        //NAME
+        free(buffer);
+        result = strchr(classes, '|');
+        columnSize = result - classes;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, classes, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 1, buffer, -1);
+        classes += columnSize + 1;
+
+        //YEAR
+        free(buffer);
+        result = strchr(classes, '|');
+        columnSize = result - classes;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, classes, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 2, atoi(buffer), -1);
+        classes += columnSize + 1;
+
+        //APPRENTICESHIP
+        free(buffer);
+        result = strchr(classes, '|');
+        columnSize = result - classes;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, classes, columnSize);
+        buffer[columnSize] = '\0';
+        if (!strcmp(buffer, "1")) {
+            printf("Apprentice\n");
+            buffer = realloc(buffer, 3 * sizeof(char));
+            strcpy(buffer, "Oui");
+        } else {
+            printf("Not Apprentice\n");
+            buffer = realloc(buffer, 3 * sizeof(char));
+            strcpy(buffer, "Non");
+        }
+
+        gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 3, buffer, -1);
+        classes += columnSize + 1;
+
+        //MAJOR
+        free(buffer);
+        result = strchr(classes, '|');
+        columnSize = result - classes;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, classes, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 4, buffer, -1);
+        classes += columnSize + 1;
+
+        //USER
+        free(buffer);
+        result = strchr(classes, '|');
+        columnSize = result - classes;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, classes, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 5, buffer, -1);
+        classes += columnSize + 1;
+
+        //USER_FK
+        free(buffer);
+        result = strchr(classes, '|');
+        columnSize = result - classes;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, classes, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 6, atoi(buffer), -1);
+        classes += columnSize + 1;
+
+        //SANCTION
+        free(buffer);
+        result = strchr(classes, '|');
+        columnSize = result - classes;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, classes, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 7, buffer, -1);
+        classes += columnSize + 1;
+
+        //SANCTION_FK
+        free(buffer);
+        result = strstr(classes, ";\n");
+        columnSize = result - classes;
+        buffer = malloc(columnSize + 1);
+
+        strncpy(buffer, classes, columnSize);
+        buffer[columnSize] = '\0';
+
+        gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 8, atoi(buffer), -1);
+        classes += columnSize + 2;
+
+    }
+
+    free(firstAddress);
+}
+
 void on_menu_stack_visible_child_notify(GtkStack *stack) {
-    printf("%d\n", *widgets->test);
     if (gtk_stack_get_visible_child_name(stack) != NULL) {
         const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack);
         if (!strcmp(menu, "view_classes")) {
             printf("Classes !\n");
-
+            GTKListClasses();
         } else if (!strcmp(menu, "view_students")) {
             printf("Students !\n");
-            GTKListStudents(widgets);
+            GTKListStudents();
 
         } else if (!strcmp(menu, "view_sanctions")) {
             printf("Sanctions !\n");
@@ -257,6 +421,7 @@ void connectWidgets() {
     widgets->menu_stack = GTK_STACK(gtk_builder_get_object(builder, "menu_stack"));
 
     //Connect view_students
+    widgets->view_students = g_slice_new(View_students);
     widgets->view_students->view_students_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_students"));
     widgets->view_students->view_students_view = GTK_WIDGET(gtk_builder_get_object(builder, "students_view"));
     widgets->view_students->students_tree_store = GTK_TREE_STORE(
@@ -302,16 +467,58 @@ void connectWidgets() {
     gtk_tree_view_column_add_attribute(widgets->view_students->students_cx_9, widgets->view_students->students_cr_9,
                                        "text", 8);
 
+    //Connect view_classes
+    widgets->view_classes = g_slice_new(View_classes);
+    widgets->view_classes->view_classes_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_classes"));
+    widgets->view_classes->view_classes_view = GTK_WIDGET(gtk_builder_get_object(builder, "classes_view"));
+    widgets->view_classes->classes_tree_store = GTK_TREE_STORE(
+            gtk_builder_get_object(builder, "classes_tree_store"));
+    widgets->view_classes->classes_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "classes_tree_view"));
+    widgets->view_classes->classes_tree_selection = GTK_TREE_SELECTION(
+            gtk_builder_get_object(builder, "classes_tree_selection"));
+    widgets->view_classes->classes_cx_1 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "classes_cx_1"));
+    widgets->view_classes->classes_cx_2 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "classes_cx_2"));
+    widgets->view_classes->classes_cx_3 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "classes_cx_3"));
+    widgets->view_classes->classes_cx_4 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "classes_cx_4"));
+    widgets->view_classes->classes_cx_5 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "classes_cx_5"));
+    widgets->view_classes->classes_cx_6 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "classes_cx_6"));
+    widgets->view_classes->classes_cx_7 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "classes_cx_7"));
+    widgets->view_classes->classes_cx_8 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "classes_cx_8"));
+    widgets->view_classes->classes_cx_9 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "classes_cx_9"));
+    widgets->view_classes->classes_cr_1 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "classes_cr_1"));
+    widgets->view_classes->classes_cr_2 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "classes_cr_2"));
+    widgets->view_classes->classes_cr_3 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "classes_cr_3"));
+    widgets->view_classes->classes_cr_4 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "classes_cr_4"));
+    widgets->view_classes->classes_cr_5 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "classes_cr_5"));
+    widgets->view_classes->classes_cr_6 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "classes_cr_6"));
+    widgets->view_classes->classes_cr_7 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "classes_cr_7"));
+    widgets->view_classes->classes_cr_8 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "classes_cr_8"));
+    widgets->view_classes->classes_cr_9 = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "classes_cr_9"));
 
+    gtk_tree_view_column_add_attribute(widgets->view_classes->classes_cx_1, widgets->view_classes->classes_cr_1,
+                                       "text", 0);
+    gtk_tree_view_column_add_attribute(widgets->view_classes->classes_cx_2, widgets->view_classes->classes_cr_2,
+                                       "text", 1);
+    gtk_tree_view_column_add_attribute(widgets->view_classes->classes_cx_3, widgets->view_classes->classes_cr_3,
+                                       "text", 2);
+    gtk_tree_view_column_add_attribute(widgets->view_classes->classes_cx_4, widgets->view_classes->classes_cr_4,
+                                       "text", 3);
+    gtk_tree_view_column_add_attribute(widgets->view_classes->classes_cx_5, widgets->view_classes->classes_cr_5,
+                                       "text", 4);
+    gtk_tree_view_column_add_attribute(widgets->view_classes->classes_cx_6, widgets->view_classes->classes_cr_6,
+                                       "text", 5);
+    gtk_tree_view_column_add_attribute(widgets->view_classes->classes_cx_7, widgets->view_classes->classes_cr_7,
+                                       "text", 6);
+    gtk_tree_view_column_add_attribute(widgets->view_classes->classes_cx_8, widgets->view_classes->classes_cr_8,
+                                       "text", 7);
+    gtk_tree_view_column_add_attribute(widgets->view_classes->classes_cx_9, widgets->view_classes->classes_cr_9,
+                                       "text", 8);
 }
 
 
 void dashboardGTK(int *argc, char ***argv) {
     // Déclaration des variables
     widgets = g_slice_new(App_widgets);
-    widgets->view_students = g_slice_new(View_students);
-    int test = 2;
-    widgets->test = &test;
 
     gtk_init(argc, argv);
 
@@ -329,6 +536,7 @@ void dashboardGTK(int *argc, char ***argv) {
     gtk_main();
 
     g_slice_free(View_students, widgets->view_students);
+    g_slice_free(View_classes, widgets->view_classes);
     g_slice_free(App_widgets, widgets);
 }
 
