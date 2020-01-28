@@ -29,6 +29,11 @@
 [https://www.guillaumeriviere.name/estia/DRI/tp1.php](https://www.guillaumeriviere.name/estia/DRI/tp1.php)
 
 ### DLLs & build issue
+#### ThreeView
+[https://linuxfr.org/users/trim/journaux/utilisation-de-gtktreemodel-gtktreeview-et-consorts](https://linuxfr.org/users/trim/journaux/utilisation-de-gtktreemodel-gtktreeview-et-consorts)
+[https://gtk.developpez.com/cours/gtk2/?page=page_23](https://gtk.developpez.com/cours/gtk2/?page=page_23)
+
+### DLLs issue
 
 Lier le dossier **msys2/mingw64/bin** aux variables d'environnement
 système **PATH**
@@ -41,3 +46,8 @@ leur dossiers de version.\
 **msys2/mingw64/include** (respecter les chemins introuvables indiqués
 dans les messages d'erreur de compilation).\
 Repeter autant de fois que nécéssaire.
+Lier le dossier **msys2/mingw64/bin** aux variables d'environnement système **PATH**
+
+## SQLite
+
+[http://zetcode.com/db/sqlitec/](http://zetcode.com/db/sqlitec/)
