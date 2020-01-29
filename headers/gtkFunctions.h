@@ -118,6 +118,8 @@ typedef struct {
 
 App_widgets *widgets;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //Event listeners
 G_MODULE_EXPORT void on_select_changed(GtkWidget *widget);
 
@@ -125,45 +127,54 @@ G_MODULE_EXPORT void on_menu_stack_visible_child_notify(GtkStack *stack);
 
 G_MODULE_EXPORT void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher);
 
+G_MODULE_EXPORT void on_sanctions_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
 
+G_MODULE_EXPORT void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
+
+G_MODULE_EXPORT void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
+
+G_MODULE_EXPORT void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
+
+//Functions prototype
+guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void on_destroy() {
     gtk_main_quit();
 }
 
-void on_select_changed(GtkWidget *c) {
-    gchar *cValue;
-    guint iValue;
+void on_sanctions_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
+    guint id = get_id_row_activated(tree_view, path);
+    printf("SANCTION ID: %d\n", id);
+}
+
+void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
+    guint id = get_id_row_activated(tree_view, path);
+    printf("CLASS ID: %d\n", id);
+}
+
+void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
+    guint id = get_id_row_activated(tree_view, path);
+    printf("STUDENT ID: %d\n", id);
+}
+
+void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
+    guint id = get_id_row_activated(tree_view, path);
+    printf("DELIVERABLE ID: %d\n", id);
+}
+
+guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
+    guint int_data;
+
     GtkTreeIter iter;
-    GtkTreeModel *model;
-
-    if (gtk_tree_selection_get_selected(GTK_TREE_SELECTION(c), &model, &iter) == FALSE)
-        return;
-
-    gtk_tree_model_get(model, &iter, 0, &iValue, -1);
-    printf("id: %d, ", iValue);
-
-    gtk_tree_model_get(model, &iter, 1, &cValue, -1);
-    printf("first_name: %s, ", cValue);
-
-    gtk_tree_model_get(model, &iter, 2, &cValue, -1);
-    printf("last_name: %s, ", cValue);
-
-    gtk_tree_model_get(model, &iter, 4, &cValue, -1);
-    printf("email: %s, ", cValue);
-
-    gtk_tree_model_get(model, &iter, 5, &iValue, -1);
-    printf("bad_code: %d, ", iValue);
-
-    gtk_tree_model_get(model, &iter, 6, &iValue, -1);
-    printf("nb_bottles: %d, ", iValue);
-
-    gtk_tree_model_get(model, &iter, 7, &cValue, -1);
-    printf("class: %s, ", cValue);
-
-    gtk_tree_model_get(model, &iter, 8, &iValue, -1);
-    printf("class_fk: %d\n", iValue);
-
-
+    GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
+    if (gtk_tree_model_get_iter(model, &iter, path)) {
+        gtk_tree_model_get(model, &iter, 0, &int_data, -1);
+        return int_data;
+    } else {
+        fprintf(stderr, "Error! selected column not found!\n");
+        return EXIT_FAILURE;
+    }
 }
 
 void GTKListStudents() {
@@ -925,7 +936,6 @@ void connectWidgets() {
                                        "text", 9);
 
 }
-
 
 void dashboardGTK(int *argc, char ***argv) {
     // Déclaration des variables

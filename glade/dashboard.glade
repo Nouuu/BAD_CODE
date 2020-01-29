@@ -157,6 +157,7 @@
                             <property name="rules_hint">True</property>
                             <property name="search_column">0</property>
                             <property name="enable_grid_lines">both</property>
+                            <signal name="row-activated" handler="on_classes_tree_view_row_activated" swapped="no"/>
                             <child internal-child="selection">
                               <object class="GtkTreeSelection" id="classes__tree_selection"/>
                             </child>
@@ -306,6 +307,7 @@
                             <property name="model">students_tree_store</property>
                             <property name="rules_hint">True</property>
                             <property name="enable_grid_lines">both</property>
+                            <signal name="row-activated" handler="on_students_tree_view_row_activated" swapped="no"/>
                             <child internal-child="selection">
                               <object class="GtkTreeSelection" id="students_tree_selection"/>
                             </child>
@@ -457,6 +459,7 @@
                             <property name="rules_hint">True</property>
                             <property name="search_column">0</property>
                             <property name="enable_grid_lines">both</property>
+                            <signal name="row-activated" handler="on_sanctions_tree_view_row_activated" swapped="no"/>
                             <child internal-child="selection">
                               <object class="GtkTreeSelection" id="sanctions_tree_selection"/>
                             </child>
@@ -559,6 +562,7 @@
                             <property name="rules_hint">True</property>
                             <property name="search_column">0</property>
                             <property name="enable_grid_lines">both</property>
+                            <signal name="row-activated" handler="on_deliverables_tree_view_row_activated" swapped="no"/>
                             <child internal-child="selection">
                               <object class="GtkTreeSelection" id="deliverables_tree_selection"/>
                             </child>
@@ -581,7 +585,7 @@
                                 <property name="title" translatable="yes">due_date</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="sort_column_id">0</property>
+                                <property name="sort_column_id">1</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="deliverables_cr_2"/>
                                 </child>
@@ -593,7 +597,7 @@
                                 <property name="title" translatable="yes">subject</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="sort_column_id">0</property>
+                                <property name="sort_column_id">2</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="deliverables_cr_3"/>
                                 </child>
@@ -605,7 +609,7 @@
                                 <property name="title" translatable="yes">audio_record</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="sort_column_id">0</property>
+                                <property name="sort_column_id">3</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="deliverables_cr_4"/>
                                 </child>
@@ -617,7 +621,7 @@
                                 <property name="title" translatable="yes">video_record</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="sort_column_id">0</property>
+                                <property name="sort_column_id">4</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="deliverables_cr_5"/>
                                 </child>
@@ -629,7 +633,7 @@
                                 <property name="title" translatable="yes">bad_code</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="sort_column_id">0</property>
+                                <property name="sort_column_id">5</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="deliverables_cr_6"/>
                                 </child>
@@ -641,7 +645,7 @@
                                 <property name="title" translatable="yes">deliverable_file</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="sort_column_id">0</property>
+                                <property name="sort_column_id">6</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="deliverables_cr_7"/>
                                 </child>
@@ -653,7 +657,7 @@
                                 <property name="title" translatable="yes">status</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="sort_column_id">0</property>
+                                <property name="sort_column_id">7</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="deliverables_cr_8"/>
                                 </child>
@@ -665,7 +669,7 @@
                                 <property name="title" translatable="yes">student</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="sort_column_id">0</property>
+                                <property name="sort_column_id">8</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="deliverables_cr_9"/>
                                 </child>
@@ -678,7 +682,7 @@
                                 <property name="title" translatable="yes">student_fk</property>
                                 <property name="expand">True</property>
                                 <property name="clickable">True</property>
-                                <property name="sort_column_id">0</property>
+                                <property name="sort_column_id">9</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="deliverables_cr_10"/>
                                 </child>
