@@ -22,6 +22,11 @@
     <property name="can_focus">False</property>
     <property name="icon_name">list-add-symbolic</property>
   </object>
+  <object class="GtkImage" id="add_image4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-add-symbolic</property>
+  </object>
   <object class="GtkTreeStore" id="classes_tree_store">
     <columns>
       <!-- column-name id -->
@@ -60,6 +65,11 @@
     <property name="icon_name">list-remove-symbolic</property>
   </object>
   <object class="GtkImage" id="delete_image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-remove-symbolic</property>
+  </object>
+  <object class="GtkImage" id="delete_image4">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">list-remove-symbolic</property>
@@ -616,6 +626,50 @@
                   </object>
                   <packing>
                     <property name="x">595</property>
+                    <property name="y">387</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButtonBox">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">15</property>
+                    <property name="layout_style">start</property>
+                    <child>
+                      <object class="GtkButton" id="students_view_remove_bottle_button">
+                        <property name="label" translatable="yes">Bottle</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">delete_image4</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_students_view_remove_bottle_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="students_view_add_bottle_button">
+                        <property name="label" translatable="yes">Bottle</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">add_image4</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_students_view_add_bottle_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
                     <property name="y">387</property>
                   </packing>
                 </child>

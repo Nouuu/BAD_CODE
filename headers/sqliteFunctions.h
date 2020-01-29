@@ -571,10 +571,10 @@ int insertStudent(char *dbname, char *first_name, char *last_name, char *photo_l
     return 0;
 }
 
-int addStudentBottle(char *dbname, int id) {
+int addStudentBottle(char *dbname, int id, int count) {
     sqlite3 *db = connectDB(dbname);
     sqlite3_stmt *pStmt;
-    char *sqlRequest = "update student set nb_bottles = nb_bottles + 1 where id = ?;";
+    char *sqlRequest = "update student set nb_bottles = nb_bottles + ? where id = ?;";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
@@ -582,7 +582,8 @@ int addStudentBottle(char *dbname, int id) {
         return 1;
     }
 
-    sqlite3_bind_int(pStmt, 1, id);
+    sqlite3_bind_int(pStmt, 1, count);
+    sqlite3_bind_int(pStmt, 2, id);
 
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {

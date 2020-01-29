@@ -15,6 +15,8 @@ typedef struct {
     GtkButton *students_view_delete_button;
     GtkButton *students_view_create_button;
     GtkButton *students_view_refresh_button;
+    GtkButton *students_view_remove_bottle_button;
+    GtkButton *students_view_add_bottle_button;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;
@@ -152,12 +154,16 @@ G_MODULE_EXPORT void on_classes_view_refresh_button_clicked();
 G_MODULE_EXPORT void on_classes_view_delete_button_clicked();
 
 G_MODULE_EXPORT void on_classes_view_create_button_clicked();
-//TODO boutons inc bottles
+
 G_MODULE_EXPORT void on_students_view_refresh_button_clicked();
 
 G_MODULE_EXPORT void on_students_view_delete_button_clicked();
 
 G_MODULE_EXPORT void on_students_view_create_button_clicked();
+
+G_MODULE_EXPORT void on_students_view_remove_bottle_button_clicked();
+
+G_MODULE_EXPORT void on_students_view_add_bottle_button_clicked();
 
 G_MODULE_EXPORT void on_sanctions_view_refresh_button_clicked();
 
@@ -277,6 +283,24 @@ void on_students_view_delete_button_clicked() {
 
 void on_students_view_create_button_clicked() {
     printf("Create student\n");
+}
+
+void on_students_view_remove_bottle_button_clicked() {
+    guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
+    if (int_data) {
+        addStudentBottle(dbname, int_data, -1);
+        GTKListStudents();
+    }
+    printf("Remove bottle student ID: %d\n", int_data);
+}
+
+void on_students_view_add_bottle_button_clicked() {
+    guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
+    if (int_data) {
+        addStudentBottle(dbname, int_data, 1);
+        GTKListStudents();
+    }
+    printf("Add bottle student ID: %d\n", int_data);
 }
 
 void on_sanctions_view_refresh_button_clicked() {
@@ -872,7 +896,10 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "students_view_create_button"));
     widgets->view_students->students_view_refresh_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "students_view_refresh_button"));
-
+    widgets->view_students->students_view_add_bottle_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "students_view_add_bottle_button"));
+    widgets->view_students->students_view_remove_bottle_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "students_view_remove_bottle_button"));
     widgets->view_students->students_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "students_tree_store"));
     widgets->view_students->students_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "students_tree_view"));
