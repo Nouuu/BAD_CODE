@@ -2,6 +2,11 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="add_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-add-symbolic</property>
+  </object>
   <object class="GtkTreeStore" id="classes_tree_store">
     <columns>
       <!-- column-name id -->
@@ -23,6 +28,11 @@
       <!-- column-name sanction_fk -->
       <column type="guint"/>
     </columns>
+  </object>
+  <object class="GtkImage" id="delete_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-remove-symbolic</property>
   </object>
   <object class="GtkTreeStore" id="deliverables_tree_store">
     <columns>
@@ -47,6 +57,13 @@
       <!-- column-name student_fk -->
       <column type="guint"/>
     </columns>
+  </object>
+  <object class="GtkImage" id="refresh_image">
+    <property name="width_request">16</property>
+    <property name="height_request">16</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">view-refresh-symbolic</property>
   </object>
   <object class="GtkTreeStore" id="sanctions_tree_store">
     <columns>
@@ -141,7 +158,7 @@
                 <child>
                   <object class="GtkViewport" id="classes_view">
                     <property name="width_request">880</property>
-                    <property name="height_request">420</property>
+                    <property name="height_request">380</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -159,7 +176,7 @@
                             <property name="enable_grid_lines">both</property>
                             <signal name="row-activated" handler="on_classes_tree_view_row_activated" swapped="no"/>
                             <child internal-child="selection">
-                              <object class="GtkTreeSelection" id="classes__tree_selection"/>
+                              <object class="GtkTreeSelection" id="classes_tree_selection"/>
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="classes_cx_1">
@@ -279,6 +296,67 @@
                     </child>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkButtonBox">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">15</property>
+                    <property name="layout_style">start</property>
+                    <child>
+                      <object class="GtkButton" id="classes_view_delete_button">
+                        <property name="label" translatable="yes">Delete</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">delete_image</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_classes_view_delete_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="classes_view_create_button">
+                        <property name="label" translatable="yes">Create</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">add_image</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_classes_view_create_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="classes_view_refresh_button">
+                        <property name="label" translatable="yes">Refresh</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">refresh_image</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_classes_view_refresh_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">595</property>
+                    <property name="y">387</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="name">view_classes</property>
@@ -292,7 +370,7 @@
                 <child>
                   <object class="GtkViewport" id="students_view">
                     <property name="width_request">880</property>
-                    <property name="height_request">420</property>
+                    <property name="height_request">390</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -443,7 +521,7 @@
                 <child>
                   <object class="GtkViewport" id="sanctions_view">
                     <property name="width_request">880</property>
-                    <property name="height_request">420</property>
+                    <property name="height_request">390</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -546,7 +624,7 @@
                 <child>
                   <object class="GtkViewport" id="deliverables_view">
                     <property name="width_request">880</property>
-                    <property name="height_request">420</property>
+                    <property name="height_request">390</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>

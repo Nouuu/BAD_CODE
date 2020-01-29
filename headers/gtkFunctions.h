@@ -38,6 +38,9 @@ typedef struct {
 typedef struct {
     GtkWidget *view_classes_fixed;
     GtkWidget *view_classes_view;
+    GtkButton *classes_view_delete_button;
+    GtkButton *classes_view_create_button;
+    GtkButton *classes_view_refresh_button;
     GtkTreeStore *classes_tree_store;
     GtkTreeView *classes_tree_view;
     GtkTreeSelection *classes_tree_selection;
@@ -135,8 +138,16 @@ G_MODULE_EXPORT void on_students_tree_view_row_activated(GtkTreeView *tree_view,
 
 G_MODULE_EXPORT void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
 
+G_MODULE_EXPORT void on_classes_view_refresh_button_clicked();
+
+G_MODULE_EXPORT void on_classes_view_delete_button_clicked();
+
+G_MODULE_EXPORT void on_classes_view_create_button_clicked();
+
 //Functions prototype
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
+
+guint get_id_row_selected(GtkTreeSelection *selection);
 
 void on_destroy();
 
@@ -205,6 +216,24 @@ void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher
         on_menu_stack_visible_child_notify(gtk_stack_switcher_get_stack(stackSwitcher));
 }
 
+void on_classes_view_refresh_button_clicked() {
+    printf("Refresh classes\n");
+    GTKListClasses();
+}
+
+void on_classes_view_delete_button_clicked() {
+    guint int_data = get_id_row_selected(widgets->view_classes->classes_tree_selection);
+    if (int_data) {
+        deleteClass(dbname, int_data);
+        GTKListClasses();
+    }
+    printf("Delete class ID: %d\n", int_data);
+}
+
+void on_classes_view_create_button_clicked() {
+    printf("Create class\n");
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
@@ -219,6 +248,16 @@ guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
         fprintf(stderr, "Error! selected column not found!\n");
         return EXIT_FAILURE;
     }
+}
+
+guint get_id_row_selected(GtkTreeSelection *selection) {
+    guint int_data = 0;
+    GtkTreeModel *model;
+    GtkTreeIter iter;
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        gtk_tree_model_get(model, &iter, 0, &int_data, -1);
+    }
+    return int_data;
 }
 
 void GTKListStudents() {
@@ -793,6 +832,12 @@ void connectWidgets() {
     widgets->view_classes = g_slice_new(View_classes);
     widgets->view_classes->view_classes_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_classes"));
     widgets->view_classes->view_classes_view = GTK_WIDGET(gtk_builder_get_object(builder, "classes_view"));
+    widgets->view_classes->classes_view_delete_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "classes_view_delete_button"));
+    widgets->view_classes->classes_view_create_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "classes_view_create_button"));
+    widgets->view_classes->classes_view_refresh_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "classes_view_refresh_button"));
     widgets->view_classes->classes_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "classes_tree_store"));
     widgets->view_classes->classes_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "classes_tree_view"));
