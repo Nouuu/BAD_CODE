@@ -12,6 +12,9 @@ extern char *dbname;
 typedef struct {
     GtkWidget *view_students_fixed;
     GtkWidget *view_students_view;
+    GtkButton *students_view_delete_button;
+    GtkButton *students_view_create_button;
+    GtkButton *students_view_refresh_button;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;
@@ -67,6 +70,9 @@ typedef struct {
 typedef struct {
     GtkWidget *view_sanctions_fixed;
     GtkWidget *view_sanctions_view;
+    GtkButton *sanctions_view_delete_button;
+    GtkButton *sanctions_view_create_button;
+    GtkButton *sanctions_view_refresh_button;
     GtkTreeStore *sanctions_tree_store;
     GtkTreeView *sanctions_tree_view;
     GtkTreeSelection *sanctions_tree_selection;
@@ -85,6 +91,9 @@ typedef struct {
 typedef struct {
     GtkWidget *view_deliverables_fixed;
     GtkWidget *view_deliverables_view;
+    GtkButton *deliverables_view_delete_button;
+    GtkButton *deliverables_view_create_button;
+    GtkButton *deliverables_view_refresh_button;
     GtkTreeStore *deliverables_tree_store;
     GtkTreeView *deliverables_tree_view;
     GtkTreeSelection *deliverables_tree_selection;
@@ -143,6 +152,24 @@ G_MODULE_EXPORT void on_classes_view_refresh_button_clicked();
 G_MODULE_EXPORT void on_classes_view_delete_button_clicked();
 
 G_MODULE_EXPORT void on_classes_view_create_button_clicked();
+//TODO boutons inc bottles
+G_MODULE_EXPORT void on_students_view_refresh_button_clicked();
+
+G_MODULE_EXPORT void on_students_view_delete_button_clicked();
+
+G_MODULE_EXPORT void on_students_view_create_button_clicked();
+
+G_MODULE_EXPORT void on_sanctions_view_refresh_button_clicked();
+
+G_MODULE_EXPORT void on_sanctions_view_delete_button_clicked();
+
+G_MODULE_EXPORT void on_sanctions_view_create_button_clicked();
+
+G_MODULE_EXPORT void on_deliverables_view_refresh_button_clicked();
+
+G_MODULE_EXPORT void on_deliverables_view_delete_button_clicked();
+
+G_MODULE_EXPORT void on_deliverables_view_create_button_clicked();
 
 //Functions prototype
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
@@ -232,6 +259,60 @@ void on_classes_view_delete_button_clicked() {
 
 void on_classes_view_create_button_clicked() {
     printf("Create class\n");
+}
+
+void on_students_view_refresh_button_clicked() {
+    printf("Refresh students\n");
+    GTKListStudents();
+}
+
+void on_students_view_delete_button_clicked() {
+    guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
+    if (int_data) {
+        deleteStudent(dbname, int_data);
+        GTKListStudents();
+    }
+    printf("Delete student ID: %d\n", int_data);
+}
+
+void on_students_view_create_button_clicked() {
+    printf("Create student\n");
+}
+
+void on_sanctions_view_refresh_button_clicked() {
+    printf("Refresh sanctions\n");
+    GTKListSanctions();
+}
+
+void on_sanctions_view_delete_button_clicked() {
+    guint int_data = get_id_row_selected(widgets->view_sanctions->sanctions_tree_selection);
+    if (int_data) {
+        deleteSanction(dbname, int_data);
+        GTKListSanctions();
+    }
+    printf("Delete sanction ID: %d\n", int_data);
+}
+
+void on_sanctions_view_create_button_clicked() {
+    printf("Create sanction\n");
+}
+
+void on_deliverables_view_refresh_button_clicked() {
+    printf("Refresh deliverables\n");
+    GTKListDeliverables();
+}
+
+void on_deliverables_view_delete_button_clicked() {
+    guint int_data = get_id_row_selected(widgets->view_deliverables->deliverables_tree_selection);
+    if (int_data) {
+        deleteDeliverable(dbname, int_data);
+        GTKListDeliverables();
+    }
+    printf("Delete deliverable ID: %d\n", int_data);
+}
+
+void on_deliverables_view_create_button_clicked() {
+    printf("Create deliverable\n");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -785,6 +866,13 @@ void connectWidgets() {
     widgets->view_students = g_slice_new(View_students);
     widgets->view_students->view_students_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_students"));
     widgets->view_students->view_students_view = GTK_WIDGET(gtk_builder_get_object(builder, "students_view"));
+    widgets->view_students->students_view_delete_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "students_view_delete_button"));
+    widgets->view_students->students_view_create_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "students_view_create_button"));
+    widgets->view_students->students_view_refresh_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "students_view_refresh_button"));
+
     widgets->view_students->students_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "students_tree_store"));
     widgets->view_students->students_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "students_tree_view"));
@@ -885,6 +973,12 @@ void connectWidgets() {
     widgets->view_sanctions = g_slice_new(View_sanctions);
     widgets->view_sanctions->view_sanctions_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_sanctions"));
     widgets->view_sanctions->view_sanctions_view = GTK_WIDGET(gtk_builder_get_object(builder, "sanctions_view"));
+    widgets->view_sanctions->sanctions_view_delete_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "sanctions_view_delete_button"));
+    widgets->view_sanctions->sanctions_view_create_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "sanctions_view_create_button"));
+    widgets->view_sanctions->sanctions_view_refresh_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "sanctions_view_refresh_button"));
     widgets->view_sanctions->sanctions_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "sanctions_tree_store"));
     widgets->view_sanctions->sanctions_tree_view = GTK_TREE_VIEW(
@@ -919,6 +1013,12 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "view_deliverables"));
     widgets->view_deliverables->view_deliverables_view = GTK_WIDGET(
             gtk_builder_get_object(builder, "deliverables_view"));
+    widgets->view_deliverables->deliverables_view_delete_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "deliverables_view_delete_button"));
+    widgets->view_deliverables->deliverables_view_create_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "deliverables_view_create_button"));
+    widgets->view_deliverables->deliverables_view_refresh_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "deliverables_view_refresh_button"));
     widgets->view_deliverables->deliverables_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "deliverables_tree_store"));
     widgets->view_deliverables->deliverables_tree_view = GTK_TREE_VIEW(
