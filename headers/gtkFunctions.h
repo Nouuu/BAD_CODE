@@ -138,7 +138,22 @@ G_MODULE_EXPORT void on_deliverables_tree_view_row_activated(GtkTreeView *tree_v
 //Functions prototype
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
 
+void on_destroy();
+
+void GTKListStudents();
+
+void GTKListClasses();
+
+void GTKListSanctions();
+
+void GTKListDeliverables();
+
+void connectWidgets();
+
+void dashboardGTK(int *argc, char ***argv);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void on_destroy() {
     gtk_main_quit();
 }
@@ -162,6 +177,35 @@ void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath
     guint id = get_id_row_activated(tree_view, path);
     printf("DELIVERABLE ID: %d\n", id);
 }
+
+void on_menu_stack_visible_child_notify(GtkStack *stack) {
+    if (gtk_stack_get_visible_child_name(stack) != NULL) {
+        const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack);
+        if (!strcmp(menu, "view_classes")) {
+            printf("Classes view\n");
+            GTKListClasses();
+        } else if (!strcmp(menu, "view_students")) {
+            printf("Students view\n");
+            GTKListStudents();
+        } else if (!strcmp(menu, "view_sanctions")) {
+            printf("Sanctions view\n");
+            GTKListSanctions();
+        } else if (!strcmp(menu, "view_deliverables")) {
+            printf("Deliverables view\n");
+            GTKListDeliverables();
+        } else if (!strcmp(menu, "view_settings")) {
+            printf("Settings view\n");
+
+        }
+    }
+}
+
+void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher) {
+    if (gtk_stack_switcher_get_stack(stackSwitcher) != NULL)
+        on_menu_stack_visible_child_notify(gtk_stack_switcher_get_stack(stackSwitcher));
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint int_data;
@@ -691,33 +735,6 @@ void GTKListDeliverables() {
     }
 
     free(firstAddress);
-}
-
-void on_menu_stack_visible_child_notify(GtkStack *stack) {
-    if (gtk_stack_get_visible_child_name(stack) != NULL) {
-        const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack);
-        if (!strcmp(menu, "view_classes")) {
-            printf("Classes !\n");
-            GTKListClasses();
-        } else if (!strcmp(menu, "view_students")) {
-            printf("Students !\n");
-            GTKListStudents();
-        } else if (!strcmp(menu, "view_sanctions")) {
-            printf("Sanctions !\n");
-            GTKListSanctions();
-        } else if (!strcmp(menu, "view_deliverables")) {
-            printf("Deliverables !\n");
-            GTKListDeliverables();
-        } else if (!strcmp(menu, "view_settings")) {
-            printf("Settings !\n");
-
-        }
-    }
-}
-
-void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher) {
-    if (gtk_stack_switcher_get_stack(stackSwitcher) != NULL)
-        on_menu_stack_visible_child_notify(gtk_stack_switcher_get_stack(stackSwitcher));
 }
 
 void connectWidgets() {
