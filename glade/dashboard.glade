@@ -2,6 +2,31 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="add_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-add-symbolic</property>
+  </object>
+  <object class="GtkImage" id="add_image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-add-symbolic</property>
+  </object>
+  <object class="GtkImage" id="add_image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-add-symbolic</property>
+  </object>
+  <object class="GtkImage" id="add_image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-add-symbolic</property>
+  </object>
+  <object class="GtkImage" id="add_image4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-add-symbolic</property>
+  </object>
   <object class="GtkTreeStore" id="classes_tree_store">
     <columns>
       <!-- column-name id -->
@@ -23,6 +48,31 @@
       <!-- column-name sanction_fk -->
       <column type="guint"/>
     </columns>
+  </object>
+  <object class="GtkImage" id="delete_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-remove-symbolic</property>
+  </object>
+  <object class="GtkImage" id="delete_image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-remove-symbolic</property>
+  </object>
+  <object class="GtkImage" id="delete_image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-remove-symbolic</property>
+  </object>
+  <object class="GtkImage" id="delete_image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-remove-symbolic</property>
+  </object>
+  <object class="GtkImage" id="delete_image4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-remove-symbolic</property>
   </object>
   <object class="GtkTreeStore" id="deliverables_tree_store">
     <columns>
@@ -47,6 +97,34 @@
       <!-- column-name student_fk -->
       <column type="guint"/>
     </columns>
+  </object>
+  <object class="GtkImage" id="refresh_image">
+    <property name="width_request">16</property>
+    <property name="height_request">16</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">view-refresh-symbolic</property>
+  </object>
+  <object class="GtkImage" id="refresh_image1">
+    <property name="width_request">16</property>
+    <property name="height_request">16</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">view-refresh-symbolic</property>
+  </object>
+  <object class="GtkImage" id="refresh_image2">
+    <property name="width_request">16</property>
+    <property name="height_request">16</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">view-refresh-symbolic</property>
+  </object>
+  <object class="GtkImage" id="refresh_image3">
+    <property name="width_request">16</property>
+    <property name="height_request">16</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">view-refresh-symbolic</property>
   </object>
   <object class="GtkTreeStore" id="sanctions_tree_store">
     <columns>
@@ -121,7 +199,7 @@
             <signal name="notify::visible-child" handler="on_menu_stack_switcher_visible_child_notify" swapped="no"/>
           </object>
           <packing>
-            <property name="x">143</property>
+            <property name="x">85</property>
             <property name="y">161</property>
           </packing>
         </child>
@@ -141,7 +219,7 @@
                 <child>
                   <object class="GtkViewport" id="classes_view">
                     <property name="width_request">880</property>
-                    <property name="height_request">420</property>
+                    <property name="height_request">380</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -159,7 +237,7 @@
                             <property name="enable_grid_lines">both</property>
                             <signal name="row-activated" handler="on_classes_tree_view_row_activated" swapped="no"/>
                             <child internal-child="selection">
-                              <object class="GtkTreeSelection" id="classes__tree_selection"/>
+                              <object class="GtkTreeSelection" id="classes_tree_selection"/>
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="classes_cx_1">
@@ -279,6 +357,67 @@
                     </child>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkButtonBox">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">15</property>
+                    <property name="layout_style">start</property>
+                    <child>
+                      <object class="GtkButton" id="classes_view_delete_button">
+                        <property name="label" translatable="yes">Delete</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">delete_image</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_classes_view_delete_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="classes_view_create_button">
+                        <property name="label" translatable="yes">Create</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">add_image</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_classes_view_create_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="classes_view_refresh_button">
+                        <property name="label" translatable="yes">Refresh</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">refresh_image</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_classes_view_refresh_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">595</property>
+                    <property name="y">387</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="name">view_classes</property>
@@ -292,7 +431,7 @@
                 <child>
                   <object class="GtkViewport" id="students_view">
                     <property name="width_request">880</property>
-                    <property name="height_request">420</property>
+                    <property name="height_request">380</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -429,6 +568,111 @@
                     </child>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkButtonBox">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">15</property>
+                    <property name="layout_style">start</property>
+                    <child>
+                      <object class="GtkButton" id="students_view_delete_button">
+                        <property name="label" translatable="yes">Delete</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">delete_image1</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_students_view_delete_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="students_view_create_button">
+                        <property name="label" translatable="yes">Create</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">add_image1</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_students_view_create_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="students_view_refresh_button">
+                        <property name="label" translatable="yes">Refresh</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">refresh_image1</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_students_view_refresh_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">595</property>
+                    <property name="y">387</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButtonBox">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">15</property>
+                    <property name="layout_style">start</property>
+                    <child>
+                      <object class="GtkButton" id="students_view_remove_bottle_button">
+                        <property name="label" translatable="yes">Bottle</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">delete_image4</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_students_view_remove_bottle_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="students_view_add_bottle_button">
+                        <property name="label" translatable="yes">Bottle</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">add_image4</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_students_view_add_bottle_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="y">387</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="name">view_students</property>
@@ -443,7 +687,7 @@
                 <child>
                   <object class="GtkViewport" id="sanctions_view">
                     <property name="width_request">880</property>
-                    <property name="height_request">420</property>
+                    <property name="height_request">380</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -532,6 +776,67 @@
                     </child>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkButtonBox">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">15</property>
+                    <property name="layout_style">start</property>
+                    <child>
+                      <object class="GtkButton" id="sanctions_view_delete_button">
+                        <property name="label" translatable="yes">Delete</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">delete_image2</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_sanctions_view_delete_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="sanctions_view_create_button">
+                        <property name="label" translatable="yes">Create</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">add_image2</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_sanctions_view_create_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="sanctions_view_refresh_button">
+                        <property name="label" translatable="yes">Refresh</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">refresh_image2</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_sanctions_view_refresh_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">595</property>
+                    <property name="y">387</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="name">view_sanctions</property>
@@ -546,7 +851,7 @@
                 <child>
                   <object class="GtkViewport" id="deliverables_view">
                     <property name="width_request">880</property>
-                    <property name="height_request">420</property>
+                    <property name="height_request">380</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -694,6 +999,67 @@
                     </child>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkButtonBox">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">15</property>
+                    <property name="layout_style">start</property>
+                    <child>
+                      <object class="GtkButton" id="deliverables_view_delete_button">
+                        <property name="label" translatable="yes">Delete</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">delete_image3</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_deliverables_view_delete_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="deliverables_view_create_button">
+                        <property name="label" translatable="yes">Create</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">add_image3</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_deliverables_view_create_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="deliverables_view_refresh_button">
+                        <property name="label" translatable="yes">Refresh</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="image">refresh_image3</property>
+                        <property name="always_show_image">True</property>
+                        <signal name="clicked" handler="on_deliverables_view_refresh_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">595</property>
+                    <property name="y">387</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="name">view_deliverables</property>
@@ -702,23 +1068,38 @@
               </packing>
             </child>
             <child>
-              <object class="GtkFixed" id="view_settings">
+              <object class="GtkFixed" id="view_user">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel">
-                    <property name="width_request">100</property>
-                    <property name="height_request">80</property>
+                  <object class="GtkImage" id="view_user_image">
+                    <property name="width_request">150</property>
+                    <property name="height_request">150</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Settings</property>
+                    <property name="use_fallback">True</property>
                   </object>
+                  <packing>
+                    <property name="x">650</property>
+                    <property name="y">45</property>
+                  </packing>
                 </child>
+              </object>
+              <packing>
+                <property name="name">view_user</property>
+                <property name="title" translatable="yes">User</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFixed" id="view_settings">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="name">view_settings</property>
                 <property name="title" translatable="yes">Settings</property>
-                <property name="position">4</property>
+                <property name="position">5</property>
               </packing>
             </child>
           </object>

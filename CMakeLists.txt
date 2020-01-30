@@ -12,7 +12,7 @@ link_directories(${GTK_LIBRARY_DIRS})
 add_definitions(${GTK_CFLAGS_OTHER})
 
 
-add_executable(BAD_CODE main.c)
+add_executable(BAD_CODE main.c headers/functions.c headers/sqliteFunctions.c headers/ftkFunctions.c)
 
 
 target_link_libraries(BAD_CODE LINK_PUBLIC sqlite3)
