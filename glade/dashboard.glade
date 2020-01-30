@@ -199,7 +199,7 @@
             <signal name="notify::visible-child" handler="on_menu_stack_switcher_visible_child_notify" swapped="no"/>
           </object>
           <packing>
-            <property name="x">143</property>
+            <property name="x">85</property>
             <property name="y">161</property>
           </packing>
         </child>
@@ -1068,23 +1068,38 @@
               </packing>
             </child>
             <child>
-              <object class="GtkFixed" id="view_settings">
+              <object class="GtkFixed" id="view_user">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel">
-                    <property name="width_request">100</property>
-                    <property name="height_request">80</property>
+                  <object class="GtkImage" id="view_user_image">
+                    <property name="width_request">150</property>
+                    <property name="height_request">150</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Settings</property>
+                    <property name="use_fallback">True</property>
                   </object>
+                  <packing>
+                    <property name="x">650</property>
+                    <property name="y">45</property>
+                  </packing>
                 </child>
+              </object>
+              <packing>
+                <property name="name">view_user</property>
+                <property name="title" translatable="yes">User</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFixed" id="view_settings">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="name">view_settings</property>
                 <property name="title" translatable="yes">Settings</property>
-                <property name="position">4</property>
+                <property name="position">5</property>
               </packing>
             </child>
           </object>
