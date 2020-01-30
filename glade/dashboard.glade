@@ -98,6 +98,14 @@
       <column type="guint"/>
     </columns>
   </object>
+  <object class="GtkFileFilter" id="filefilter1">
+    <mime-types>
+      <mime-type>*.txt</mime-type>
+    </mime-types>
+    <patterns>
+      <pattern>*.txt</pattern>
+    </patterns>
+  </object>
   <object class="GtkImage" id="refresh_image">
     <property name="width_request">16</property>
     <property name="height_request">16</property>
@@ -1072,16 +1080,46 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkImage" id="view_user_image">
-                    <property name="width_request">150</property>
-                    <property name="height_request">150</property>
+                  <object class="GtkBox">
+                    <property name="width_request">100</property>
+                    <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="use_fallback">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">10</property>
+                    <child>
+                      <object class="GtkImage" id="view_user_image">
+                        <property name="width_request">150</property>
+                        <property name="height_request">150</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_fallback">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkFileChooserButton" id="view_user_image_file_picker">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="create_folders">False</property>
+                        <property name="filter">filefilter1</property>
+                        <property name="title" translatable="yes">Profil picture</property>
+                        <signal name="file-set" handler="on_view_user_image_file_picker_file_set" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
-                    <property name="x">650</property>
-                    <property name="y">45</property>
+                    <property name="x">690</property>
+                    <property name="y">5</property>
                   </packing>
                 </child>
               </object>

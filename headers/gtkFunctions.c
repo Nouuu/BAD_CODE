@@ -149,6 +149,10 @@ void on_deliverables_view_create_button_clicked() {
     printf("Create deliverable\n");
 }
 
+void on_view_user_image_file_picker_file_set() {
+    printf("Choose file! : %s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker)));
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
@@ -692,48 +696,58 @@ void GTKListDeliverables() {
 }
 
 void GTKUser() {
-    char *data, *email, *first_name, *last_name, *photo, *birthdate, intBuffer[5];
+    char *email, *first_name, *last_name, *photo, *birthdate;
     int id;
+    GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
+
+    GTKUserImage(photo);
+}
+
+void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate) {
+    char *intBuffer, *data, *firstAdress;
     size_t columnSize;
     getUser(dbname, &data, 1);
+    firstAdress = data;
 
     columnSize = strchr(data, '|') - data;
+    intBuffer = malloc(columnSize + 1);
     strncpy(intBuffer, data, columnSize);
     intBuffer[columnSize] = '\0';
-    id = atoi(intBuffer);
+    *id = atoi(intBuffer);
     data += columnSize + 1;
 
     columnSize = strchr(data, '|') - data;
-    email = malloc(columnSize + 1);
-    strncpy(email, data, columnSize);
-    email[columnSize] = '\0';
+    *email = malloc(columnSize + 1);
+    strncpy(*email, data, columnSize);
+    (*email)[columnSize] = '\0';
     data += columnSize + 1;
 
     columnSize = strchr(data, '|') - data;
-    first_name = malloc(columnSize + 1);
-    strncpy(first_name, data, columnSize);
-    first_name[columnSize] = '\0';
+    *first_name = malloc(columnSize + 1);
+    strncpy(*first_name, data, columnSize);
+    (*first_name)[columnSize] = '\0';
     data += columnSize + 1;
 
     columnSize = strchr(data, '|') - data;
-    last_name = malloc(columnSize + 1);
-    strncpy(last_name, data, columnSize);
-    last_name[columnSize] = '\0';
+    *last_name = malloc(columnSize + 1);
+    strncpy(*last_name, data, columnSize);
+    (*last_name)[columnSize] = '\0';
     data += columnSize + 1;
 
     columnSize = strchr(data, '|') - data;
-    photo = malloc(columnSize + 1);
-    strncpy(photo, data, columnSize);
-    photo[columnSize] = '\0';
+    *photo = malloc(columnSize + 1);
+    strncpy(*photo, data, columnSize);
+    (*photo)[columnSize] = '\0';
     data += columnSize + 1;
 
     columnSize = strstr(data, ";\n") - data;
-    birthdate = malloc(columnSize + 1);
-    strncpy(birthdate, data, columnSize);
-    birthdate[columnSize] = '\0';
+    *birthdate = malloc(columnSize + 1);
+    strncpy(*birthdate, data, columnSize);
+    (*birthdate)[columnSize] = '\0';
     data += columnSize + 1;
 
-    GTKUserImage(photo);
+    free(intBuffer);
+    free(firstAdress);
 }
 
 void GTKUserImage(char *path) {
@@ -1000,6 +1014,8 @@ void connectWidgets() {
     widgets->view_user = g_slice_new(View_user);
     widgets->view_user->view_user_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_user"));
     widgets->view_user->view_user_image = GTK_IMAGE(gtk_builder_get_object(builder, "view_user_image"));
+    widgets->view_user->view_user_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "view_user_image_file_picker"));
 }
 
 void dashboardGTK(int *argc, char ***argv) {

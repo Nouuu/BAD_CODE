@@ -4,6 +4,7 @@
 
 #ifndef BAD_CODE_GTKFUNCTIONS_H
 #define BAD_CODE_GTKFUNCTIONS_H
+
 #include <stdio.h>
 #include <string.h>
 #include <libgen.h>
@@ -100,6 +101,7 @@ typedef struct {
 typedef struct {
     GtkWidget *view_user_fixed;
     GtkImage *view_user_image;
+    GtkFileChooserButton *view_user_image_file_picker;
 } View_user;
 
 typedef struct {
@@ -190,6 +192,8 @@ G_MODULE_EXPORT void on_deliverables_view_delete_button_clicked();
 
 G_MODULE_EXPORT void on_deliverables_view_create_button_clicked();
 
+G_MODULE_EXPORT void on_view_user_image_file_picker_file_set();
+
 //Functions prototype
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
 
@@ -206,6 +210,8 @@ void GTKListSanctions();
 void GTKListDeliverables();
 
 void GTKUser();
+
+void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate);
 
 void GTKUserImage(char *path);
 
