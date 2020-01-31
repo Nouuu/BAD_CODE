@@ -150,7 +150,8 @@ void on_deliverables_view_create_button_clicked() {
 }
 
 void on_view_user_image_file_picker_file_set() {
-    printf("Choose file! : %s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker)));
+    printf("Choose file! : %s\n",
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -773,8 +774,11 @@ void connectWidgets() {
     widgets->menu_stack = GTK_STACK(gtk_builder_get_object(builder, "menu_stack"));
 
     //Connect view_students
-    widgets->view_students = g_slice_new(View_students);
+    widgets->view_students = g_slice_new(Students);
+    widgets->view_students->view_students_stack = GTK_STACK(gtk_builder_get_object(builder, "view_students_stack"));
     widgets->view_students->view_students_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_students"));
+    widgets->view_students->edit_student_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "edit_student"));
+    widgets->view_students->create_student_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "create_student"));
     widgets->view_students->view_students_view = GTK_WIDGET(gtk_builder_get_object(builder, "students_view"));
     widgets->view_students->students_view_delete_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "students_view_delete_button"));
@@ -830,8 +834,11 @@ void connectWidgets() {
                                        "text", 8);
 
     //Connect view_classes
-    widgets->view_classes = g_slice_new(View_classes);
+    widgets->view_classes = g_slice_new(Classes);
+    widgets->view_classes->view_classes_stack = GTK_STACK(gtk_builder_get_object(builder, "view_classes_stack"));
     widgets->view_classes->view_classes_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_classes"));
+    widgets->view_classes->edit_class_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "edit_class"));
+    widgets->view_classes->create_class_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "create_class"));
     widgets->view_classes->view_classes_view = GTK_WIDGET(gtk_builder_get_object(builder, "classes_view"));
     widgets->view_classes->classes_view_delete_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "classes_view_delete_button"));
@@ -883,8 +890,11 @@ void connectWidgets() {
                                        "text", 8);
 
     //Connect view_sanctions
-    widgets->view_sanctions = g_slice_new(View_sanctions);
+    widgets->view_sanctions = g_slice_new(Sanctions);
+    widgets->view_sanctions->view_sanctions_stack = GTK_STACK(gtk_builder_get_object(builder, "view_sanctions_stack"));
     widgets->view_sanctions->view_sanctions_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_sanctions"));
+    widgets->view_sanctions->edit_sanction_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "edit_sanction"));
+    widgets->view_sanctions->create_sanction_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "create_sanction"));
     widgets->view_sanctions->view_sanctions_view = GTK_WIDGET(gtk_builder_get_object(builder, "sanctions_view"));
     widgets->view_sanctions->sanctions_view_delete_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "sanctions_view_delete_button"));
@@ -921,9 +931,15 @@ void connectWidgets() {
                                        "text", 4);
 
     //Connect view_deliverables
-    widgets->view_deliverables = g_slice_new(View_deliverables);
+    widgets->view_deliverables = g_slice_new(Deliverables);
+    widgets->view_deliverables->view_deliverables_stack = GTK_STACK(
+            gtk_builder_get_object(builder, "view_deliverables_stack"));
     widgets->view_deliverables->view_deliverables_fixed = GTK_WIDGET(
             gtk_builder_get_object(builder, "view_deliverables"));
+    widgets->view_deliverables->edit_deliverable_fixed = GTK_WIDGET(
+            gtk_builder_get_object(builder, "edit_deliverable"));
+    widgets->view_deliverables->create_deliverable_fixed = GTK_WIDGET(
+            gtk_builder_get_object(builder, "create_deliverables"));
     widgets->view_deliverables->view_deliverables_view = GTK_WIDGET(
             gtk_builder_get_object(builder, "deliverables_view"));
     widgets->view_deliverables->deliverables_view_delete_button = GTK_BUTTON(
@@ -1011,8 +1027,10 @@ void connectWidgets() {
                                        "text", 9);
 
     //Connect view_user
-    widgets->view_user = g_slice_new(View_user);
+    widgets->view_user = g_slice_new(User);
+    widgets->view_user->view_user_stack = GTK_STACK(gtk_builder_get_object(builder, "view_user_stack"));
     widgets->view_user->view_user_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_user"));
+    widgets->view_user->edit_user_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "edit_user"));
     widgets->view_user->view_user_image = GTK_IMAGE(gtk_builder_get_object(builder, "view_user_image"));
     widgets->view_user->view_user_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "view_user_image_file_picker"));
@@ -1037,10 +1055,10 @@ void dashboardGTK(int *argc, char ***argv) {
 
     gtk_main();
 
-    g_slice_free(View_students, widgets->view_students);
-    g_slice_free(View_classes, widgets->view_classes);
-    g_slice_free(View_sanctions, widgets->view_sanctions);
-    g_slice_free(View_deliverables, widgets->view_deliverables);
-    g_slice_free(View_user, widgets->view_user);
+    g_slice_free(Students, widgets->view_students);
+    g_slice_free(Classes, widgets->view_classes);
+    g_slice_free(Sanctions, widgets->view_sanctions);
+    g_slice_free(Deliverables, widgets->view_deliverables);
+    g_slice_free(User, widgets->view_user);
     g_slice_free(App_widgets, widgets);
 }
