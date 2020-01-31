@@ -17,6 +17,7 @@ void on_sanctions_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *p
 void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint id = get_id_row_activated(tree_view, path);
     printf("CLASS ID: %d\n", id);
+    gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->edit_class_fixed);
 }
 
 void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
@@ -33,6 +34,8 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
     if (gtk_stack_get_visible_child_name(stack) != NULL) {
         const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack);
         if (!strcmp(menu, "view_classes")) {
+            gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack,
+                                        widgets->view_classes->view_classes_fixed);
             printf("Classes view\n");
             GTKListClasses();
         } else if (!strcmp(menu, "view_students")) {
