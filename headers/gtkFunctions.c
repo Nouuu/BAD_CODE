@@ -34,8 +34,6 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
     if (gtk_stack_get_visible_child_name(stack) != NULL) {
         const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack);
         if (!strcmp(menu, "view_classes")) {
-            gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack,
-                                        widgets->view_classes->view_classes_fixed);
             printf("Classes view\n");
             GTKListClasses();
         } else if (!strcmp(menu, "view_students")) {
@@ -78,6 +76,27 @@ void on_classes_view_delete_button_clicked() {
 
 void on_classes_view_create_button_clicked() {
     printf("Create class\n");
+    gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->create_class_fixed);
+}
+
+void on_class_edit_return_button_clicked() {
+    printf("Return to class view\n");
+    GTKListClasses();
+}
+
+void on_class_edit_submit_button_clicked() {
+    printf("Submit class edit\n");
+    GTKListClasses();
+}
+
+void on_class_create_return_button_clicked() {
+    printf("Return to class view\n");
+    GTKListClasses();
+}
+
+void on_class_create_submit_button_clicked() {
+    printf("Submit class create\n");
+    GTKListClasses();
 }
 
 void on_students_view_refresh_button_clicked() {
@@ -314,6 +333,7 @@ void GTKListStudents() {
 }
 
 void GTKListClasses() {
+    gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->view_classes_fixed);
     char *classes, *result, *firstAddress;
     int nbClasses = 0;
     listClasses(dbname, &classes);
@@ -849,6 +869,14 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "classes_view_create_button"));
     widgets->view_classes->classes_view_refresh_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "classes_view_refresh_button"));
+    widgets->view_classes->class_edit_return_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "class_edit_return_button"));
+    widgets->view_classes->class_edit_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "class_edit_submit_button"));
+    widgets->view_classes->class_create_return_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "class_create_return_button"));
+    widgets->view_classes->class_create_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "class_create_submit_button"));
     widgets->view_classes->classes_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "classes_tree_store"));
     widgets->view_classes->classes_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "classes_tree_view"));

@@ -60,6 +60,10 @@ typedef struct {
     GtkButton *classes_view_delete_button;
     GtkButton *classes_view_create_button;
     GtkButton *classes_view_refresh_button;
+    GtkButton *class_edit_return_button;
+    GtkButton *class_edit_submit_button;
+    GtkButton *class_create_return_button;
+    GtkButton *class_create_submit_button;
     GtkTreeStore *classes_tree_store;
     GtkTreeView *classes_tree_view;
     GtkTreeSelection *classes_tree_selection;
@@ -183,6 +187,14 @@ G_MODULE_EXPORT void on_classes_view_refresh_button_clicked();
 G_MODULE_EXPORT void on_classes_view_delete_button_clicked();
 
 G_MODULE_EXPORT void on_classes_view_create_button_clicked();
+
+G_MODULE_EXPORT void on_class_edit_return_button_clicked();
+
+G_MODULE_EXPORT void on_class_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_class_create_return_button_clicked();
+
+G_MODULE_EXPORT void on_class_create_submit_button_clicked();
 
 G_MODULE_EXPORT void on_students_view_refresh_button_clicked();
 
