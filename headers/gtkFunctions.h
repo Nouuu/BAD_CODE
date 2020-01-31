@@ -18,7 +18,10 @@ extern GtkBuilder *builder;
 extern char *dbname;
 
 typedef struct {
+    GtkStack *view_students_stack;
     GtkWidget *view_students_fixed;
+    GtkWidget *edit_student_fixed;
+    GtkWidget *create_student_fixed;
     GtkWidget *view_students_view;
     GtkButton *students_view_delete_button;
     GtkButton *students_view_create_button;
@@ -46,10 +49,13 @@ typedef struct {
     GtkCellRenderer *students_cr_7;
     GtkCellRenderer *students_cr_8;
     GtkCellRenderer *students_cr_9;
-} View_students;
+} Students;
 
 typedef struct {
+    GtkStack *view_classes_stack;
     GtkWidget *view_classes_fixed;
+    GtkWidget *edit_class_fixed;
+    GtkWidget *create_class_fixed;
     GtkWidget *view_classes_view;
     GtkButton *classes_view_delete_button;
     GtkButton *classes_view_create_button;
@@ -75,10 +81,13 @@ typedef struct {
     GtkCellRenderer *classes_cr_7;
     GtkCellRenderer *classes_cr_8;
     GtkCellRenderer *classes_cr_9;
-} View_classes;
+} Classes;
 
 typedef struct {
+    GtkStack *view_sanctions_stack;
     GtkWidget *view_sanctions_fixed;
+    GtkWidget *edit_sanction_fixed;
+    GtkWidget *create_sanction_fixed;
     GtkWidget *view_sanctions_view;
     GtkButton *sanctions_view_delete_button;
     GtkButton *sanctions_view_create_button;
@@ -96,16 +105,21 @@ typedef struct {
     GtkCellRenderer *sanctions_cr_3;
     GtkCellRenderer *sanctions_cr_4;
     GtkCellRenderer *sanctions_cr_5;
-} View_sanctions;
+} Sanctions;
 
 typedef struct {
+    GtkStack *view_user_stack;
     GtkWidget *view_user_fixed;
+    GtkWidget *edit_user_fixed;
     GtkImage *view_user_image;
     GtkFileChooserButton *view_user_image_file_picker;
-} View_user;
+} User;
 
 typedef struct {
+    GtkStack *view_deliverables_stack;
     GtkWidget *view_deliverables_fixed;
+    GtkWidget *edit_deliverable_fixed;
+    GtkWidget *create_deliverable_fixed;
     GtkWidget *view_deliverables_view;
     GtkButton *deliverables_view_delete_button;
     GtkButton *deliverables_view_create_button;
@@ -133,16 +147,16 @@ typedef struct {
     GtkCellRenderer *deliverables_cr_8;
     GtkCellRenderer *deliverables_cr_9;
     GtkCellRenderer *deliverables_cr_10;
-} View_deliverables;
+} Deliverables;
 
 typedef struct {
     GtkWidget *window_dashboard;
     GtkStack *menu_stack;
-    View_students *view_students;
-    View_classes *view_classes;
-    View_sanctions *view_sanctions;
-    View_deliverables *view_deliverables;
-    View_user *view_user;
+    Students *view_students;
+    Classes *view_classes;
+    Sanctions *view_sanctions;
+    Deliverables *view_deliverables;
+    User *view_user;
 } App_widgets;
 
 App_widgets *widgets;
