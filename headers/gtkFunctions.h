@@ -18,13 +18,20 @@ extern GtkBuilder *builder;
 extern char *dbname;
 
 typedef struct {
+    GtkStack *view_students_stack;
     GtkWidget *view_students_fixed;
+    GtkWidget *edit_student_fixed;
+    GtkWidget *create_student_fixed;
     GtkWidget *view_students_view;
     GtkButton *students_view_delete_button;
     GtkButton *students_view_create_button;
     GtkButton *students_view_refresh_button;
     GtkButton *students_view_remove_bottle_button;
     GtkButton *students_view_add_bottle_button;
+    GtkButton *student_edit_return_button;
+    GtkButton *student_edit_submit_button;
+    GtkButton *student_create_return_button;
+    GtkButton *student_create_submit_button;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;
@@ -46,14 +53,21 @@ typedef struct {
     GtkCellRenderer *students_cr_7;
     GtkCellRenderer *students_cr_8;
     GtkCellRenderer *students_cr_9;
-} View_students;
+} Students;
 
 typedef struct {
+    GtkStack *view_classes_stack;
     GtkWidget *view_classes_fixed;
+    GtkWidget *edit_class_fixed;
+    GtkWidget *create_class_fixed;
     GtkWidget *view_classes_view;
     GtkButton *classes_view_delete_button;
     GtkButton *classes_view_create_button;
     GtkButton *classes_view_refresh_button;
+    GtkButton *class_edit_return_button;
+    GtkButton *class_edit_submit_button;
+    GtkButton *class_create_return_button;
+    GtkButton *class_create_submit_button;
     GtkTreeStore *classes_tree_store;
     GtkTreeView *classes_tree_view;
     GtkTreeSelection *classes_tree_selection;
@@ -75,14 +89,21 @@ typedef struct {
     GtkCellRenderer *classes_cr_7;
     GtkCellRenderer *classes_cr_8;
     GtkCellRenderer *classes_cr_9;
-} View_classes;
+} Classes;
 
 typedef struct {
+    GtkStack *view_sanctions_stack;
     GtkWidget *view_sanctions_fixed;
+    GtkWidget *edit_sanction_fixed;
+    GtkWidget *create_sanction_fixed;
     GtkWidget *view_sanctions_view;
     GtkButton *sanctions_view_delete_button;
     GtkButton *sanctions_view_create_button;
     GtkButton *sanctions_view_refresh_button;
+    GtkButton *sanction_edit_return_button;
+    GtkButton *sanction_edit_submit_button;
+    GtkButton *sanction_create_return_button;
+    GtkButton *sanction_create_submit_button;
     GtkTreeStore *sanctions_tree_store;
     GtkTreeView *sanctions_tree_view;
     GtkTreeSelection *sanctions_tree_selection;
@@ -96,20 +117,32 @@ typedef struct {
     GtkCellRenderer *sanctions_cr_3;
     GtkCellRenderer *sanctions_cr_4;
     GtkCellRenderer *sanctions_cr_5;
-} View_sanctions;
+} Sanctions;
 
 typedef struct {
+    GtkStack *view_user_stack;
     GtkWidget *view_user_fixed;
+    GtkWidget *edit_user_fixed;
+    GtkButton *user_view_edit_button;
+    GtkButton *user_edit_submit_button;
+    GtkButton *user_edit_return_button;
     GtkImage *view_user_image;
     GtkFileChooserButton *view_user_image_file_picker;
-} View_user;
+} User;
 
 typedef struct {
+    GtkStack *view_deliverables_stack;
     GtkWidget *view_deliverables_fixed;
+    GtkWidget *edit_deliverable_fixed;
+    GtkWidget *create_deliverable_fixed;
     GtkWidget *view_deliverables_view;
     GtkButton *deliverables_view_delete_button;
     GtkButton *deliverables_view_create_button;
     GtkButton *deliverables_view_refresh_button;
+    GtkButton *deliverable_edit_return_button;
+    GtkButton *deliverable_edit_submit_button;
+    GtkButton *deliverable_create_return_button;
+    GtkButton *deliverable_create_submit_button;
     GtkTreeStore *deliverables_tree_store;
     GtkTreeView *deliverables_tree_view;
     GtkTreeSelection *deliverables_tree_selection;
@@ -133,16 +166,16 @@ typedef struct {
     GtkCellRenderer *deliverables_cr_8;
     GtkCellRenderer *deliverables_cr_9;
     GtkCellRenderer *deliverables_cr_10;
-} View_deliverables;
+} Deliverables;
 
 typedef struct {
     GtkWidget *window_dashboard;
     GtkStack *menu_stack;
-    View_students *view_students;
-    View_classes *view_classes;
-    View_sanctions *view_sanctions;
-    View_deliverables *view_deliverables;
-    View_user *view_user;
+    Students *view_students;
+    Classes *view_classes;
+    Sanctions *view_sanctions;
+    Deliverables *view_deliverables;
+    User *view_user;
 } App_widgets;
 
 App_widgets *widgets;
@@ -170,6 +203,14 @@ G_MODULE_EXPORT void on_classes_view_delete_button_clicked();
 
 G_MODULE_EXPORT void on_classes_view_create_button_clicked();
 
+G_MODULE_EXPORT void on_class_edit_return_button_clicked();
+
+G_MODULE_EXPORT void on_class_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_class_create_return_button_clicked();
+
+G_MODULE_EXPORT void on_class_create_submit_button_clicked();
+
 G_MODULE_EXPORT void on_students_view_refresh_button_clicked();
 
 G_MODULE_EXPORT void on_students_view_delete_button_clicked();
@@ -180,11 +221,27 @@ G_MODULE_EXPORT void on_students_view_remove_bottle_button_clicked();
 
 G_MODULE_EXPORT void on_students_view_add_bottle_button_clicked();
 
+G_MODULE_EXPORT void on_student_edit_return_button_clicked();
+
+G_MODULE_EXPORT void on_student_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_student_create_return_button_clicked();
+
+G_MODULE_EXPORT void on_student_create_submit_button_clicked();
+
 G_MODULE_EXPORT void on_sanctions_view_refresh_button_clicked();
 
 G_MODULE_EXPORT void on_sanctions_view_delete_button_clicked();
 
 G_MODULE_EXPORT void on_sanctions_view_create_button_clicked();
+
+G_MODULE_EXPORT void on_sanction_edit_return_button_clicked();
+
+G_MODULE_EXPORT void on_sanction_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_sanction_create_return_button_clicked();
+
+G_MODULE_EXPORT void on_sanction_create_submit_button_clicked();
 
 G_MODULE_EXPORT void on_deliverables_view_refresh_button_clicked();
 
@@ -192,7 +249,21 @@ G_MODULE_EXPORT void on_deliverables_view_delete_button_clicked();
 
 G_MODULE_EXPORT void on_deliverables_view_create_button_clicked();
 
+G_MODULE_EXPORT void on_deliverable_edit_return_button_clicked();
+
+G_MODULE_EXPORT void on_deliverable_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_deliverable_create_return_button_clicked();
+
+G_MODULE_EXPORT void on_deliverable_create_submit_button_clicked();
+
 G_MODULE_EXPORT void on_view_user_image_file_picker_file_set();
+
+G_MODULE_EXPORT void on_user_view_edit_button_clicked();
+
+G_MODULE_EXPORT void on_user_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_user_edit_return_button_clicked();
 
 //Functions prototype
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
