@@ -156,6 +156,16 @@
     <property name="can_focus">False</property>
     <property name="icon_name">edit-redo-symbolic-rtl</property>
   </object>
+  <object class="GtkImage" id="return_image6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-redo-symbolic-rtl</property>
+  </object>
+  <object class="GtkImage" id="return_image7">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-redo-symbolic-rtl</property>
+  </object>
   <object class="GtkTreeStore" id="sanctions_tree_store">
     <columns>
       <!-- column-name id -->
@@ -1568,6 +1578,64 @@
                   <object class="GtkFixed" id="edit_deliverable">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkButtonBox">
+                        <property name="width_request">100</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">15</property>
+                        <property name="layout_style">start</property>
+                        <child>
+                          <object class="GtkButton" id="deliverable_edit_submit_button">
+                            <property name="label" translatable="yes">Submit</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="image">submit_image6</property>
+                            <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_deliverable_edit_submit_button_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="deliverable_edit_return_button">
+                            <property name="label" translatable="yes">Return</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="image">return_image6</property>
+                            <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_deliverable_edit_return_button_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="x">680</property>
+                        <property name="y">387</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="width_request">100</property>
+                        <property name="height_request">80</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Edit deliverable</property>
+                      </object>
+                      <packing>
+                        <property name="x">15</property>
+                        <property name="y">18</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="name">page1</property>
@@ -1579,6 +1647,64 @@
                   <object class="GtkFixed" id="create_deliverable">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkButtonBox">
+                        <property name="width_request">100</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">15</property>
+                        <property name="layout_style">start</property>
+                        <child>
+                          <object class="GtkButton" id="deliverable_create_submit_button">
+                            <property name="label" translatable="yes">Submit</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="image">submit_image7</property>
+                            <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_deliverable_create_submit_button_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="deliverable_create_return_button">
+                            <property name="label" translatable="yes">Return</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="image">return_image7</property>
+                            <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_deliverable_create_return_button_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="x">680</property>
+                        <property name="y">387</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="width_request">100</property>
+                        <property name="height_request">80</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Create deliverable</property>
+                      </object>
+                      <packing>
+                        <property name="x">20</property>
+                        <property name="y">16</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="name">page2</property>
@@ -1693,6 +1819,16 @@
     <property name="icon_name">object-select-symbolic</property>
   </object>
   <object class="GtkImage" id="submit_image5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">object-select-symbolic</property>
+  </object>
+  <object class="GtkImage" id="submit_image6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">object-select-symbolic</property>
+  </object>
+  <object class="GtkImage" id="submit_image7">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">object-select-symbolic</property>
