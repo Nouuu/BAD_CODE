@@ -12,6 +12,8 @@ void on_destroy() {
 void on_sanctions_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint id = get_id_row_activated(tree_view, path);
     printf("SANCTION ID: %d\n", id);
+    gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
+                                widgets->view_sanctions->edit_sanction_fixed);
 }
 
 void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
@@ -175,6 +177,25 @@ void on_sanctions_view_delete_button_clicked() {
 
 void on_sanctions_view_create_button_clicked() {
     printf("Create sanction\n");
+    gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
+                                widgets->view_sanctions->create_sanction_fixed);
+}
+
+void on_sanction_edit_return_button_clicked(){
+    printf("Return to sanctions view\n");
+    GTKListSanctions();
+}
+void on_sanction_edit_submit_button_clicked(){
+    printf("Submit sanction edit\n");
+    GTKListSanctions();
+}
+void on_sanction_create_return_button_clicked(){
+    printf("Return to sanctions view\n");
+    GTKListSanctions();
+}
+void on_sanction_create_submit_button_clicked(){
+    printf("Submit sanction create\n");
+    GTKListSanctions();
 }
 
 void on_deliverables_view_refresh_button_clicked() {
@@ -497,6 +518,8 @@ void GTKListClasses() {
 }
 
 void GTKListSanctions() {
+    gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
+                                widgets->view_sanctions->view_sanctions_fixed);
     char *sanctions, *result, *firstAddress;
     int nbSanctions = 0;
     listSanctions(dbname, &sanctions);
@@ -967,6 +990,14 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "sanctions_view_create_button"));
     widgets->view_sanctions->sanctions_view_refresh_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "sanctions_view_refresh_button"));
+    widgets->view_sanctions->sanction_edit_return_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "sanction_edit_return_button"));
+    widgets->view_sanctions->sanction_edit_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "sanction_edit_submit_button"));
+    widgets->view_sanctions->sanction_create_return_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "sanction_create_return_button"));
+    widgets->view_sanctions->sanction_create_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "sanction_create_submit_button"));
     widgets->view_sanctions->sanctions_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "sanctions_tree_store"));
     widgets->view_sanctions->sanctions_tree_view = GTK_TREE_VIEW(
