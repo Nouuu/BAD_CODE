@@ -32,6 +32,8 @@ void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *pa
 void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint id = get_id_row_activated(tree_view, path);
     printf("DELIVERABLE ID: %d\n", id);
+    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
+                                widgets->view_deliverables->edit_deliverable_fixed);
 }
 
 void on_menu_stack_visible_child_notify(GtkStack *stack) {
@@ -181,19 +183,22 @@ void on_sanctions_view_create_button_clicked() {
                                 widgets->view_sanctions->create_sanction_fixed);
 }
 
-void on_sanction_edit_return_button_clicked(){
+void on_sanction_edit_return_button_clicked() {
     printf("Return to sanctions view\n");
     GTKListSanctions();
 }
-void on_sanction_edit_submit_button_clicked(){
+
+void on_sanction_edit_submit_button_clicked() {
     printf("Submit sanction edit\n");
     GTKListSanctions();
 }
-void on_sanction_create_return_button_clicked(){
+
+void on_sanction_create_return_button_clicked() {
     printf("Return to sanctions view\n");
     GTKListSanctions();
 }
-void on_sanction_create_submit_button_clicked(){
+
+void on_sanction_create_submit_button_clicked() {
     printf("Submit sanction create\n");
     GTKListSanctions();
 }
@@ -214,6 +219,28 @@ void on_deliverables_view_delete_button_clicked() {
 
 void on_deliverables_view_create_button_clicked() {
     printf("Create deliverable\n");
+    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
+                                widgets->view_deliverables->create_deliverable_fixed);
+}
+
+void on_deliverable_edit_return_button_clicked() {
+    printf("Return to deliverables view\n");
+    GTKListDeliverables();
+}
+
+void on_deliverable_edit_submit_button_clicked() {
+    printf("Submit deliverable edit\n");
+    GTKListDeliverables();
+}
+
+void on_deliverable_create_return_button_clicked() {
+    printf("Return to deliverables view\n");
+    GTKListDeliverables();
+}
+
+void on_deliverable_create_submit_button_clicked() {
+    printf("Submit deliverable create\n");
+    GTKListDeliverables();
 }
 
 void on_view_user_image_file_picker_file_set() {
@@ -600,6 +627,8 @@ void GTKListSanctions() {
 }
 
 void GTKListDeliverables() {
+    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
+                                widgets->view_deliverables->view_deliverables_fixed);
     char *deliverables, *result, *firstAddress;
     int nbdeliverables = 0;
     listDeliverables(dbname, &deliverables);
@@ -774,6 +803,12 @@ void GTKUser() {
     GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
 
     GTKUserImage(photo);
+
+    free(email);
+    free(first_name);
+    free(last_name);
+    free(photo);
+    free(birthdate);
 }
 
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate) {
@@ -837,7 +872,7 @@ void GTKUserImage(char *path) {
                                   gdk_pixbuf_scale_simple(pixbuf, floor(width * ratio), floor(height * ratio),
                                                           GDK_INTERP_BILINEAR));
     }
-
+//    free(pixbuf);
 }
 
 void connectWidgets() {
@@ -1035,7 +1070,7 @@ void connectWidgets() {
     widgets->view_deliverables->edit_deliverable_fixed = GTK_WIDGET(
             gtk_builder_get_object(builder, "edit_deliverable"));
     widgets->view_deliverables->create_deliverable_fixed = GTK_WIDGET(
-            gtk_builder_get_object(builder, "create_deliverables"));
+            gtk_builder_get_object(builder, "create_deliverable"));
     widgets->view_deliverables->view_deliverables_view = GTK_WIDGET(
             gtk_builder_get_object(builder, "deliverables_view"));
     widgets->view_deliverables->deliverables_view_delete_button = GTK_BUTTON(
@@ -1044,6 +1079,14 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "deliverables_view_create_button"));
     widgets->view_deliverables->deliverables_view_refresh_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "deliverables_view_refresh_button"));
+    widgets->view_deliverables->deliverable_edit_return_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "deliverable_edit_return_button"));
+    widgets->view_deliverables->deliverable_edit_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "deliverable_edit_submit_button"));
+    widgets->view_deliverables->deliverable_create_return_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "deliverable_create_return_button"));
+    widgets->view_deliverables->deliverable_create_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "deliverable_create_submit_button"));
     widgets->view_deliverables->deliverables_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "deliverables_tree_store"));
     widgets->view_deliverables->deliverables_tree_view = GTK_TREE_VIEW(

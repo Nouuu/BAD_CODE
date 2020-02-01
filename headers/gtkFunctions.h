@@ -136,6 +136,10 @@ typedef struct {
     GtkButton *deliverables_view_delete_button;
     GtkButton *deliverables_view_create_button;
     GtkButton *deliverables_view_refresh_button;
+    GtkButton *deliverable_edit_return_button;
+    GtkButton *deliverable_edit_submit_button;
+    GtkButton *deliverable_create_return_button;
+    GtkButton *deliverable_create_submit_button;
     GtkTreeStore *deliverables_tree_store;
     GtkTreeView *deliverables_tree_view;
     GtkTreeSelection *deliverables_tree_selection;
@@ -241,6 +245,15 @@ G_MODULE_EXPORT void on_deliverables_view_refresh_button_clicked();
 G_MODULE_EXPORT void on_deliverables_view_delete_button_clicked();
 
 G_MODULE_EXPORT void on_deliverables_view_create_button_clicked();
+
+G_MODULE_EXPORT void on_deliverable_edit_return_button_clicked();
+
+G_MODULE_EXPORT void on_deliverable_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_deliverable_create_return_button_clicked();
+
+G_MODULE_EXPORT void on_deliverable_create_submit_button_clicked();
+
 
 G_MODULE_EXPORT void on_view_user_image_file_picker_file_set();
 
