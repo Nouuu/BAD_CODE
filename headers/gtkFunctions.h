@@ -28,6 +28,10 @@ typedef struct {
     GtkButton *students_view_refresh_button;
     GtkButton *students_view_remove_bottle_button;
     GtkButton *students_view_add_bottle_button;
+    GtkButton *student_edit_return_button;
+    GtkButton *student_edit_submit_button;
+    GtkButton *student_create_return_button;
+    GtkButton *student_create_submit_button;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;
@@ -205,6 +209,14 @@ G_MODULE_EXPORT void on_students_view_create_button_clicked();
 G_MODULE_EXPORT void on_students_view_remove_bottle_button_clicked();
 
 G_MODULE_EXPORT void on_students_view_add_bottle_button_clicked();
+
+G_MODULE_EXPORT void on_student_edit_return_button_clicked();
+
+G_MODULE_EXPORT void on_student_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_student_create_return_button_clicked();
+
+G_MODULE_EXPORT void on_student_create_submit_button_clicked();
 
 G_MODULE_EXPORT void on_sanctions_view_refresh_button_clicked();
 

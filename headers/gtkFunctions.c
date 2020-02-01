@@ -23,6 +23,8 @@ void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *pat
 void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint id = get_id_row_activated(tree_view, path);
     printf("STUDENT ID: %d\n", id);
+    gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
+                                widgets->view_students->edit_student_fixed);
 }
 
 void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
@@ -80,7 +82,7 @@ void on_classes_view_create_button_clicked() {
 }
 
 void on_class_edit_return_button_clicked() {
-    printf("Return to class view\n");
+    printf("Return to classes view\n");
     GTKListClasses();
 }
 
@@ -90,7 +92,7 @@ void on_class_edit_submit_button_clicked() {
 }
 
 void on_class_create_return_button_clicked() {
-    printf("Return to class view\n");
+    printf("Return to classes view\n");
     GTKListClasses();
 }
 
@@ -115,6 +117,8 @@ void on_students_view_delete_button_clicked() {
 
 void on_students_view_create_button_clicked() {
     printf("Create student\n");
+    gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
+                                widgets->view_students->create_student_fixed);
 }
 
 void on_students_view_remove_bottle_button_clicked() {
@@ -133,6 +137,26 @@ void on_students_view_add_bottle_button_clicked() {
         GTKListStudents();
     }
     printf("Add bottle student ID: %d\n", int_data);
+}
+
+void on_student_edit_return_button_clicked() {
+    printf("Return to students view\n");
+    GTKListStudents();
+}
+
+void on_student_edit_submit_button_clicked() {
+    printf("Submit student edit\n");
+    GTKListStudents();
+}
+
+void on_student_create_return_button_clicked() {
+    printf("Return to students view\n");
+    GTKListStudents();
+}
+
+void on_student_create_submit_button_clicked() {
+    printf("Submit student create\n");
+    GTKListStudents();
 }
 
 void on_sanctions_view_refresh_button_clicked() {
@@ -203,6 +227,8 @@ guint get_id_row_selected(GtkTreeSelection *selection) {
 }
 
 void GTKListStudents() {
+    gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
+                                widgets->view_students->view_students_fixed);
     char *students, *result, *firstAddress;
     int nbStudents = 0;
     listStudents(dbname, &students);
@@ -810,9 +836,17 @@ void connectWidgets() {
     widgets->view_students->students_view_refresh_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "students_view_refresh_button"));
     widgets->view_students->students_view_add_bottle_button = GTK_BUTTON(
-            gtk_builder_get_object(builder, "students_view_add_bottle_button"));
+            gtk_builder_get_object(builder, "students_view_add_bottle_bcreaten"));
     widgets->view_students->students_view_remove_bottle_button = GTK_BUTTON(
-            gtk_builder_get_object(builder, "students_view_remove_bottle_button"));
+            gtk_builder_get_object(builder, "students_view_remove_bottlcreatetton"));
+    widgets->view_students->student_edit_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "student_edit_submit_button"));
+    widgets->view_students->student_edit_return_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "student_edit_return_button"));
+    widgets->view_students->student_create_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "student_create_submit_button"));
+    widgets->view_students->student_create_return_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "student_create_return_button"));
     widgets->view_students->students_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "students_tree_store"));
     widgets->view_students->students_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "students_tree_view"));

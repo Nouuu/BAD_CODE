@@ -187,6 +187,21 @@
     <property name="can_focus">False</property>
     <property name="icon_name">object-select-symbolic</property>
   </object>
+  <object class="GtkImage" id="submit_image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">object-select-symbolic</property>
+  </object>
+  <object class="GtkImage" id="submit_image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">object-select-symbolic</property>
+  </object>
+  <object class="GtkImage" id="submit_image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">object-select-symbolic</property>
+  </object>
   <object class="GtkWindow" id="window_dashboard">
     <property name="width_request">900</property>
     <property name="height_request">650</property>
@@ -302,7 +317,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">595</property>
+                        <property name="x">570</property>
                         <property name="y">387</property>
                       </packing>
                     </child>
@@ -511,7 +526,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">695</property>
+                        <property name="x">680</property>
                         <property name="y">387</property>
                       </packing>
                     </child>
@@ -580,7 +595,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">695</property>
+                        <property name="x">680</property>
                         <property name="y">387</property>
                       </packing>
                     </child>
@@ -802,7 +817,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">595</property>
+                        <property name="x">570</property>
                         <property name="y">387</property>
                       </packing>
                     </child>
@@ -914,7 +929,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">695</property>
+                        <property name="x">680</property>
                         <property name="y">387</property>
                       </packing>
                     </child>
@@ -950,13 +965,14 @@
                         <property name="spacing">15</property>
                         <property name="layout_style">start</property>
                         <child>
-                          <object class="GtkButton" id="student_edit_submit_button1">
+                          <object class="GtkButton" id="student_create_submit_button">
                             <property name="label" translatable="yes">Submit</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="image">submit_image3</property>
                             <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_student_create_submit_button_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -965,13 +981,14 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="student_edit_return_button1">
+                          <object class="GtkButton" id="student_create_return_button">
                             <property name="label" translatable="yes">Return</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="image">return_image3</property>
                             <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_student_create_return_button_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -980,6 +997,10 @@
                           </packing>
                         </child>
                       </object>
+                      <packing>
+                        <property name="x">680</property>
+                        <property name="y">387</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
@@ -1152,7 +1173,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">595</property>
+                        <property name="x">570</property>
                         <property name="y">387</property>
                       </packing>
                     </child>
@@ -1407,7 +1428,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">595</property>
+                        <property name="x">570</property>
                         <property name="y">387</property>
                       </packing>
                     </child>
@@ -1539,20 +1560,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="submit_image1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">object-select-symbolic</property>
-  </object>
-  <object class="GtkImage" id="submit_image2">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">object-select-symbolic</property>
-  </object>
-  <object class="GtkImage" id="submit_image3">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">object-select-symbolic</property>
   </object>
 </interface>
