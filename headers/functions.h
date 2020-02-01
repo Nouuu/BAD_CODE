@@ -17,4 +17,8 @@ int copyFile(char *src, char *dest);
 
 int removeDirectory(char *src);
 
+char *get_filename_ext(char *path);
+
+int checkImageExtension(char *path);
+
 #endif //BAD_CODE_FUNCTIONS_H

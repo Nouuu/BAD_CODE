@@ -15,7 +15,6 @@
 
 // link builder to the one in main.c
 extern GtkBuilder *builder;
-extern char *dbname;
 
 typedef struct {
     GtkStack *view_students_stack;
@@ -285,6 +284,8 @@ void GTKUser();
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate);
 
 void GTKUserImage(char *path);
+
+int GTKUserSetImage(char *path);
 
 void connectWidgets();
 

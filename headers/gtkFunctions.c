@@ -4,6 +4,7 @@
 
 #include "gtkFunctions.h"
 #include "sqliteFunctions.h"
+#include "functions.h"
 
 void on_destroy() {
     gtk_main_quit();
@@ -74,7 +75,7 @@ void on_classes_view_refresh_button_clicked() {
 void on_classes_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_classes->classes_tree_selection);
     if (int_data) {
-        deleteClass(dbname, int_data);
+        deleteClass(int_data);
         GTKListClasses();
     }
     printf("Delete class ID: %d\n", int_data);
@@ -113,7 +114,7 @@ void on_students_view_refresh_button_clicked() {
 void on_students_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        deleteStudent(dbname, int_data);
+        deleteStudent(int_data);
         GTKListStudents();
     }
     printf("Delete student ID: %d\n", int_data);
@@ -128,7 +129,7 @@ void on_students_view_create_button_clicked() {
 void on_students_view_remove_bottle_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        addStudentBottle(dbname, int_data, -1);
+        addStudentBottle(int_data, -1);
         GTKListStudents();
     }
     printf("Remove bottle student ID: %d\n", int_data);
@@ -137,7 +138,7 @@ void on_students_view_remove_bottle_button_clicked() {
 void on_students_view_add_bottle_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        addStudentBottle(dbname, int_data, 1);
+        addStudentBottle(int_data, 1);
         GTKListStudents();
     }
     printf("Add bottle student ID: %d\n", int_data);
@@ -171,7 +172,7 @@ void on_sanctions_view_refresh_button_clicked() {
 void on_sanctions_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_sanctions->sanctions_tree_selection);
     if (int_data) {
-        deleteSanction(dbname, int_data);
+        deleteSanction(int_data);
         GTKListSanctions();
     }
     printf("Delete sanction ID: %d\n", int_data);
@@ -211,7 +212,7 @@ void on_deliverables_view_refresh_button_clicked() {
 void on_deliverables_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_deliverables->deliverables_tree_selection);
     if (int_data) {
-        deleteDeliverable(dbname, int_data);
+        deleteDeliverable(int_data);
         GTKListDeliverables();
     }
     printf("Delete deliverable ID: %d\n", int_data);
@@ -244,8 +245,17 @@ void on_deliverable_create_submit_button_clicked() {
 }
 
 void on_view_user_image_file_picker_file_set() {
-    printf("Choose file! : %s\n",
-           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker)));
+    char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker));
+    printf("Choose file! : %s\n", path);
+
+    int returnCode = GTKUserSetImage(path);
+
+    if (returnCode)
+        fprintf(stderr, "Can't use this image\n");
+    else {
+        printf("Image changed\n");
+        GTKUser();
+    }
 }
 
 void on_user_view_edit_button_clicked() {
@@ -294,7 +304,7 @@ void GTKListStudents() {
                                 widgets->view_students->view_students_fixed);
     char *students, *result, *firstAddress;
     int nbStudents = 0;
-    listStudents(dbname, &students);
+    listStudents(&students);
     firstAddress = students;
     result = students;
 
@@ -425,7 +435,7 @@ void GTKListClasses() {
     gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->view_classes_fixed);
     char *classes, *result, *firstAddress;
     int nbClasses = 0;
-    listClasses(dbname, &classes);
+    listClasses(&classes);
     firstAddress = classes;
     result = classes;
 
@@ -564,7 +574,7 @@ void GTKListSanctions() {
                                 widgets->view_sanctions->view_sanctions_fixed);
     char *sanctions, *result, *firstAddress;
     int nbSanctions = 0;
-    listSanctions(dbname, &sanctions);
+    listSanctions(&sanctions);
     firstAddress = sanctions;
     result = sanctions;
 
@@ -646,7 +656,7 @@ void GTKListDeliverables() {
                                 widgets->view_deliverables->view_deliverables_fixed);
     char *deliverables, *result, *firstAddress;
     int nbdeliverables = 0;
-    listDeliverables(dbname, &deliverables);
+    listDeliverables(&deliverables);
     firstAddress = deliverables;
     result = deliverables;
 
@@ -830,7 +840,7 @@ void GTKUser() {
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate) {
     char *intBuffer, *data, *firstAdress;
     size_t columnSize;
-    getUser(dbname, &data, 1);
+    getUser(&data, 1);
     firstAdress = data;
 
     columnSize = strchr(data, '|') - data;
@@ -888,7 +898,13 @@ void GTKUserImage(char *path) {
                                   gdk_pixbuf_scale_simple(pixbuf, floor(width * ratio), floor(height * ratio),
                                                           GDK_INTERP_BILINEAR));
     }
-//    free(pixbuf);
+}
+
+int GTKUserSetImage(char *path) {
+    if (checkImageExtension(path))
+        return 1;
+
+    return insertTableImage("user", 1, path);
 }
 
 void connectWidgets() {

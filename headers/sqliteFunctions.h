@@ -12,15 +12,17 @@
 #include <sqlite3.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+extern char *dbname;
+
 void checkVersion();
 
-sqlite3 *connectDB(char *dbname);
+sqlite3 *connectDB();
 
-int insertTableImage(char *dbname, char *table, int id, char *photo_location);
+int insertTableImage(char *table, int id, char *photo_location);
 
-int insertUser(char *dbname, char *email, char *first_name, char *last_name, char *photo_location, char *birthdate);
+int insertUser(char *email, char *first_name, char *last_name, char *photo_location, char *birthdate);
 
-int updateUser(char *dbname, int id, char *email, char *first_name, char *last_name, char *birthdate);
+int updateUser(int id, char *email, char *first_name, char *last_name, char *birthdate);
 
 /**
  * @name getUser
@@ -31,15 +33,15 @@ int updateUser(char *dbname, int id, char *email, char *first_name, char *last_n
  *
  * @data = "id|email|first_name|last_name|photo|birthdate;\n"
  */
-void getUser(char *dbname, char **data, int id);
+void getUser(char **data, int id);
 
-int insertClass(char *dbname, char *name, int year, int apprenticeship, int sanction_fk, int user_fk);
+int insertClass(char *name, int year, int apprenticeship, int sanction_fk, int user_fk);
 
-int updateClass(char *dbname, int id, char *name, int year, int apprenticeship, int user_fk, int sanction_fk);
+int updateClass(int id, char *name, int year, int apprenticeship, int user_fk, int sanction_fk);
 
-int studentNullClass(char *dbname, int class_fk);
+int studentNullClass(int class_fk);
 
-int deleteClass(char *dbname, int id);
+int deleteClass(int id);
 
 /**
  * @name listClass
@@ -48,7 +50,7 @@ int deleteClass(char *dbname, int id);
  *
  * @data = "id| name| year| apprenticeship| major| user(first_name + last_name)| user_fk| sanction(name)| sanction_fk;\n..."
  */
-void listClasses(char *dbname, char **data);
+void listClasses(char **data);
 
 /**
  * @name getClass
@@ -59,17 +61,17 @@ void listClasses(char *dbname, char **data);
  *
  * @data = "id|name|year|apprenticeship|major|user|user_fk|sanction|sanction_fk;\n"
  */
-void getClass(char *dbname, char **data, int id);
+void getClass(char **data, int id);
 
-int insertStudent(char *dbname, char *first_name, char *last_name, char *photo_location, char *email, int class_fk);
+int insertStudent(char *first_name, char *last_name, char *photo_location, char *email, int class_fk);
 
-int addStudentBottle(char *dbname, int id, int count);
+int addStudentBottle(int id, int count);
 
-int updateStudent(char *dbname, int id, char *first_name, char *last_name, char *email, int class_fk);
+int updateStudent(int id, char *first_name, char *last_name, char *email, int class_fk);
 
-int deleteStudentDeliverables(char *dbname, int student_fk);
+int deleteStudentDeliverables(int student_fk);
 
-int deleteStudent(char *dbname, int id);
+int deleteStudent(int id);
 
 /**
  * @name listStudents
@@ -78,7 +80,7 @@ int deleteStudent(char *dbname, int id);
  *
  * @data = "id| first_name| last_name| photo| email| bad_code(count)| nb_bottles| class(name)| class_fk;\n..."
  */
-void listStudents(char *dbname, char **data);
+void listStudents(char **data);
 
 /**
  * @name listClassStudents
@@ -88,7 +90,7 @@ void listStudents(char *dbname, char **data);
  *
  * @data = "id| first_name| last_name| photo| email| bad_code(count)| nb_bottles| class(name)| class_fk;\n..."
  */
-void listClassStudents(char *dbname, char **data, int class_fk);
+void listClassStudents(char **data, int class_fk);
 
 /**
  * @name getStudent
@@ -99,15 +101,15 @@ void listClassStudents(char *dbname, char **data, int class_fk);
  *
  * @data = "id|first_name|last_name|photo|email|bad_code(count)|nb_bottles|class|class_fk;\n"
  */
-void getStudent(char *dbname, char **data, int id);
+void getStudent(char **data, int id);
 
-int insertSanction(char *dbname, char *name, char *description, int user_fk);
+int insertSanction(char *name, char *description, int user_fk);
 
-int updateSanction(char *dbname, int id, char *name, char *description, int user_fk);
+int updateSanction(int id, char *name, char *description, int user_fk);
 
-int classNullSanction(char *dbname, int sanction_fk);
+int classNullSanction(int sanction_fk);
 
-int deleteSanction(char *dbname, int id);
+int deleteSanction(int id);
 
 /**
  * @name  listSanctions
@@ -116,7 +118,7 @@ int deleteSanction(char *dbname, int id);
  *
  * @data = "id| name| description| user(first_name + last_name)| user_fk;\n"
  */
-void listSanctions(char *dbname, char **data);
+void listSanctions(char **data);
 
 /**
  * @name  getSanction
@@ -126,16 +128,16 @@ void listSanctions(char *dbname, char **data);
  *
  * @data = "id|name|description|user(first_name + last_name)|user_fk;\n"
  */
-void getSanction(char *dbname, char **data, int id);
+void getSanction(char **data, int id);
 
-int insertDeliverableFile(char *dbname, char *column, int id, int student_fk, char *file_location);
+int insertDeliverableFile(char *column, int id, int student_fk, char *file_location);
 
-int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_record_path, char *video_reccord_path,
+int insertDeliverable(char *due_date, char *subject, char *audio_record_path, char *video_reccord_path,
                       char *bad_code_path, char *deliverable_file_path, char *status, int student_fk);
 
-int updateDeliverable(char *dbname, int id, char *due_date, char *subject, char *status, int student_fk);
+int updateDeliverable(int id, char *due_date, char *subject, char *status, int student_fk);
 
-int deleteDeliverable(char *dbname, int id);
+int deleteDeliverable(int id);
 
 /**
  * @name listDeliverables
@@ -144,7 +146,7 @@ int deleteDeliverable(char *dbname, int id);
  *
  * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n..."
  */
-void listDeliverables(char *dbname, char **data);
+void listDeliverables(char **data);
 
 /**
  * @name listStudentDeliverables
@@ -154,7 +156,7 @@ void listDeliverables(char *dbname, char **data);
  *
  * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n..."
  */
-void listStudentDeliverables(char *dbname, char **data, int studentId);
+void listStudentDeliverables(char **data, int studentId);
 
 /**
  * @name getDeliverable
@@ -164,6 +166,6 @@ void listStudentDeliverables(char *dbname, char **data, int studentId);
  *
  * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n"
  */
-void getDeliverable(char *dbname, char **data, int id);
+void getDeliverable(char **data, int id);
 
 #endif //BAD_CODE_SQLITEFUNCTIONS_H
