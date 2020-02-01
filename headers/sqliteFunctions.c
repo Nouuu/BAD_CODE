@@ -135,7 +135,7 @@ int insertUser(char *email, char *first_name, char *last_name, char *photo_locat
     return 0;
 }
 
-int updateUser(int id, char *email, char *first_name, char *last_name, char *birthdate) {
+int updateUser(int id, const char *email, const char *first_name, const char *last_name, const char *birthdate) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update user set email = ?, first_name = ?, last_name = ?, birthdate = ? where id = ?;";

@@ -54,7 +54,7 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
             GTKListDeliverables();
         } else if (!strcmp(menu, "view_user")) {
             printf("User view\n");
-            GTKUser();
+            GTKViewUser();
         } else if (!strcmp(menu, "view_settings")) {
             printf("Settings view\n");
 
@@ -254,23 +254,23 @@ void on_view_user_image_file_picker_file_set() {
         fprintf(stderr, "Can't use this image\n");
     else {
         printf("Image changed\n");
-        GTKUser();
+        GTKViewUser();
     }
 }
 
 void on_user_view_edit_button_clicked() {
     printf("Edit user\n");
-    gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->edit_user_fixed);
+    GTKEditUser();
 }
 
 void on_user_edit_submit_button_clicked() {
     printf("User edit submit\n");
-    GTKUser();
+    GTKEditUserSubmit();
 }
 
 void on_user_edit_return_button_clicked() {
     printf("User return to view\n");
-    GTKUser();
+    GTKViewUser();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -822,19 +822,60 @@ void GTKListDeliverables() {
     free(firstAddress);
 }
 
-void GTKUser() {
+void GTKViewUser() {
     gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->view_user_fixed);
+    char *email, *first_name, *last_name, *photo, *birthdate, *emailURI;
+    int id;
+    GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
+    emailURI = malloc(strlen(email + 8));
+    strcat(strcpy(emailURI, "mailto:"), email);
+
+    GTKUserImage(photo);
+
+    gtk_label_set_text(widgets->view_user->view_user_first_name, first_name);
+    gtk_label_set_text(widgets->view_user->view_user_last_name, last_name);
+    gtk_label_set_text(widgets->view_user->view_user_birthdate, birthdate);
+    gtk_button_set_label(GTK_BUTTON(widgets->view_user->view_user_email), email);
+    gtk_link_button_set_uri(widgets->view_user->view_user_email, emailURI);
+
+    free(email);
+    free(emailURI);
+    free(first_name);
+    free(last_name);
+    free(photo);
+    free(birthdate);
+}
+
+void GTKEditUser() {
+    gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->edit_user_fixed);
     char *email, *first_name, *last_name, *photo, *birthdate;
     int id;
     GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
 
-    GTKUserImage(photo);
+    gtk_entry_set_text(widgets->view_user->edit_user_first_name, first_name);
+    gtk_entry_set_text(widgets->view_user->edit_user_last_name, last_name);
+    gtk_entry_set_text(widgets->view_user->edit_user_email, email);
+    gtk_label_set_text(widgets->view_user->edit_user_birthdate, birthdate);
 
     free(email);
     free(first_name);
     free(last_name);
     free(photo);
     free(birthdate);
+}
+
+void GTKEditUserSubmit() {
+    int returnCode = updateUser(1,
+                                gtk_entry_get_text(widgets->view_user->edit_user_email),
+                                gtk_entry_get_text(widgets->view_user->edit_user_first_name),
+                                gtk_entry_get_text(widgets->view_user->edit_user_last_name),
+                                gtk_label_get_text(widgets->view_user->edit_user_birthdate));
+    if (returnCode)
+        fprintf(stderr, "Error, could not update user\n");
+    else {
+        printf("User update successful\n");
+        GTKViewUser();
+    }
 }
 
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate) {
@@ -892,7 +933,7 @@ void GTKUserImage(char *path) {
         printf("loaded!\n");
         int width = gdk_pixbuf_get_width(pixbuf);
         int height = gdk_pixbuf_get_height(pixbuf);
-        double ratio = (150. / width);
+        double ratio = (250. / width);
         printf("width: %d, height: %d, ratio: %lf\n", width, height, ratio);
         gtk_image_set_from_pixbuf(widgets->view_user->view_user_image,
                                   gdk_pixbuf_scale_simple(pixbuf, floor(width * ratio), floor(height * ratio),
@@ -1208,6 +1249,14 @@ void connectWidgets() {
     widgets->view_user->user_edit_return_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "user_edit_return_button"));
     widgets->view_user->view_user_image = GTK_IMAGE(gtk_builder_get_object(builder, "view_user_image"));
+    widgets->view_user->view_user_first_name = GTK_LABEL(gtk_builder_get_object(builder, "view_user_first_name"));
+    widgets->view_user->view_user_last_name = GTK_LABEL(gtk_builder_get_object(builder, "view_user_last_name"));
+    widgets->view_user->view_user_birthdate = GTK_LABEL(gtk_builder_get_object(builder, "view_user_birthdate"));
+    widgets->view_user->edit_user_birthdate = GTK_LABEL(gtk_builder_get_object(builder, "edit_user_birthdate"));
+    widgets->view_user->edit_user_first_name = GTK_ENTRY(gtk_builder_get_object(builder, "edit_user_first_name"));
+    widgets->view_user->edit_user_last_name = GTK_ENTRY(gtk_builder_get_object(builder, "edit_user_last_name"));
+    widgets->view_user->edit_user_email = GTK_ENTRY(gtk_builder_get_object(builder, "edit_user_email"));
+    widgets->view_user->view_user_email = GTK_LINK_BUTTON(gtk_builder_get_object(builder, "view_user_email"));
     widgets->view_user->view_user_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "view_user_image_file_picker"));
 }

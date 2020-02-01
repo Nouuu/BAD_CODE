@@ -22,7 +22,7 @@ int insertTableImage(char *table, int id, char *photo_location);
 
 int insertUser(char *email, char *first_name, char *last_name, char *photo_location, char *birthdate);
 
-int updateUser(int id, char *email, char *first_name, char *last_name, char *birthdate);
+int updateUser(int id, const char *email, const char *first_name, const char *last_name, const char *birthdate);
 
 /**
  * @name getUser
