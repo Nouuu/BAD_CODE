@@ -248,6 +248,21 @@ void on_view_user_image_file_picker_file_set() {
            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker)));
 }
 
+void on_user_view_edit_button_clicked() {
+    printf("Edit user\n");
+    gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->edit_user_fixed);
+}
+
+void on_user_edit_submit_button_clicked() {
+    printf("User edit submit\n");
+    GTKUser();
+}
+
+void on_user_edit_return_button_clicked() {
+    printf("User return to view\n");
+    GTKUser();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
@@ -798,6 +813,7 @@ void GTKListDeliverables() {
 }
 
 void GTKUser() {
+    gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->view_user_fixed);
     char *email, *first_name, *last_name, *photo, *birthdate;
     int id;
     GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
@@ -1170,6 +1186,11 @@ void connectWidgets() {
     widgets->view_user->view_user_stack = GTK_STACK(gtk_builder_get_object(builder, "view_user_stack"));
     widgets->view_user->view_user_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "view_user"));
     widgets->view_user->edit_user_fixed = GTK_WIDGET(gtk_builder_get_object(builder, "edit_user"));
+    widgets->view_user->user_view_edit_button = GTK_BUTTON(gtk_builder_get_object(builder, "user_view_edit_button"));
+    widgets->view_user->user_edit_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "user_edit_submit_button"));
+    widgets->view_user->user_edit_return_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "user_edit_return_button"));
     widgets->view_user->view_user_image = GTK_IMAGE(gtk_builder_get_object(builder, "view_user_image"));
     widgets->view_user->view_user_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "view_user_image_file_picker"));

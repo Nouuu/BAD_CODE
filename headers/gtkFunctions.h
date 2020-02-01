@@ -123,6 +123,9 @@ typedef struct {
     GtkStack *view_user_stack;
     GtkWidget *view_user_fixed;
     GtkWidget *edit_user_fixed;
+    GtkButton *user_view_edit_button;
+    GtkButton *user_edit_submit_button;
+    GtkButton *user_edit_return_button;
     GtkImage *view_user_image;
     GtkFileChooserButton *view_user_image_file_picker;
 } User;
@@ -254,8 +257,13 @@ G_MODULE_EXPORT void on_deliverable_create_return_button_clicked();
 
 G_MODULE_EXPORT void on_deliverable_create_submit_button_clicked();
 
-
 G_MODULE_EXPORT void on_view_user_image_file_picker_file_set();
+
+G_MODULE_EXPORT void on_user_view_edit_button_clicked();
+
+G_MODULE_EXPORT void on_user_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_user_edit_return_button_clicked();
 
 //Functions prototype
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
