@@ -233,7 +233,7 @@ void getUser(char **data, int id) {
     sqlite3_close(db);
 }
 
-int insertClass(const char *name, const char *major, int year, int apprenticeship, int sanction_fk, int user_fk) {
+int insertClass(const char *name, const char *major, int year, int apprenticeship, int user_fk, int sanction_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into class (name, year, apprenticeship, major, user_fk, sanction_fk) VALUES (?, ?, ?, ?, ?, ?)";
@@ -248,8 +248,8 @@ int insertClass(const char *name, const char *major, int year, int apprenticeshi
     sqlite3_bind_int(pStmt, 2, year);
     sqlite3_bind_int(pStmt, 3, apprenticeship);
     sqlite3_bind_text(pStmt, 4, major, -1, 0);
-    sqlite3_bind_int(pStmt, 5, sanction_fk);
-    sqlite3_bind_int(pStmt, 6, user_fk);
+    sqlite3_bind_int(pStmt, 5, user_fk);
+    sqlite3_bind_int(pStmt, 6, sanction_fk);
 
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {

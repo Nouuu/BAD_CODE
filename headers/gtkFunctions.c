@@ -83,7 +83,7 @@ void on_classes_view_delete_button_clicked() {
 
 void on_classes_view_create_button_clicked() {
     printf("Create class\n");
-    gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->create_class_fixed);
+    GTKCreateClass();
 }
 
 void on_class_edit_return_button_clicked() {
@@ -103,7 +103,7 @@ void on_class_create_return_button_clicked() {
 
 void on_class_create_submit_button_clicked() {
     printf("Submit class create\n");
-    GTKListClasses();
+    GTKCreateClassSubmit();
 }
 
 void on_students_view_refresh_button_clicked() {
@@ -728,7 +728,92 @@ void GTKEditClassSubmit() {
             atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction)))
     );
 
-    GTKListClasses();
+    if (returnCode)
+        fprintf(stderr, "Error, could not update class\n");
+    else {
+        printf("Class update successful\n");
+        GTKListClasses();
+    }
+}
+
+void GTKCreateClass() {
+    gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->create_class_fixed);
+
+    GTKCreateClassFillSanctionComboList();
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_sanction), "0");
+
+    gtk_entry_set_text(widgets->view_classes->create_class_name, "");
+    gtk_entry_set_text(widgets->view_classes->create_class_major, "");
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_user), "1");
+    gtk_entry_set_text(GTK_ENTRY(widgets->view_classes->create_class_year), "2020");
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widgets->view_classes->create_class_apprenticeship), FALSE);
+
+}
+
+void GTKCreateClassSubmit() {
+
+    int returnCode = insertClass(
+            gtk_entry_get_text(widgets->view_classes->create_class_name),
+            gtk_entry_get_text(widgets->view_classes->create_class_major),
+            atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->create_class_year))),
+            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->view_classes->create_class_apprenticeship)) ? 1 : 0,
+            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_user))),
+            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_sanction))));
+
+    if (returnCode)
+        fprintf(stderr, "Error, could not create class\n");
+    else {
+        printf("Class create successful\n");
+        GTKListClasses();
+    }
+}
+
+
+void GTKCreateClassFillSanctionComboList() {
+    char *sanctionsList;
+    listSanctions(&sanctionsList);
+
+    int nbSanctions = 0, i;
+    char *result = sanctionsList, *firstAdress = sanctionsList, *nameBuffer, *idBuffer;
+    size_t columnSize;
+
+
+    gtk_combo_box_text_remove_all(widgets->view_classes->create_class_sanction);
+    gtk_combo_box_text_append(widgets->view_classes->create_class_sanction, "0", "None");
+
+
+    while ((result = strstr(result, ";\n"))) {
+        nbSanctions++;
+        result++;
+    }
+
+    for (i = 0; i < nbSanctions; ++i) {
+        //ID
+        result = strchr(sanctionsList, '|');
+        columnSize = result - sanctionsList;
+        idBuffer = malloc(columnSize + 1);
+
+        strncpy(idBuffer, sanctionsList, columnSize);
+        idBuffer[columnSize] = '\0';
+        sanctionsList += columnSize + 1;
+
+        //NAME
+        result = strchr(sanctionsList, '|');
+        columnSize = result - sanctionsList;
+        nameBuffer = malloc(columnSize + 1);
+
+        strncpy(nameBuffer, sanctionsList, columnSize);
+        nameBuffer[columnSize] = '\0';
+
+        gtk_combo_box_text_append(widgets->view_classes->create_class_sanction, idBuffer, nameBuffer);
+
+        sanctionsList = strstr(sanctionsList, ";\n") + 2;
+        free(idBuffer);
+        free(nameBuffer);
+    }
+
+    free(firstAdress);
+
 }
 
 void GTKListSanctions() {
@@ -1213,6 +1298,14 @@ void connectWidgets() {
     widgets->view_classes->edit_class_apprenticeship = GTK_CHECK_BUTTON(
             gtk_builder_get_object(builder, "edit_class_apprenticeship"));
     widgets->view_classes->edit_class_year = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "edit_class_year"));
+    widgets->view_classes->create_class_name = GTK_ENTRY(gtk_builder_get_object(builder, "create_class_name"));
+    widgets->view_classes->create_class_major = GTK_ENTRY(gtk_builder_get_object(builder, "create_class_major"));
+    widgets->view_classes->create_class_sanction = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "create_class_sanction"));
+    widgets->view_classes->create_class_user = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder, "create_class_user"));
+    widgets->view_classes->create_class_apprenticeship = GTK_CHECK_BUTTON(
+            gtk_builder_get_object(builder, "create_class_apprenticeship"));
+    widgets->view_classes->create_class_year = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "create_class_year"));
     widgets->view_classes->classes_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "classes_tree_store"));
     widgets->view_classes->classes_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "classes_tree_view"));

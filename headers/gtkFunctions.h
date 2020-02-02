@@ -74,6 +74,12 @@ typedef struct {
     GtkComboBoxText *edit_class_user;
     GtkCheckButton *edit_class_apprenticeship;
     GtkSpinButton *edit_class_year;
+    GtkEntry *create_class_name;
+    GtkEntry *create_class_major;
+    GtkComboBoxText *create_class_sanction;
+    GtkComboBoxText *create_class_user;
+    GtkCheckButton *create_class_apprenticeship;
+    GtkSpinButton *create_class_year;
     GtkTreeStore *classes_tree_store;
     GtkTreeView *classes_tree_view;
     GtkTreeSelection *classes_tree_selection;
@@ -298,6 +304,12 @@ void GTKEditClassFillSanctionComboList();
 
 void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char **major, char **user, char **user_fk,
                      char **sanction, char **sanction_fk);
+
+void GTKCreateClass();
+
+void GTKCreateClassSubmit();
+
+void GTKCreateClassFillSanctionComboList();
 
 void GTKListSanctions();
 
