@@ -401,6 +401,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkTreeViewColumn" id="classes_cx_1">
+                                    <property name="visible">False</property>
                                     <property name="resizable">True</property>
                                     <property name="title" translatable="yes">id</property>
                                     <property name="expand">True</property>
@@ -415,7 +416,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="classes_cx_2">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">name</property>
+                                    <property name="title" translatable="yes">Name</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">1</property>
@@ -427,7 +428,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="classes_cx_3">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">year</property>
+                                    <property name="title" translatable="yes">Year</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_indicator">True</property>
@@ -440,7 +441,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="classes_cx_4">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">apprenticeship</property>
+                                    <property name="title" translatable="yes">Apprenticeship</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">3</property>
@@ -452,7 +453,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="classes_cx_5">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">major</property>
+                                    <property name="title" translatable="yes">Major</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">4</property>
@@ -464,7 +465,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="classes_cx_6">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">user</property>
+                                    <property name="title" translatable="yes">User</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">5</property>
@@ -489,7 +490,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="classes_cx_8">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">sanction</property>
+                                    <property name="title" translatable="yes">Sanction</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">7</property>
