@@ -35,9 +35,10 @@ int updateUser(int id, const char *email, const char *first_name, const char *la
  */
 void getUser(char **data, int id);
 
-int insertClass(char *name, int year, int apprenticeship, int sanction_fk, int user_fk);
+int insertClass(char *name, int year, int apprenticeship, const char *major, int sanction_fk, int user_fk);
 
-int updateClass(int id, char *name, int year, int apprenticeship, int user_fk, int sanction_fk);
+int
+updateClass(int id, const char *name, const char *major, int year, int apprenticeship, int user_fk, int sanction_fk);
 
 int studentNullClass(int class_fk);
 

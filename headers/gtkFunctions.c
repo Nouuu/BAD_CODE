@@ -20,7 +20,7 @@ void on_sanctions_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *p
 void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint id = get_id_row_activated(tree_view, path);
     printf("CLASS ID: %d\n", id);
-    gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->edit_class_fixed);
+    GTKEditClass(id);
 }
 
 void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
@@ -93,7 +93,7 @@ void on_class_edit_return_button_clicked() {
 
 void on_class_edit_submit_button_clicked() {
     printf("Submit class edit\n");
-    GTKListClasses();
+    GTKEditClassSubmit();
 }
 
 void on_class_create_return_button_clicked() {
@@ -569,11 +569,173 @@ void GTKListClasses() {
     free(firstAddress);
 }
 
+void GTKEditClass(int id) {
+    gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->edit_class_fixed);
+    char *name, *major, *user, *sanction, *year, *sanction_fk, *user_fk, idBuffer[4];
+    int apprenticeship;
+
+    GTKEditClassFillSanctionComboList();
+    GTKClassGetData(id, &name, &year, &apprenticeship, &major, &user, &user_fk, &sanction, &sanction_fk);
+    itoa(id, idBuffer, 10);
+
+    gtk_label_set_text(widgets->view_classes->edit_class_id, idBuffer);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_classes->edit_class_id), FALSE);
+    gtk_entry_set_text(widgets->view_classes->edit_class_name, name);
+    gtk_entry_set_text(widgets->view_classes->edit_class_major, major);
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction), sanction_fk);
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_user), user_fk);
+    if (apprenticeship)
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widgets->view_classes->edit_class_apprenticeship), TRUE);
+    else
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widgets->view_classes->edit_class_apprenticeship), FALSE);
+    gtk_entry_set_text(GTK_ENTRY(widgets->view_classes->edit_class_year), year);
+
+    free(name);
+    free(major);
+    free(user);
+    free(sanction);
+    free(year);
+    free(sanction_fk);
+    free(user_fk);
+}
+
+void GTKEditClassFillSanctionComboList() {
+    char *sanctionsList;
+    listSanctions(&sanctionsList);
+
+    int nbSanctions = 0, i;
+    char *result = sanctionsList, *firstAdress = sanctionsList, *nameBuffer, *idBuffer;
+    size_t columnSize;
+
+
+    gtk_combo_box_text_remove_all(widgets->view_classes->edit_class_sanction);
+    gtk_combo_box_text_append(widgets->view_classes->edit_class_sanction, "0", "None");
+
+
+    while ((result = strstr(result, ";\n"))) {
+        nbSanctions++;
+        result++;
+    }
+
+    for (i = 0; i < nbSanctions; ++i) {
+        //ID
+        result = strchr(sanctionsList, '|');
+        columnSize = result - sanctionsList;
+        idBuffer = malloc(columnSize + 1);
+
+        strncpy(idBuffer, sanctionsList, columnSize);
+        idBuffer[columnSize] = '\0';
+        sanctionsList += columnSize + 1;
+
+        //NAME
+        result = strchr(sanctionsList, '|');
+        columnSize = result - sanctionsList;
+        nameBuffer = malloc(columnSize + 1);
+
+        strncpy(nameBuffer, sanctionsList, columnSize);
+        nameBuffer[columnSize] = '\0';
+
+        gtk_combo_box_text_append(widgets->view_classes->edit_class_sanction, idBuffer, nameBuffer);
+
+        sanctionsList = strstr(sanctionsList, ";\n") + 2;
+        free(idBuffer);
+        free(nameBuffer);
+    }
+
+    free(firstAdress);
+}
+
+void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char **major, char **user, char **user_fk,
+                     char **sanction, char **sanction_fk) {
+    char *classData, *intBuffer, *firstAdress;
+    size_t columnSize;
+    getClass(&classData, id);
+    firstAdress = classData;
+
+    //ID
+    classData += strchr(classData, '|') - classData + 1;
+
+    //NAME
+    columnSize = strchr(classData, '|') - classData;
+    *name = malloc(columnSize + 1);
+    strncpy(*name, classData, columnSize);
+    (*name)[columnSize] = '\0';
+    classData += columnSize + 1;
+
+    //YEAR
+    columnSize = strchr(classData, '|') - classData;
+    *year = malloc(columnSize + 1);
+    strncpy(*year, classData, columnSize);
+    (*year)[columnSize] = '\0';
+    classData += columnSize + 1;
+
+    //APPRENTICESHIP
+    columnSize = strchr(classData, '|') - classData;
+    intBuffer = malloc(columnSize + 1);
+    strncpy(intBuffer, classData, columnSize);
+    intBuffer[columnSize] = '\0';
+    *apprenticeship = atoi(intBuffer);
+    free(intBuffer);
+    classData += columnSize + 1;
+
+    //MAJOR
+    columnSize = strchr(classData, '|') - classData;
+    *major = malloc(columnSize + 1);
+    strncpy(*major, classData, columnSize);
+    (*major)[columnSize] = '\0';
+    classData += columnSize + 1;
+
+    //USER
+    columnSize = strchr(classData, '|') - classData;
+    *user = malloc(columnSize + 1);
+    strncpy(*user, classData, columnSize);
+    (*user)[columnSize] = '\0';
+    classData += columnSize + 1;
+
+    //USER_FK
+    columnSize = strchr(classData, '|') - classData;
+    *user_fk = malloc(columnSize + 1);
+    strncpy(*user_fk, classData, columnSize);
+    (*user_fk)[columnSize] = '\0';
+    classData += columnSize + 1;
+
+    //SANCTION
+    columnSize = strchr(classData, '|') - classData;
+    *sanction = malloc(columnSize + 1);
+    strncpy(*sanction, classData, columnSize);
+    (*sanction)[columnSize] = '\0';
+    classData += columnSize + 1;
+
+    //SANCTION_FK
+    columnSize = strstr(classData, ";\n") - classData;
+    *sanction_fk = malloc(columnSize + 1);
+    strncpy(*sanction_fk, classData, columnSize);
+    (*sanction_fk)[columnSize] = '\0';
+    classData += columnSize + 1;
+
+    free(firstAdress);
+}
+
+void GTKEditClassSubmit() {
+
+    int returnCode = updateClass(
+            atoi(gtk_label_get_text(widgets->view_classes->edit_class_id)),
+            gtk_entry_get_text(widgets->view_classes->edit_class_name),
+            gtk_entry_get_text(widgets->view_classes->edit_class_major),
+            atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))),
+            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->view_classes->edit_class_apprenticeship)) ? 1 : 0,
+            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_user))),
+            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction)))
+    );
+
+    GTKListClasses();
+}
+
 void GTKListSanctions() {
     gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
                                 widgets->view_sanctions->view_sanctions_fixed);
     char *sanctions, *result, *firstAddress;
-    int nbSanctions = 0;
+    int nbSanctions = 0, i;
     listSanctions(&sanctions);
     firstAddress = sanctions;
     result = sanctions;
@@ -586,7 +748,7 @@ void GTKListSanctions() {
     GtkTreeIter iter;
     gtk_tree_store_clear(widgets->view_sanctions->sanctions_tree_store);
 
-    for (int i = 0; i < nbSanctions; ++i) {
+    for (i = 0; i < nbSanctions; ++i) {
         gtk_tree_store_append(widgets->view_sanctions->sanctions_tree_store, &iter, NULL);
 
         //ID
@@ -1042,6 +1204,15 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "class_create_return_button"));
     widgets->view_classes->class_create_submit_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "class_create_submit_button"));
+    widgets->view_classes->edit_class_id = GTK_LABEL(gtk_builder_get_object(builder, "edit_class_id"));
+    widgets->view_classes->edit_class_name = GTK_ENTRY(gtk_builder_get_object(builder, "edit_class_name"));
+    widgets->view_classes->edit_class_major = GTK_ENTRY(gtk_builder_get_object(builder, "edit_class_major"));
+    widgets->view_classes->edit_class_sanction = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "edit_class_sanction"));
+    widgets->view_classes->edit_class_user = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder, "edit_class_user"));
+    widgets->view_classes->edit_class_apprenticeship = GTK_CHECK_BUTTON(
+            gtk_builder_get_object(builder, "edit_class_apprenticeship"));
+    widgets->view_classes->edit_class_year = GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "edit_class_year"));
     widgets->view_classes->classes_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "classes_tree_store"));
     widgets->view_classes->classes_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "classes_tree_view"));

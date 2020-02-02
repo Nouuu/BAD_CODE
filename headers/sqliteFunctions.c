@@ -233,10 +233,10 @@ void getUser(char **data, int id) {
     sqlite3_close(db);
 }
 
-int insertClass(char *name, int year, int apprenticeship, int sanction_fk, int user_fk) {
+int insertClass(const char *name, const char *major, int year, int apprenticeship, int sanction_fk, int user_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
-    char *sqlRequest = "insert into class (name, year, apprenticeship, user_fk, sanction_fk) VALUES (?, ?, ?, ?, ?)";
+    char *sqlRequest = "insert into class (name, year, apprenticeship, major, user_fk, sanction_fk) VALUES (?, ?, ?, ?, ?, ?)";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
@@ -247,8 +247,9 @@ int insertClass(char *name, int year, int apprenticeship, int sanction_fk, int u
     sqlite3_bind_text(pStmt, 1, name, -1, 0);
     sqlite3_bind_int(pStmt, 2, year);
     sqlite3_bind_int(pStmt, 3, apprenticeship);
-    sqlite3_bind_int(pStmt, 4, sanction_fk);
-    sqlite3_bind_int(pStmt, 5, user_fk);
+    sqlite3_bind_text(pStmt, 4, major, -1, 0);
+    sqlite3_bind_int(pStmt, 5, sanction_fk);
+    sqlite3_bind_int(pStmt, 6, user_fk);
 
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {
@@ -261,10 +262,11 @@ int insertClass(char *name, int year, int apprenticeship, int sanction_fk, int u
     return 0;
 }
 
-int updateClass(int id, char *name, int year, int apprenticeship, int user_fk, int sanction_fk) {
+int
+updateClass(int id, const char *name, const char *major, int year, int apprenticeship, int user_fk, int sanction_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
-    char *sqlRequest = "update class set name = ?, year = ?, apprenticeship = ?, user_fk = ?, sanction_fk = ? where id = ?";
+    char *sqlRequest = "update class set name = ?, year = ?, apprenticeship = ?, major = ?, user_fk = ?, sanction_fk = ? where id = ?";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
@@ -275,9 +277,10 @@ int updateClass(int id, char *name, int year, int apprenticeship, int user_fk, i
     sqlite3_bind_text(pStmt, 1, name, -1, 0);
     sqlite3_bind_int(pStmt, 2, year);
     sqlite3_bind_int(pStmt, 3, apprenticeship);
-    sqlite3_bind_int(pStmt, 4, user_fk);
-    sqlite3_bind_int(pStmt, 5, sanction_fk);
-    sqlite3_bind_int(pStmt, 6, id);
+    sqlite3_bind_text(pStmt, 4, major, -1, 0);
+    sqlite3_bind_int(pStmt, 5, user_fk);
+    sqlite3_bind_int(pStmt, 6, sanction_fk);
+    sqlite3_bind_int(pStmt, 7, id);
 
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {

@@ -528,19 +528,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkLabel">
-                        <property name="width_request">100</property>
-                        <property name="height_request">80</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Edit/View class</property>
-                      </object>
-                      <packing>
-                        <property name="x">30</property>
-                        <property name="y">30</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkButtonBox">
                         <property name="width_request">100</property>
                         <property name="visible">True</property>
@@ -584,6 +571,204 @@
                         <property name="x">680</property>
                         <property name="y">387</property>
                       </packing>
+                    </child>
+                    <child>
+                      <object class="GtkGrid">
+                        <property name="width_request">100</property>
+                        <property name="height_request">80</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="row_spacing">30</property>
+                        <property name="column_spacing">10</property>
+                        <property name="row_homogeneous">True</property>
+                        <property name="column_homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Name :</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Sans Bold 14"/>
+                              <attribute name="style" value="normal"/>
+                              <attribute name="underline" value="True"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Year :</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Sans Bold 14"/>
+                              <attribute name="style" value="normal"/>
+                              <attribute name="underline" value="True"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Apprenticeship :</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Sans Bold 14"/>
+                              <attribute name="style" value="normal"/>
+                              <attribute name="underline" value="True"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Major :</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Sans Bold 14"/>
+                              <attribute name="style" value="normal"/>
+                              <attribute name="underline" value="True"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="edit_class_name">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="max_length">25</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Sanction :</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Sans Bold 14"/>
+                              <attribute name="style" value="normal"/>
+                              <attribute name="underline" value="True"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="edit_class_major">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="max_length">150</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="edit_class_sanction">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="active_id">0</property>
+                            <items>
+                              <item id="0" translatable="yes">None</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="edit_class_apprenticeship">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="always_show_image">True</property>
+                            <property name="draw_indicator">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="edit_class_year">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="max_length">4</property>
+                            <property name="text" translatable="yes">2020</property>
+                            <property name="progress_pulse_step">1</property>
+                            <property name="input_purpose">digits</property>
+                            <property name="climb_rate">1</property>
+                            <property name="snap_to_ticks">True</property>
+                            <property name="numeric">True</property>
+                            <property name="value">2020</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">User :</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Sans Bold 14"/>
+                              <attribute name="style" value="normal"/>
+                              <attribute name="underline" value="True"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">5</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="edit_class_user">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="active_id">1</property>
+                            <items>
+                              <item id="1" translatable="yes">Frédéric Sananes</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">5</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="x">40</property>
+                        <property name="y">20</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="edit_class_id">
+                        <property name="can_focus">False</property>
+                      </object>
                     </child>
                   </object>
                   <packing>
