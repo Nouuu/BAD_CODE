@@ -52,16 +52,15 @@ int copyFile(char *src, char *dest) {
     return 0;
 }
 
-int removeDirectory(char *src){
+int removeDirectory(char *src) {
     struct dirent *dir;
     char *filePathBuffer = malloc(strlen(src) + 100);
     DIR *d = opendir(src);
     if (d) {
-        while ((dir = readdir(d)) != NULL)
-        {
-            if (!strcmp(dir->d_name,".") || !strcmp(dir->d_name,".."))
+        while ((dir = readdir(d)) != NULL) {
+            if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, ".."))
                 continue;
-            strcat(strcat(strcpy(filePathBuffer, src),"/"),dir->d_name);
+            strcat(strcat(strcpy(filePathBuffer, src), "/"), dir->d_name);
             printf("%s\n", filePathBuffer);
             remove(filePathBuffer);
         }
@@ -73,3 +72,20 @@ int removeDirectory(char *src){
     return 0;
 }
 
+char *get_filename_ext(char *path) {
+    char *bname = basename(path);
+
+    char *dot = strrchr(bname, '.');
+    if (!dot || dot == bname) return "";
+    return dot + 1;
+}
+
+int checkImageExtension(char *path) {
+    char *fileExt = get_filename_ext(path);
+
+    if (strcmp(fileExt, "bmp") != 0 && strcmp(fileExt, "gif") != 0 && strcmp(fileExt, "ico") != 0 &&
+        strcmp(fileExt, "jpeg") != 0 && strcmp(fileExt, "jpg") != 0 && strcmp(fileExt, "svg") != 0 &&
+        strcmp(fileExt, "tiff") != 0)
+        return 1;
+    return 0;
+}

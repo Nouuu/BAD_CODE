@@ -4,6 +4,7 @@
 
 #include "gtkFunctions.h"
 #include "sqliteFunctions.h"
+#include "functions.h"
 
 void on_destroy() {
     gtk_main_quit();
@@ -53,7 +54,7 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
             GTKListDeliverables();
         } else if (!strcmp(menu, "view_user")) {
             printf("User view\n");
-            GTKUser();
+            GTKViewUser();
         } else if (!strcmp(menu, "view_settings")) {
             printf("Settings view\n");
 
@@ -74,7 +75,7 @@ void on_classes_view_refresh_button_clicked() {
 void on_classes_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_classes->classes_tree_selection);
     if (int_data) {
-        deleteClass(dbname, int_data);
+        deleteClass(int_data);
         GTKListClasses();
     }
     printf("Delete class ID: %d\n", int_data);
@@ -113,7 +114,7 @@ void on_students_view_refresh_button_clicked() {
 void on_students_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        deleteStudent(dbname, int_data);
+        deleteStudent(int_data);
         GTKListStudents();
     }
     printf("Delete student ID: %d\n", int_data);
@@ -128,7 +129,7 @@ void on_students_view_create_button_clicked() {
 void on_students_view_remove_bottle_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        addStudentBottle(dbname, int_data, -1);
+        addStudentBottle(int_data, -1);
         GTKListStudents();
     }
     printf("Remove bottle student ID: %d\n", int_data);
@@ -137,7 +138,7 @@ void on_students_view_remove_bottle_button_clicked() {
 void on_students_view_add_bottle_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        addStudentBottle(dbname, int_data, 1);
+        addStudentBottle(int_data, 1);
         GTKListStudents();
     }
     printf("Add bottle student ID: %d\n", int_data);
@@ -171,7 +172,7 @@ void on_sanctions_view_refresh_button_clicked() {
 void on_sanctions_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_sanctions->sanctions_tree_selection);
     if (int_data) {
-        deleteSanction(dbname, int_data);
+        deleteSanction(int_data);
         GTKListSanctions();
     }
     printf("Delete sanction ID: %d\n", int_data);
@@ -211,7 +212,7 @@ void on_deliverables_view_refresh_button_clicked() {
 void on_deliverables_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_deliverables->deliverables_tree_selection);
     if (int_data) {
-        deleteDeliverable(dbname, int_data);
+        deleteDeliverable(int_data);
         GTKListDeliverables();
     }
     printf("Delete deliverable ID: %d\n", int_data);
@@ -244,23 +245,32 @@ void on_deliverable_create_submit_button_clicked() {
 }
 
 void on_view_user_image_file_picker_file_set() {
-    printf("Choose file! : %s\n",
-           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker)));
+    char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker));
+    printf("Choose file! : %s\n", path);
+
+    int returnCode = GTKUserSetImage(path);
+
+    if (returnCode)
+        fprintf(stderr, "Can't use this image\n");
+    else {
+        printf("Image changed\n");
+        GTKViewUser();
+    }
 }
 
 void on_user_view_edit_button_clicked() {
     printf("Edit user\n");
-    gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->edit_user_fixed);
+    GTKEditUser();
 }
 
 void on_user_edit_submit_button_clicked() {
     printf("User edit submit\n");
-    GTKUser();
+    GTKEditUserSubmit();
 }
 
 void on_user_edit_return_button_clicked() {
     printf("User return to view\n");
-    GTKUser();
+    GTKViewUser();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -294,7 +304,7 @@ void GTKListStudents() {
                                 widgets->view_students->view_students_fixed);
     char *students, *result, *firstAddress;
     int nbStudents = 0;
-    listStudents(dbname, &students);
+    listStudents(&students);
     firstAddress = students;
     result = students;
 
@@ -425,7 +435,7 @@ void GTKListClasses() {
     gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->view_classes_fixed);
     char *classes, *result, *firstAddress;
     int nbClasses = 0;
-    listClasses(dbname, &classes);
+    listClasses(&classes);
     firstAddress = classes;
     result = classes;
 
@@ -564,7 +574,7 @@ void GTKListSanctions() {
                                 widgets->view_sanctions->view_sanctions_fixed);
     char *sanctions, *result, *firstAddress;
     int nbSanctions = 0;
-    listSanctions(dbname, &sanctions);
+    listSanctions(&sanctions);
     firstAddress = sanctions;
     result = sanctions;
 
@@ -646,7 +656,7 @@ void GTKListDeliverables() {
                                 widgets->view_deliverables->view_deliverables_fixed);
     char *deliverables, *result, *firstAddress;
     int nbdeliverables = 0;
-    listDeliverables(dbname, &deliverables);
+    listDeliverables(&deliverables);
     firstAddress = deliverables;
     result = deliverables;
 
@@ -812,13 +822,40 @@ void GTKListDeliverables() {
     free(firstAddress);
 }
 
-void GTKUser() {
+void GTKViewUser() {
     gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->view_user_fixed);
+    char *email, *first_name, *last_name, *photo, *birthdate, *emailURI;
+    int id;
+    GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
+    emailURI = malloc(strlen(email + 8));
+    strcat(strcpy(emailURI, "mailto:"), email);
+
+    GTKUserImage(photo);
+
+    gtk_label_set_text(widgets->view_user->view_user_first_name, first_name);
+    gtk_label_set_text(widgets->view_user->view_user_last_name, last_name);
+    gtk_label_set_text(widgets->view_user->view_user_birthdate, birthdate);
+    gtk_button_set_label(GTK_BUTTON(widgets->view_user->view_user_email), email);
+    gtk_link_button_set_uri(widgets->view_user->view_user_email, emailURI);
+
+    free(email);
+    free(emailURI);
+    free(first_name);
+    free(last_name);
+    free(photo);
+    free(birthdate);
+}
+
+void GTKEditUser() {
+    gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->edit_user_fixed);
     char *email, *first_name, *last_name, *photo, *birthdate;
     int id;
     GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
 
-    GTKUserImage(photo);
+    gtk_entry_set_text(widgets->view_user->edit_user_first_name, first_name);
+    gtk_entry_set_text(widgets->view_user->edit_user_last_name, last_name);
+    gtk_entry_set_text(widgets->view_user->edit_user_email, email);
+    gtk_label_set_text(widgets->view_user->edit_user_birthdate, birthdate);
 
     free(email);
     free(first_name);
@@ -827,10 +864,24 @@ void GTKUser() {
     free(birthdate);
 }
 
+void GTKEditUserSubmit() {
+    int returnCode = updateUser(1,
+                                gtk_entry_get_text(widgets->view_user->edit_user_email),
+                                gtk_entry_get_text(widgets->view_user->edit_user_first_name),
+                                gtk_entry_get_text(widgets->view_user->edit_user_last_name),
+                                gtk_label_get_text(widgets->view_user->edit_user_birthdate));
+    if (returnCode)
+        fprintf(stderr, "Error, could not update user\n");
+    else {
+        printf("User update successful\n");
+        GTKViewUser();
+    }
+}
+
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate) {
     char *intBuffer, *data, *firstAdress;
     size_t columnSize;
-    getUser(dbname, &data, 1);
+    getUser(&data, 1);
     firstAdress = data;
 
     columnSize = strchr(data, '|') - data;
@@ -882,13 +933,19 @@ void GTKUserImage(char *path) {
         printf("loaded!\n");
         int width = gdk_pixbuf_get_width(pixbuf);
         int height = gdk_pixbuf_get_height(pixbuf);
-        double ratio = (150. / width);
+        double ratio = (250. / width);
         printf("width: %d, height: %d, ratio: %lf\n", width, height, ratio);
         gtk_image_set_from_pixbuf(widgets->view_user->view_user_image,
                                   gdk_pixbuf_scale_simple(pixbuf, floor(width * ratio), floor(height * ratio),
                                                           GDK_INTERP_BILINEAR));
     }
-//    free(pixbuf);
+}
+
+int GTKUserSetImage(char *path) {
+    if (checkImageExtension(path))
+        return 1;
+
+    return insertTableImage("user", 1, path);
 }
 
 void connectWidgets() {
@@ -1192,6 +1249,14 @@ void connectWidgets() {
     widgets->view_user->user_edit_return_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "user_edit_return_button"));
     widgets->view_user->view_user_image = GTK_IMAGE(gtk_builder_get_object(builder, "view_user_image"));
+    widgets->view_user->view_user_first_name = GTK_LABEL(gtk_builder_get_object(builder, "view_user_first_name"));
+    widgets->view_user->view_user_last_name = GTK_LABEL(gtk_builder_get_object(builder, "view_user_last_name"));
+    widgets->view_user->view_user_birthdate = GTK_LABEL(gtk_builder_get_object(builder, "view_user_birthdate"));
+    widgets->view_user->edit_user_birthdate = GTK_LABEL(gtk_builder_get_object(builder, "edit_user_birthdate"));
+    widgets->view_user->edit_user_first_name = GTK_ENTRY(gtk_builder_get_object(builder, "edit_user_first_name"));
+    widgets->view_user->edit_user_last_name = GTK_ENTRY(gtk_builder_get_object(builder, "edit_user_last_name"));
+    widgets->view_user->edit_user_email = GTK_ENTRY(gtk_builder_get_object(builder, "edit_user_email"));
+    widgets->view_user->view_user_email = GTK_LINK_BUTTON(gtk_builder_get_object(builder, "view_user_email"));
     widgets->view_user->view_user_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "view_user_image_file_picker"));
 }

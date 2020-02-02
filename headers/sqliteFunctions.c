@@ -9,7 +9,7 @@ void checkVersion() {
     printf("SQLite version: %s\n", sqlite3_version);
 }
 
-sqlite3 *connectDB(char *dbname) {
+sqlite3 *connectDB() {
     sqlite3 *db;
     int returnCode = sqlite3_open(dbname, &db);
     if (returnCode) {
@@ -21,12 +21,12 @@ sqlite3 *connectDB(char *dbname) {
     return db;
 }
 
-int insertTableImage(char *dbname, char *table, int id, char *photo_location) {
+int insertTableImage(char *table, int id, char *photo_location) {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////    PARTIE FICHIER 1 ///////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    sqlite3 *db = connectDB(dbname);
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = malloc(50);
     sprintf(sqlRequest, "select photo from %s WHERE id = ?", table);
@@ -51,7 +51,7 @@ int insertTableImage(char *dbname, char *table, int id, char *photo_location) {
         remove(filePathBuffer);
     }
     free(filePathBuffer);
-
+    sqlite3_finalize(pStmt);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////    PARTIE FICHIER 2 ///////////////////////////////////////////////////////////////////////////
@@ -98,8 +98,8 @@ int insertTableImage(char *dbname, char *table, int id, char *photo_location) {
     return 0;
 }
 
-int insertUser(char *dbname, char *email, char *first_name, char *last_name, char *photo_location, char *birthdate) {
-    sqlite3 *db = connectDB(dbname);
+int insertUser(char *email, char *first_name, char *last_name, char *photo_location, char *birthdate) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into user (email, first_name, last_name, birthdate) VALUES (?, ?, ?, ?)";
 
@@ -123,7 +123,7 @@ int insertUser(char *dbname, char *email, char *first_name, char *last_name, cha
 
     if (photo_location != NULL && strlen(photo_location) > 0) {
         int last_id = sqlite3_last_insert_rowid(db);
-        returnCode = insertTableImage(dbname, "user", last_id, photo_location);
+        returnCode = insertTableImage("user", last_id, photo_location);
         if (returnCode) {
             fprintf(stderr, "adding profil picture failed");
             return 1;
@@ -135,8 +135,8 @@ int insertUser(char *dbname, char *email, char *first_name, char *last_name, cha
     return 0;
 }
 
-int updateUser(char *dbname, int id, char *email, char *first_name, char *last_name, char *birthdate) {
-    sqlite3 *db = connectDB(dbname);
+int updateUser(int id, const char *email, const char *first_name, const char *last_name, const char *birthdate) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update user set email = ?, first_name = ?, last_name = ?, birthdate = ? where id = ?;";
 
@@ -166,14 +166,14 @@ int updateUser(char *dbname, int id, char *email, char *first_name, char *last_n
 /**
  * @name getUser
  *
- * @param dbname
+ * @param 
  * @param data
  * @param id
  *
  * @data = "id|email|first_name|last_name|photo|birthdate;\n"
  */
-void getUser(char *dbname, char **data, int id) {
-    sqlite3 *db = connectDB(dbname);
+void getUser(char **data, int id) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select * from user where id = ?;";
     size_t rowStringSize = 1;
@@ -233,8 +233,8 @@ void getUser(char *dbname, char **data, int id) {
     sqlite3_close(db);
 }
 
-int insertClass(char *dbname, char *name, int year, int apprenticeship, int sanction_fk, int user_fk) {
-    sqlite3 *db = connectDB(dbname);
+int insertClass(char *name, int year, int apprenticeship, int sanction_fk, int user_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into class (name, year, apprenticeship, user_fk, sanction_fk) VALUES (?, ?, ?, ?, ?)";
 
@@ -261,8 +261,8 @@ int insertClass(char *dbname, char *name, int year, int apprenticeship, int sanc
     return 0;
 }
 
-int updateClass(char *dbname, int id, char *name, int year, int apprenticeship, int user_fk, int sanction_fk) {
-    sqlite3 *db = connectDB(dbname);
+int updateClass(int id, char *name, int year, int apprenticeship, int user_fk, int sanction_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update class set name = ?, year = ?, apprenticeship = ?, user_fk = ?, sanction_fk = ? where id = ?";
 
@@ -290,8 +290,8 @@ int updateClass(char *dbname, int id, char *name, int year, int apprenticeship, 
     return 0;
 }
 
-int studentNullClass(char *dbname, int class_fk) {
-    sqlite3 *db = connectDB(dbname);
+int studentNullClass(int class_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update student set class_fk = null where class_fk = ?;";
 
@@ -314,8 +314,8 @@ int studentNullClass(char *dbname, int class_fk) {
     return 0;
 }
 
-int deleteClass(char *dbname, int id) {
-    sqlite3 *db = connectDB(dbname);
+int deleteClass(int id) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "delete from class where id = ?";
 
@@ -333,7 +333,7 @@ int deleteClass(char *dbname, int id) {
         return 1;
     }
 
-    studentNullClass(dbname, id);
+    studentNullClass(id);
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
@@ -341,13 +341,13 @@ int deleteClass(char *dbname, int id) {
 
 /**
  * @name listClass
- * @param dbname
+ * @param 
  * @param data
  *
  * @data = "id| name| year| apprenticeship| major| user(first_name + last_name)| user_fk| sanction(name)| sanction_fk;\n..."
  */
-void listClasses(char *dbname, char **data) {
-    sqlite3 *db = connectDB(dbname);
+void listClasses(char **data) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select class.id,\n"
                        "       class.name,\n"
@@ -440,14 +440,14 @@ void listClasses(char *dbname, char **data) {
 /**
  * @name getClass
  *
- * @param dbname
+ * @param 
  * @param data
  * @param id
  *
  * @data = "id|name|year|apprenticeship|major|user|user_fk|sanction|sanction_fk;\n"
  */
-void getClass(char *dbname, char **data, int id) {
-    sqlite3 *db = connectDB(dbname);
+void getClass(char **data, int id) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select class.id,\n"
                        "       class.name,\n"
@@ -534,8 +534,8 @@ void getClass(char *dbname, char **data, int id) {
     sqlite3_close(db);
 }
 
-int insertStudent(char *dbname, char *first_name, char *last_name, char *photo_location, char *email, int class_fk) {
-    sqlite3 *db = connectDB(dbname);
+int insertStudent(char *first_name, char *last_name, char *photo_location, char *email, int class_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into student (first_name, last_name, email, nb_bottles, class_fk) VALUES (?, ?, ?, 0, ?);";
 
@@ -559,7 +559,7 @@ int insertStudent(char *dbname, char *first_name, char *last_name, char *photo_l
 
     if (photo_location != NULL && strlen(photo_location) > 0) {
         int last_id = sqlite3_last_insert_rowid(db);
-        returnCode = insertTableImage(dbname, "student", last_id, photo_location);
+        returnCode = insertTableImage("student", last_id, photo_location);
         if (returnCode) {
             fprintf(stderr, "adding profil picture failed");
             return 1;
@@ -571,8 +571,8 @@ int insertStudent(char *dbname, char *first_name, char *last_name, char *photo_l
     return 0;
 }
 
-int addStudentBottle(char *dbname, int id, int count) {
-    sqlite3 *db = connectDB(dbname);
+int addStudentBottle(int id, int count) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update student set nb_bottles = nb_bottles + ? where id = ?;";
 
@@ -596,8 +596,8 @@ int addStudentBottle(char *dbname, int id, int count) {
     return 0;
 }
 
-int updateStudent(char *dbname, int id, char *first_name, char *last_name, char *email, int class_fk) {
-    sqlite3 *db = connectDB(dbname);
+int updateStudent(int id, char *first_name, char *last_name, char *email, int class_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update student set first_name = ?, last_name= ?, email = ?, class_fk = ? where id = ?;";
 
@@ -624,8 +624,8 @@ int updateStudent(char *dbname, int id, char *first_name, char *last_name, char 
     return 0;
 }
 
-int deleteStudentDeliverables(char *dbname, int student_fk) {
-    sqlite3 *db = connectDB(dbname);
+int deleteStudentDeliverables(int student_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "delete from deliverable where student_fk = ?;";
 
@@ -648,8 +648,8 @@ int deleteStudentDeliverables(char *dbname, int student_fk) {
     return 0;
 }
 
-int deleteStudent(char *dbname, int id) {
-    sqlite3 *db = connectDB(dbname);
+int deleteStudent(int id) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "delete from student where id = ?";
 
@@ -667,7 +667,7 @@ int deleteStudent(char *dbname, int id) {
         return 1;
     }
 
-    deleteStudentDeliverables(dbname, id);
+    deleteStudentDeliverables(id);
 
     char *studentIdBuffer = malloc(4);
     itoa(id, studentIdBuffer, 10);
@@ -684,13 +684,13 @@ int deleteStudent(char *dbname, int id) {
 
 /**
  * @name listStudents
- * @param dbname
+ * @param 
  * @param data
  *
  * @data = "id| first_name| last_name| photo| email| bad_code(count)| nb_bottles| class(name)| class_fk;\n..."
  */
-void listStudents(char *dbname, char **data) {
-    sqlite3 *db = connectDB(dbname);
+void listStudents(char **data) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select student.id,\n"
                        "       first_name,\n"
@@ -783,14 +783,14 @@ void listStudents(char *dbname, char **data) {
 
 /**
  * @name listClassStudents
- * @param dbname
+ * @param 
  * @param data
  * @param class_fk
  *
  * @data = "id| first_name| last_name| photo| email| bad_code(count)| nb_bottles| class(name)| class_fk;\n..."
  */
-void listClassStudents(char *dbname, char **data, int class_fk) {
-    sqlite3 *db = connectDB(dbname);
+void listClassStudents(char **data, int class_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select student.id,\n"
                        "       first_name,\n"
@@ -885,14 +885,14 @@ void listClassStudents(char *dbname, char **data, int class_fk) {
 /**
  * @name getStudent
  *
- * @param dbname
+ * @param 
  * @param data
  * @param id
  *
  * @data = "id|first_name|last_name|photo|email|bad_code(count)|nb_bottles|class|class_fk;\n"
  */
-void getStudent(char *dbname, char **data, int id) {
-    sqlite3 *db = connectDB(dbname);
+void getStudent(char **data, int id) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select student.id,\n"
                        "       first_name,\n"
@@ -979,8 +979,8 @@ void getStudent(char *dbname, char **data, int id) {
 }
 
 
-int insertSanction(char *dbname, char *name, char *description, int user_fk) {
-    sqlite3 *db = connectDB(dbname);
+int insertSanction(char *name, char *description, int user_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into sanction (name, description, user_fk) VALUES (?, ?, ?);";
 
@@ -1005,8 +1005,8 @@ int insertSanction(char *dbname, char *name, char *description, int user_fk) {
     return 0;
 }
 
-int updateSanction(char *dbname, int id, char *name, char *description, int user_fk) {
-    sqlite3 *db = connectDB(dbname);
+int updateSanction(int id, char *name, char *description, int user_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update sanction set name = ?, description = ?, user_fk = ? where id = ?;";
 
@@ -1032,8 +1032,8 @@ int updateSanction(char *dbname, int id, char *name, char *description, int user
     return 0;
 }
 
-int classNullSanction(char *dbname, int sanction_fk) {
-    sqlite3 *db = connectDB(dbname);
+int classNullSanction(int sanction_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update class set sanction_fk = null where sanction_fk = ?;";
 
@@ -1056,8 +1056,8 @@ int classNullSanction(char *dbname, int sanction_fk) {
     return 0;
 }
 
-int deleteSanction(char *dbname, int id) {
-    sqlite3 *db = connectDB(dbname);
+int deleteSanction(int id) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "delete from sanction where id = ?;";
 
@@ -1075,7 +1075,7 @@ int deleteSanction(char *dbname, int id) {
         return 1;
     }
 
-    classNullSanction(dbname, id);
+    classNullSanction(id);
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
@@ -1083,13 +1083,13 @@ int deleteSanction(char *dbname, int id) {
 
 /**
  * @name  listSanctions
- * @param dbname
+ * @param 
  * @param data
  *
  * @data = "id| name| description| user(first_name + last_name)| user_fk;\n"
  */
-void listSanctions(char *dbname, char **data) {
-    sqlite3 *db = connectDB(dbname);
+void listSanctions(char **data) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select sanction.id, name, description, u.first_name || ' ' || u.last_name as user, user_fk\n"
                        "from sanction\n"
@@ -1148,14 +1148,14 @@ void listSanctions(char *dbname, char **data) {
 
 /**
  * @name  getSanction
- * @param dbname
+ * @param 
  * @param data
  * @param id
  *
  * @data = "id|name|description|user(first_name + last_name)|user_fk;\n"
  */
-void getSanction(char *dbname, char **data, int id) {
-    sqlite3 *db = connectDB(dbname);
+void getSanction(char **data, int id) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select sanction.id, name, description, u.first_name || ' ' || u.last_name as user, user_fk\n"
                        "from sanction\n"
@@ -1214,11 +1214,11 @@ void getSanction(char *dbname, char **data, int id) {
 }
 
 
-int insertDeliverableFile(char *dbname, char *column, int id, int student_fk, char *file_location) {
+int insertDeliverableFile(char *column, int id, int student_fk, char *file_location) {
 
     /////////////// DELETE OLDER FILE //////////////////////////////////////////////////////////////////////////////////
 
-    sqlite3 *db = connectDB(dbname);
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = malloc(60);
     sprintf(sqlRequest, "select %s from deliverable WHERE id = ?", column);
@@ -1283,10 +1283,10 @@ int insertDeliverableFile(char *dbname, char *column, int id, int student_fk, ch
     return 0;
 }
 
-int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_record_path, char *video_reccord_path,
+int insertDeliverable(char *due_date, char *subject, char *audio_record_path, char *video_reccord_path,
                       char *bad_code_path, char *deliverable_file_path, char *status, int student_fk) {
 
-    sqlite3 *db = connectDB(dbname);
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into deliverable (due_date, subject, status, student_fk) values (?, ?, ?, ?);";
 
@@ -1310,7 +1310,7 @@ int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_r
     int last_id = sqlite3_last_insert_rowid(db);
 
     if (audio_record_path != NULL && strlen(audio_record_path) > 0) {
-        returnCode = insertDeliverableFile(dbname, "audio_record", last_id, student_fk, audio_record_path);
+        returnCode = insertDeliverableFile("audio_record", last_id, student_fk, audio_record_path);
         if (returnCode) {
             fprintf(stderr, "adding deliverable audio record failed");
             return 1;
@@ -1318,7 +1318,7 @@ int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_r
     }
 
     if (video_reccord_path != NULL && strlen(video_reccord_path) > 0) {
-        returnCode = insertDeliverableFile(dbname, "video_record", last_id, student_fk, video_reccord_path);
+        returnCode = insertDeliverableFile("video_record", last_id, student_fk, video_reccord_path);
         if (returnCode) {
             fprintf(stderr, "adding deliverable audio record failed");
             return 1;
@@ -1326,7 +1326,7 @@ int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_r
     }
 
     if (bad_code_path != NULL && strlen(bad_code_path) > 0) {
-        returnCode = insertDeliverableFile(dbname, "bad_code", last_id, student_fk, bad_code_path);
+        returnCode = insertDeliverableFile("bad_code", last_id, student_fk, bad_code_path);
         if (returnCode) {
             fprintf(stderr, "adding deliverable audio record failed");
             return 1;
@@ -1334,7 +1334,7 @@ int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_r
     }
 
     if (deliverable_file_path != NULL && strlen(deliverable_file_path) > 0) {
-        returnCode = insertDeliverableFile(dbname, "deliverable_file", last_id, student_fk, deliverable_file_path);
+        returnCode = insertDeliverableFile("deliverable_file", last_id, student_fk, deliverable_file_path);
         if (returnCode) {
             fprintf(stderr, "adding deliverable audio record failed");
             return 1;
@@ -1344,8 +1344,8 @@ int insertDeliverable(char *dbname, char *due_date, char *subject, char *audio_r
     return 0;
 }
 
-int updateDeliverable(char *dbname, int id, char *due_date, char *subject, char *status, int student_fk) {
-    sqlite3 *db = connectDB(dbname);
+int updateDeliverable(int id, char *due_date, char *subject, char *status, int student_fk) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update deliverable set due_date = ?, subject = ?, status = ?, student_fk = ? where id = ?;";
 
@@ -1372,10 +1372,10 @@ int updateDeliverable(char *dbname, int id, char *due_date, char *subject, char 
     return 0;
 }
 
-int deleteDeliverable(char *dbname, int id) {
+int deleteDeliverable(int id) {
     //////////////////// DELETE FILES //////////////////////////////////////////////////////////////////////////////////
 
-    sqlite3 *db = connectDB(dbname);
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = malloc(60);
 
@@ -1432,13 +1432,13 @@ int deleteDeliverable(char *dbname, int id) {
 
 /**
  * @name listDeliverables
- * @param dbname
+ * @param 
  * @param data
  *
  * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n..."
  */
-void listDeliverables(char *dbname, char **data) {
-    sqlite3 *db = connectDB(dbname);
+void listDeliverables(char **data) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select deliverable.id,\n"
                        "       due_date,\n"
@@ -1536,14 +1536,14 @@ void listDeliverables(char *dbname, char **data) {
 
 /**
  * @name listStudentDeliverables
- * @param dbname
+ * @param 
  * @param data
  * @param studentId
  *
  * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n..."
  */
-void listStudentDeliverables(char *dbname, char **data, int studentId) {
-    sqlite3 *db = connectDB(dbname);
+void listStudentDeliverables(char **data, int studentId) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select deliverable.id,\n"
                        "       due_date,\n"
@@ -1643,14 +1643,14 @@ void listStudentDeliverables(char *dbname, char **data, int studentId) {
 
 /**
  * @name getDeliverable
- * @param dbname
+ * @param 
  * @param data
  * @param id
  *
  * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n"
  */
-void getDeliverable(char *dbname, char **data, int id) {
-    sqlite3 *db = connectDB(dbname);
+void getDeliverable(char **data, int id) {
+    sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "select deliverable.id,\n"
                        "       due_date,\n"

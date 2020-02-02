@@ -15,7 +15,6 @@
 
 // link builder to the one in main.c
 extern GtkBuilder *builder;
-extern char *dbname;
 
 typedef struct {
     GtkStack *view_students_stack;
@@ -127,6 +126,14 @@ typedef struct {
     GtkButton *user_edit_submit_button;
     GtkButton *user_edit_return_button;
     GtkImage *view_user_image;
+    GtkLabel *view_user_first_name;
+    GtkLabel *view_user_last_name;
+    GtkLabel *view_user_birthdate;
+    GtkLinkButton *view_user_email;
+    GtkEntry *edit_user_first_name;
+    GtkEntry *edit_user_last_name;
+    GtkEntry *edit_user_email;
+    GtkLabel *edit_user_birthdate;
     GtkFileChooserButton *view_user_image_file_picker;
 } User;
 
@@ -280,11 +287,17 @@ void GTKListSanctions();
 
 void GTKListDeliverables();
 
-void GTKUser();
+void GTKViewUser();
+
+void GTKEditUser();
+
+void GTKEditUserSubmit();
 
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate);
 
 void GTKUserImage(char *path);
+
+int GTKUserSetImage(char *path);
 
 void connectWidgets();
 
