@@ -67,6 +67,19 @@ typedef struct {
     GtkButton *class_edit_submit_button;
     GtkButton *class_create_return_button;
     GtkButton *class_create_submit_button;
+    GtkLabel  *edit_class_id;
+    GtkEntry *edit_class_name;
+    GtkEntry *edit_class_major;
+    GtkComboBoxText *edit_class_sanction;
+    GtkComboBoxText *edit_class_user;
+    GtkCheckButton *edit_class_apprenticeship;
+    GtkSpinButton *edit_class_year;
+    GtkEntry *create_class_name;
+    GtkEntry *create_class_major;
+    GtkComboBoxText *create_class_sanction;
+    GtkComboBoxText *create_class_user;
+    GtkCheckButton *create_class_apprenticeship;
+    GtkSpinButton *create_class_year;
     GtkTreeStore *classes_tree_store;
     GtkTreeView *classes_tree_view;
     GtkTreeSelection *classes_tree_selection;
@@ -282,6 +295,21 @@ void on_destroy();
 void GTKListStudents();
 
 void GTKListClasses();
+
+void GTKEditClass(int id);
+
+void GTKEditClassSubmit();
+
+void GTKEditClassFillSanctionComboList();
+
+void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char **major, char **user, char **user_fk,
+                     char **sanction, char **sanction_fk);
+
+void GTKCreateClass();
+
+void GTKCreateClassSubmit();
+
+void GTKCreateClassFillSanctionComboList();
 
 void GTKListSanctions();
 
