@@ -26,8 +26,7 @@ void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *pat
 void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint id = get_id_row_activated(tree_view, path);
     printf("STUDENT ID: %d\n", id);
-    gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
-                                widgets->view_students->edit_student_fixed);
+    GTKEditStudent(id);
 }
 
 void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
@@ -151,7 +150,7 @@ void on_student_edit_return_button_clicked() {
 
 void on_student_edit_submit_button_clicked() {
     printf("Submit student edit\n");
-    GTKListStudents();
+    GTKEditStudentSubmit();
 }
 
 void on_student_create_return_button_clicked() {
@@ -167,6 +166,20 @@ void on_student_create_submit_button_clicked() {
 void on_sanctions_view_refresh_button_clicked() {
     printf("Refresh sanctions\n");
     GTKListSanctions();
+}
+
+void on_edit_student_image_file_picker_file_set() {
+    char *path = gtk_file_chooser_get_filename(
+            GTK_FILE_CHOOSER(widgets->view_students->edit_student_image_file_picker));
+    printf("Choose file! : %s\n", path);
+
+    int returnCode = GTKEditStudentSetImage(path);
+
+    if (returnCode)
+        fprintf(stderr, "Can't use this image\n");
+    else {
+        printf("Image changed\n");
+    }
 }
 
 void on_sanctions_view_delete_button_clicked() {
@@ -430,6 +443,215 @@ void GTKListStudents() {
 
     free(firstAddress);
 }
+
+void GTKEditStudent(int id) {
+    gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
+                                widgets->view_students->edit_student_fixed);
+    char *first_name, *last_name, *photo, *email, *bottles, *class, *class_fk, idBuffer[6];
+
+    GTKEditStudentFillClassComboList();
+    GTKStudentGetData(id, &first_name, &last_name, &photo, &email, &bottles, &class, &class_fk);
+    itoa(id, idBuffer, 10);
+
+    GTKEditStudentImage(photo);
+
+    gtk_label_set_text(widgets->view_students->edit_student_id, idBuffer);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_students->edit_student_id), FALSE);
+    gtk_entry_set_text(widgets->view_students->edit_student_first_name, first_name);
+    gtk_entry_set_text(widgets->view_students->edit_student_last_name, last_name);
+    gtk_entry_set_text(widgets->view_students->edit_student_email, email);
+    gtk_entry_set_text(GTK_ENTRY(widgets->view_students->edit_student_bottles), bottles);
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_students->edit_student_class), class_fk);
+
+
+    free(first_name);
+    free(last_name);
+    free(photo);
+    free(email);
+    free(bottles);
+    free(class);
+    free(class_fk);
+}
+
+void GTKEditStudentSubmit() {
+
+    printf("id: %d\n", atoi(gtk_label_get_text(widgets->view_students->edit_student_id)));
+    printf("fname: %s\n", gtk_entry_get_text(widgets->view_students->edit_student_first_name));
+    printf("lname: %s\n", gtk_entry_get_text(widgets->view_students->edit_student_last_name));
+    printf("email: %s\n", gtk_entry_get_text(widgets->view_students->edit_student_email));
+    printf("bottles: %d\n", atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_students->edit_student_bottles))));
+    printf("class: %d\n", atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_students->edit_student_class))));
+
+    int returnCode = updateStudent(atoi(gtk_label_get_text(widgets->view_students->edit_student_id)),
+                                   gtk_entry_get_text(widgets->view_students->edit_student_first_name),
+                                   gtk_entry_get_text(widgets->view_students->edit_student_last_name),
+                                   gtk_entry_get_text(widgets->view_students->edit_student_email),
+                                   atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_students->edit_student_bottles))),
+                                   atoi(gtk_combo_box_get_active_id(
+                                           GTK_COMBO_BOX(widgets->view_students->edit_student_class))));
+    if (returnCode)
+        fprintf(stderr, "Error, could not update student\n");
+    else {
+        printf("Student update successful\n");
+        GTKListStudents();
+    }
+}
+
+void GTKEditStudentFillClassComboList() {
+    char *classList;
+    listClasses(&classList);
+
+    int nbSanctions = 0, i;
+    char *result = classList, *firstAdress = classList, *nameBuffer, *idBuffer;
+    size_t columnSize;
+
+
+    gtk_combo_box_text_remove_all(widgets->view_students->edit_student_class);
+
+
+    while ((result = strstr(result, ";\n"))) {
+        nbSanctions++;
+        result++;
+    }
+
+    for (i = 0; i < nbSanctions; ++i) {
+        //ID
+        result = strchr(classList, '|');
+        columnSize = result - classList;
+        idBuffer = malloc(columnSize + 1);
+
+        strncpy(idBuffer, classList, columnSize);
+        idBuffer[columnSize] = '\0';
+        classList += columnSize + 1;
+
+        //NAME
+        result = strchr(classList, '|');
+        columnSize = result - classList;
+        nameBuffer = malloc(columnSize + 1);
+
+        strncpy(nameBuffer, classList, columnSize);
+        nameBuffer[columnSize] = '\0';
+
+        gtk_combo_box_text_append(widgets->view_students->edit_student_class, idBuffer, nameBuffer);
+
+        classList = strstr(classList, ";\n") + 2;
+        free(idBuffer);
+        free(nameBuffer);
+    }
+
+    free(firstAdress);
+}
+
+void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo, char **email, char **bottles,
+                       char **class, char **class_fk) {
+    char *studentData, *firstAdress;
+    size_t columnSize;
+    getStudent(&studentData, id);
+    firstAdress = studentData;
+
+    //ID
+    studentData += strchr(studentData, '|') - studentData + 1;
+
+    //FIRST_NAME
+    columnSize = strchr(studentData, '|') - studentData;
+    *first_name = malloc(columnSize + 1);
+    strncpy(*first_name, studentData, columnSize);
+    (*first_name)[columnSize] = '\0';
+    studentData += columnSize + 1;
+
+    //LAST_NAME
+    columnSize = strchr(studentData, '|') - studentData;
+    *last_name = malloc(columnSize + 1);
+    strncpy(*last_name, studentData, columnSize);
+    (*last_name)[columnSize] = '\0';
+    studentData += columnSize + 1;
+
+    //PHOTO
+    columnSize = strchr(studentData, '|') - studentData;
+    *photo = malloc(columnSize + 1);
+    strncpy(*photo, studentData, columnSize);
+    (*photo)[columnSize] = '\0';
+    studentData += columnSize + 1;
+
+    //EMAIL
+    columnSize = strchr(studentData, '|') - studentData;
+    *email = malloc(columnSize + 1);
+    strncpy(*email, studentData, columnSize);
+    (*email)[columnSize] = '\0';
+    studentData += columnSize + 1;
+
+    //BADCODE COUNT
+    studentData += strchr(studentData, '|') - studentData + 1;
+
+    //BOTTLES
+    columnSize = strchr(studentData, '|') - studentData;
+    *bottles = malloc(columnSize + 1);
+    strncpy(*bottles, studentData, columnSize);
+    (*bottles)[columnSize] = '\0';
+    studentData += columnSize + 1;
+
+    //CLASS
+    columnSize = strchr(studentData, '|') - studentData;
+    *class = malloc(columnSize + 1);
+    strncpy(*class, studentData, columnSize);
+    (*class)[columnSize] = '\0';
+    studentData += columnSize + 1;
+
+    //CLASS_FK
+    columnSize = strstr(studentData, ";\n") - studentData;
+    *class_fk = malloc(columnSize + 1);
+    strncpy(*class_fk, studentData, columnSize);
+    (*class_fk)[columnSize] = '\0';
+    studentData += columnSize + 1;
+
+    free(firstAdress);
+}
+
+void GTKEditStudentImage(char *path) {
+    gtk_image_clear(widgets->view_students->edit_student_image);
+    GdkPixbuf *pixbuf;
+    if (strlen(path) < 1) {
+        if ((pixbuf = gdk_pixbuf_new_from_file("storage/profil.png", NULL)) == NULL) {
+            fprintf(stderr, "Error while loading user profil picture\n");
+        } else {
+            printf("loaded!\n");
+            int width = gdk_pixbuf_get_width(pixbuf);
+            int height = gdk_pixbuf_get_height(pixbuf);
+            double ratio = (250. / width);
+            printf("width: %d, height: %d, ratio: %lf\n", width, height, ratio);
+            gtk_image_set_from_pixbuf(widgets->view_students->edit_student_image,
+                                      gdk_pixbuf_scale_simple(pixbuf, floor(width * ratio), floor(height * ratio),
+                                                              GDK_INTERP_BILINEAR));
+        }
+    } else {
+        if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) == NULL) {
+            fprintf(stderr, "Error while loading user profil picture\n");
+        } else {
+            printf("loaded!\n");
+            int width = gdk_pixbuf_get_width(pixbuf);
+            int height = gdk_pixbuf_get_height(pixbuf);
+            double ratio = (250. / width);
+            printf("width: %d, height: %d, ratio: %lf\n", width, height, ratio);
+            gtk_image_set_from_pixbuf(widgets->view_students->edit_student_image,
+                                      gdk_pixbuf_scale_simple(pixbuf, floor(width * ratio), floor(height * ratio),
+                                                              GDK_INTERP_BILINEAR));
+        }
+    }
+}
+
+int GTKEditStudentSetImage(char *path) {
+    if (checkImageExtension(path))
+        return 1;
+
+    int id = atoi(gtk_label_get_text(widgets->view_students->edit_student_id));
+    int returnCode = insertTableImage("student", id, path);
+    if (returnCode)
+        return 1;
+
+    GTKEditStudent(id);
+    return 0;
+}
+
 
 void GTKListClasses() {
     gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->view_classes_fixed);
@@ -768,7 +990,6 @@ void GTKCreateClassSubmit() {
     }
 }
 
-
 void GTKCreateClassFillSanctionComboList() {
     char *sanctionsList;
     listSanctions(&sanctionsList);
@@ -1074,7 +1295,7 @@ void GTKViewUser() {
     char *email, *first_name, *last_name, *photo, *birthdate, *emailURI;
     int id;
     GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
-    emailURI = malloc(strlen(email + 8));
+    emailURI = malloc(strlen(email + 7));
     strcat(strcpy(emailURI, "mailto:"), email);
 
     GTKUserImage(photo);
@@ -1173,6 +1394,8 @@ void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, 
 }
 
 void GTKUserImage(char *path) {
+    gtk_image_clear(widgets->view_user->view_user_image);
+
     GdkPixbuf *pixbuf;
     if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) == NULL) {
         fprintf(stderr, "Error while loading user profil picture\n");
@@ -1225,6 +1448,19 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "student_create_submit_button"));
     widgets->view_students->student_create_return_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "student_create_return_button"));
+    widgets->view_students->edit_student_id = GTK_LABEL(gtk_builder_get_object(builder, "edit_student_id"));
+    widgets->view_students->edit_student_first_name = GTK_ENTRY(
+            gtk_builder_get_object(builder, "edit_student_first_name"));
+    widgets->view_students->edit_student_last_name = GTK_ENTRY(
+            gtk_builder_get_object(builder, "edit_student_last_name"));
+    widgets->view_students->edit_student_email = GTK_ENTRY(gtk_builder_get_object(builder, "edit_student_email"));
+    widgets->view_students->edit_student_bottles = GTK_SPIN_BUTTON(
+            gtk_builder_get_object(builder, "edit_student_bottles"));
+    widgets->view_students->edit_student_class = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "edit_student_class"));
+    widgets->view_students->edit_student_image = GTK_IMAGE(gtk_builder_get_object(builder, "edit_student_image"));
+    widgets->view_students->edit_student_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "edit_student_image_file_picker"));
     widgets->view_students->students_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "students_tree_store"));
     widgets->view_students->students_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "students_tree_view"));

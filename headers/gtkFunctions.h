@@ -31,6 +31,14 @@ typedef struct {
     GtkButton *student_edit_submit_button;
     GtkButton *student_create_return_button;
     GtkButton *student_create_submit_button;
+    GtkLabel *edit_student_id;
+    GtkEntry *edit_student_first_name;
+    GtkEntry *edit_student_last_name;
+    GtkEntry *edit_student_email;
+    GtkSpinButton *edit_student_bottles;
+    GtkComboBoxText *edit_student_class;
+    GtkImage *edit_student_image;
+    GtkFileChooserButton *edit_student_image_file_picker;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;
@@ -67,7 +75,7 @@ typedef struct {
     GtkButton *class_edit_submit_button;
     GtkButton *class_create_return_button;
     GtkButton *class_create_submit_button;
-    GtkLabel  *edit_class_id;
+    GtkLabel *edit_class_id;
     GtkEntry *edit_class_name;
     GtkEntry *edit_class_major;
     GtkComboBoxText *edit_class_sanction;
@@ -249,6 +257,8 @@ G_MODULE_EXPORT void on_student_create_return_button_clicked();
 
 G_MODULE_EXPORT void on_student_create_submit_button_clicked();
 
+G_MODULE_EXPORT void on_edit_student_image_file_picker_file_set();
+
 G_MODULE_EXPORT void on_sanctions_view_refresh_button_clicked();
 
 G_MODULE_EXPORT void on_sanctions_view_delete_button_clicked();
@@ -293,6 +303,19 @@ guint get_id_row_selected(GtkTreeSelection *selection);
 void on_destroy();
 
 void GTKListStudents();
+
+void GTKEditStudent(int id);
+
+void GTKEditStudentSubmit();
+
+void GTKEditStudentFillClassComboList();
+
+void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo, char **email, char **bottles,
+                       char **class, char **class_fk);
+
+void GTKEditStudentImage(char *path);
+
+int GTKEditStudentSetImage(char *path);
 
 void GTKListClasses();
 
