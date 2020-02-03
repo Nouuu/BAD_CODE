@@ -328,8 +328,6 @@ void GTKCreateStudentSubmit();
 
 void GTKCreateStudentFillClassComboList();
 
-void GTKCreateStudentImage(char *path);
-
 void GTKListClasses();
 
 void GTKEditClass(int id);
