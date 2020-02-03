@@ -2876,7 +2876,7 @@
         </child>
         <child>
           <object class="GtkSearchEntry" id="search_entry">
-            <property name="height_request">50</property>
+            <property name="height_request">40</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="max_length">25</property>
