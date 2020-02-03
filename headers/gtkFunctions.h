@@ -129,6 +129,10 @@ typedef struct {
     GtkButton *sanction_edit_submit_button;
     GtkButton *sanction_create_return_button;
     GtkButton *sanction_create_submit_button;
+    GtkLabel *edit_sanction_id;
+    GtkEntry *edit_sanction_name;
+    GtkTextView *edit_sanction_description;
+    GtkComboBoxText *edit_sanction_user;
     GtkTreeStore *sanctions_tree_store;
     GtkTreeView *sanctions_tree_view;
     GtkTreeSelection *sanctions_tree_selection;
@@ -349,6 +353,12 @@ void GTKCreateClassSubmit();
 void GTKCreateClassFillSanctionComboList();
 
 void GTKListSanctions();
+
+void GTKEditSanction(int id);
+
+void GTKEditSanctionSubmit();
+
+void GTKSanctionGetData(int id, char **name, char **description, char **user, char **user_fk);
 
 void GTKListDeliverables();
 
