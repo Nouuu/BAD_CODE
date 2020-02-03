@@ -68,7 +68,7 @@ int insertStudent(const char *first_name, const char *last_name, const char *pho
 
 int addStudentBottle(int id, int count);
 
-int updateStudent(int id, char *first_name, char *last_name, char *email, int class_fk);
+int updateStudent(int id, const char *first_name, const char *last_name, const char *email,int bottles, int class_fk);
 
 int deleteStudentDeliverables(int student_fk);
 

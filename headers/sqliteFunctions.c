@@ -537,7 +537,7 @@ void getClass(char **data, int id) {
     sqlite3_close(db);
 }
 
-int insertStudent(char *first_name, char *last_name, char *photo_location, char *email, int class_fk) {
+int insertStudent(const char *first_name, const char *last_name, const char *photo_location, const char *email, int class_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into student (first_name, last_name, email, nb_bottles, class_fk) VALUES (?, ?, ?, 0, ?);";
@@ -599,10 +599,10 @@ int addStudentBottle(int id, int count) {
     return 0;
 }
 
-int updateStudent(int id, char *first_name, char *last_name, char *email, int class_fk) {
+int updateStudent(int id, const char *first_name, const char *last_name, const char *email, int bottles, int class_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
-    char *sqlRequest = "update student set first_name = ?, last_name= ?, email = ?, class_fk = ? where id = ?;";
+    char *sqlRequest = "update student set first_name = ?, last_name= ?, email = ?, nb_bottles = ?, class_fk = ? where id = ?;";
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
@@ -613,8 +613,9 @@ int updateStudent(int id, char *first_name, char *last_name, char *email, int cl
     sqlite3_bind_text(pStmt, 1, first_name, -1, 0);
     sqlite3_bind_text(pStmt, 2, last_name, -1, 0);
     sqlite3_bind_text(pStmt, 3, email, -1, 0);
-    sqlite3_bind_int(pStmt, 4, class_fk);
-    sqlite3_bind_int(pStmt, 5, id);
+    sqlite3_bind_int(pStmt, 4, bottles);
+    sqlite3_bind_int(pStmt, 5, class_fk);
+    sqlite3_bind_int(pStmt, 6, id);
 
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {
@@ -972,9 +973,9 @@ void getStudent(char **data, int id) {
     strcat(result, "|");
     //Colonne 8 (class_fk)
     itoa(sqlite3_column_int(pStmt, 8), intBuffer, 10);
-    rowStringSize += strlen(intBuffer) + 1;// pour le "|"
+    rowStringSize += strlen(intBuffer) + 2;// pour le ";\n"
     result = realloc(result, rowStringSize);
-    strcat(result, strcat(intBuffer, "|"));
+    strcat(result, strcat(intBuffer, ";\n"));
 
     *data = result;
     sqlite3_finalize(pStmt);
@@ -982,7 +983,7 @@ void getStudent(char **data, int id) {
 }
 
 
-int insertSanction(char *name, char *description, int user_fk) {
+int insertSanction(const char *description, const char *name, int user_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into sanction (name, description, user_fk) VALUES (?, ?, ?);";
@@ -1008,7 +1009,7 @@ int insertSanction(char *name, char *description, int user_fk) {
     return 0;
 }
 
-int updateSanction(int id, char *name, char *description, int user_fk) {
+int updateSanction(int id, const char *name, const char *description, int user_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update sanction set name = ?, description = ?, user_fk = ? where id = ?;";
@@ -1217,7 +1218,7 @@ void getSanction(char **data, int id) {
 }
 
 
-int insertDeliverableFile(char *column, int id, int student_fk, char *file_location) {
+int insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location) {
 
     /////////////// DELETE OLDER FILE //////////////////////////////////////////////////////////////////////////////////
 
@@ -1286,8 +1287,8 @@ int insertDeliverableFile(char *column, int id, int student_fk, char *file_locat
     return 0;
 }
 
-int insertDeliverable(char *due_date, char *subject, char *audio_record_path, char *video_reccord_path,
-                      char *bad_code_path, char *deliverable_file_path, char *status, int student_fk) {
+int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path, const char *video_reccord_path,
+                      const char *bad_code_path, const char *deliverable_file_path, const char *status, int student_fk) {
 
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
@@ -1347,7 +1348,7 @@ int insertDeliverable(char *due_date, char *subject, char *audio_record_path, ch
     return 0;
 }
 
-int updateDeliverable(int id, char *due_date, char *subject, char *status, int student_fk) {
+int updateDeliverable(int id, const char *due_date, const char *subject, const char *status, int student_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "update deliverable set due_date = ?, subject = ?, status = ?, student_fk = ? where id = ?;";

@@ -19,6 +19,11 @@ int removeDirectory(char *src);
 
 char *get_filename_ext(char *path);
 
+/**
+ * @name checkImageExtension
+ * @param path
+ * @return 1 if it is image, 0 if not
+ */
 int checkImageExtension(char *path);
 
 #endif //BAD_CODE_FUNCTIONS_H
