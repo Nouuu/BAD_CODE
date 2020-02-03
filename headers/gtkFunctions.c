@@ -42,22 +42,27 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
         const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack);
         if (!strcmp(menu, "view_classes")) {
             printf("Classes view\n");
+            setSearchEntry(FALSE, NULL, NULL);
             GTKListClasses();
         } else if (!strcmp(menu, "view_students")) {
             printf("Students view\n");
+            setSearchEntry(TRUE, widgets->view_students->students_tree_view, "Search by first name");
             GTKListStudents();
         } else if (!strcmp(menu, "view_sanctions")) {
             printf("Sanctions view\n");
+            setSearchEntry(FALSE, NULL, NULL);
             GTKListSanctions();
         } else if (!strcmp(menu, "view_deliverables")) {
             printf("Deliverables view\n");
+            setSearchEntry(FALSE, NULL, NULL);
             GTKListDeliverables();
         } else if (!strcmp(menu, "view_user")) {
             printf("User view\n");
+            setSearchEntry(FALSE, NULL, NULL);
             GTKViewUser();
         } else if (!strcmp(menu, "view_settings")) {
             printf("Settings view\n");
-
+            setSearchEntry(FALSE, NULL, NULL);
         }
     }
 }
@@ -428,8 +433,6 @@ void GTKListStudents() {
 
     }
 
-    gtk_tree_view_set_search_entry(widgets->view_students->students_tree_view,
-                                   GTK_ENTRY(widgets->view_students->students_search_entry));
 
     free(firstAddress);
 }
@@ -1202,6 +1205,9 @@ void connectWidgets() {
 
     widgets->window_dashboard = GTK_WIDGET(gtk_builder_get_object(builder, "window_dashboard"));
     widgets->menu_stack = GTK_STACK(gtk_builder_get_object(builder, "menu_stack"));
+    widgets->gtk_fixed = GTK_FIXED(gtk_builder_get_object(builder, "gtk_fixed"));
+    widgets->menu_stack_switcher = GTK_STACK_SWITCHER(gtk_builder_get_object(builder, "menu_stack_switcher"));
+    widgets->search_entry = GTK_SEARCH_ENTRY(gtk_builder_get_object(builder, "search_entry"));
 
     //Connect view_students
     widgets->view_students = g_slice_new(Students);
@@ -1228,8 +1234,6 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "student_create_submit_button"));
     widgets->view_students->student_create_return_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "student_create_return_button"));
-    widgets->view_students->students_search_entry = GTK_SEARCH_ENTRY(
-            gtk_builder_get_object(builder, "students_search_entry"));
     widgets->view_students->students_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "students_tree_store"));
     widgets->view_students->students_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "students_tree_view"));
@@ -1528,6 +1532,19 @@ void connectWidgets() {
     widgets->view_user->view_user_email = GTK_LINK_BUTTON(gtk_builder_get_object(builder, "view_user_email"));
     widgets->view_user->view_user_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "view_user_image_file_picker"));
+}
+
+void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
+    if (visible) {
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162, 161);
+        gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), TRUE);
+        gtk_tree_view_set_search_entry(treeView, GTK_ENTRY(widgets->search_entry));
+        gtk_entry_set_text(GTK_ENTRY(widgets->search_entry), "");
+        gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->search_entry), placeholder);
+    } else {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), FALSE);
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 85, 161);
+    }
 }
 
 void dashboardGTK(int *argc, char ***argv) {

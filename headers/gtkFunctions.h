@@ -31,7 +31,6 @@ typedef struct {
     GtkButton *student_edit_submit_button;
     GtkButton *student_create_return_button;
     GtkButton *student_create_submit_button;
-    GtkSearchEntry *students_search_entry;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;
@@ -191,7 +190,10 @@ typedef struct {
 
 typedef struct {
     GtkWidget *window_dashboard;
+    GtkFixed *gtk_fixed;
     GtkStack *menu_stack;
+    GtkStackSwitcher *menu_stack_switcher;
+    GtkSearchEntry *search_entry;
     Students *view_students;
     Classes *view_classes;
     Sanctions *view_sanctions;
@@ -329,6 +331,8 @@ void GTKUserImage(char *path);
 int GTKUserSetImage(char *path);
 
 void connectWidgets();
+
+void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder);
 
 void dashboardGTK(int *argc, char ***argv);
 
