@@ -635,7 +635,7 @@ void GTKEditStudentImage(char *path) {
 }
 
 int GTKEditStudentSetImage(char *path) {
-    if (checkImageExtension(path))
+    if (!checkImageExtension(path))
         return 1;
 
     int id = atoi(gtk_label_get_text(widgets->view_students->edit_student_id));
@@ -661,25 +661,31 @@ void GTKCreateStudent() {
 }
 
 void GTKCreateStudentSubmit() {
-    printf("fname: %s\n", gtk_entry_get_text(widgets->view_students->create_student_first_name));
-    printf("lname: %s\n", gtk_entry_get_text(widgets->view_students->create_student_last_name));
-    printf("email: %s\n", gtk_entry_get_text(widgets->view_students->create_student_email));
-    printf("class: %d\n",
-           atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_students->create_student_class))));
-    printf("photo: %s\n",
-           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker)));
-    printf("%d\n",
-           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker)) ==
-           NULL);
+    char *photo_path = gtk_file_chooser_get_filename(
+            GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker));
+    int returnCode;
 
-    insertStudent(gtk_entry_get_text(widgets->view_students->create_student_first_name),
-                  gtk_entry_get_text(widgets->view_students->create_student_last_name),
-                  gtk_file_chooser_get_filename(
-                          GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker)),
-                  gtk_entry_get_text(widgets->view_students->create_student_email),
-                  atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_students->create_student_class))));
+    if (photo_path != NULL && strlen(photo_path) > 0 && checkImageExtension(photo_path))
+        returnCode = insertStudent(gtk_entry_get_text(widgets->view_students->create_student_first_name),
+                                   gtk_entry_get_text(widgets->view_students->create_student_last_name),
+                                   photo_path,
+                                   gtk_entry_get_text(widgets->view_students->create_student_email),
+                                   atoi(gtk_combo_box_get_active_id(
+                                           GTK_COMBO_BOX(widgets->view_students->create_student_class))));
+    else
+        returnCode = insertStudent(gtk_entry_get_text(widgets->view_students->create_student_first_name),
+                                   gtk_entry_get_text(widgets->view_students->create_student_last_name),
+                                   NULL,
+                                   gtk_entry_get_text(widgets->view_students->create_student_email),
+                                   atoi(gtk_combo_box_get_active_id(
+                                           GTK_COMBO_BOX(widgets->view_students->create_student_class))));
 
-    GTKListStudents();
+    if (returnCode)
+        fprintf(stderr, "Error, could not create student\n");
+    else {
+        printf("Student create successful\n");
+        GTKListStudents();
+    }
 }
 
 void GTKCreateStudentFillClassComboList() {
@@ -1490,7 +1496,7 @@ void GTKUserImage(char *path) {
 }
 
 int GTKUserSetImage(char *path) {
-    if (checkImageExtension(path))
+    if (!checkImageExtension(path))
         return 1;
 
     return insertTableImage("user", 1, path);

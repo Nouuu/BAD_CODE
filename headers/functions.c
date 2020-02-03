@@ -85,7 +85,8 @@ int checkImageExtension(char *path) {
 
     if (strcmp(fileExt, "bmp") != 0 && strcmp(fileExt, "gif") != 0 && strcmp(fileExt, "ico") != 0 &&
         strcmp(fileExt, "jpeg") != 0 && strcmp(fileExt, "jpg") != 0 && strcmp(fileExt, "svg") != 0 &&
-        strcmp(fileExt, "tiff") != 0)
-        return 1;
-    return 0;
+        strcmp(fileExt, "tiff") != 0 && strcmp(fileExt, "png") != 0)
+        return 0;
+
+    return 1;
 }
