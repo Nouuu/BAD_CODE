@@ -6,6 +6,8 @@
 #include "sqliteFunctions.h"
 #include "functions.h"
 
+//TODO check strlen on all submit to avoid some empty required field
+
 void on_destroy() {
     gtk_main_quit();
 }
@@ -121,8 +123,7 @@ void on_students_view_delete_button_clicked() {
 
 void on_students_view_create_button_clicked() {
     printf("Create student\n");
-    gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
-                                widgets->view_students->create_student_fixed);
+    GTKCreateStudent();
 }
 
 void on_students_view_remove_bottle_button_clicked() {
@@ -160,7 +161,7 @@ void on_student_create_return_button_clicked() {
 
 void on_student_create_submit_button_clicked() {
     printf("Submit student create\n");
-    GTKListStudents();
+    GTKCreateStudentSubmit();
 }
 
 void on_sanctions_view_refresh_button_clicked() {
@@ -462,6 +463,7 @@ void GTKEditStudent(int id) {
     gtk_entry_set_text(widgets->view_students->edit_student_email, email);
     gtk_entry_set_text(GTK_ENTRY(widgets->view_students->edit_student_bottles), bottles);
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_students->edit_student_class), class_fk);
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_students->edit_student_image_file_picker));
 
 
     free(first_name);
@@ -474,13 +476,6 @@ void GTKEditStudent(int id) {
 }
 
 void GTKEditStudentSubmit() {
-
-    printf("id: %d\n", atoi(gtk_label_get_text(widgets->view_students->edit_student_id)));
-    printf("fname: %s\n", gtk_entry_get_text(widgets->view_students->edit_student_first_name));
-    printf("lname: %s\n", gtk_entry_get_text(widgets->view_students->edit_student_last_name));
-    printf("email: %s\n", gtk_entry_get_text(widgets->view_students->edit_student_email));
-    printf("bottles: %d\n", atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_students->edit_student_bottles))));
-    printf("class: %d\n", atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_students->edit_student_class))));
 
     int returnCode = updateStudent(atoi(gtk_label_get_text(widgets->view_students->edit_student_id)),
                                    gtk_entry_get_text(widgets->view_students->edit_student_first_name),
@@ -652,6 +647,89 @@ int GTKEditStudentSetImage(char *path) {
     return 0;
 }
 
+void GTKCreateStudent() {
+    gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
+                                widgets->view_students->create_student_fixed);
+
+    GTKCreateStudentFillClassComboList();
+
+    gtk_entry_set_text(widgets->view_students->create_student_first_name, "");
+    gtk_entry_set_text(widgets->view_students->create_student_last_name, "");
+    gtk_entry_set_text(widgets->view_students->create_student_email, "");
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_students->create_student_class), "1");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker));
+}
+
+void GTKCreateStudentSubmit() {
+    printf("fname: %s\n", gtk_entry_get_text(widgets->view_students->create_student_first_name));
+    printf("lname: %s\n", gtk_entry_get_text(widgets->view_students->create_student_last_name));
+    printf("email: %s\n", gtk_entry_get_text(widgets->view_students->create_student_email));
+    printf("class: %d\n",
+           atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_students->create_student_class))));
+    printf("photo: %s\n",
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker)));
+    printf("%d\n",
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker)) ==
+           NULL);
+
+    insertStudent(gtk_entry_get_text(widgets->view_students->create_student_first_name),
+                  gtk_entry_get_text(widgets->view_students->create_student_last_name),
+                  gtk_file_chooser_get_filename(
+                          GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker)),
+                  gtk_entry_get_text(widgets->view_students->create_student_email),
+                  atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_students->create_student_class))));
+
+    GTKListStudents();
+}
+
+void GTKCreateStudentFillClassComboList() {
+    char *classList;
+    listClasses(&classList);
+
+    int nbSanctions = 0, i;
+    char *result = classList, *firstAdress = classList, *nameBuffer, *idBuffer;
+    size_t columnSize;
+
+
+    gtk_combo_box_text_remove_all(widgets->view_students->create_student_class);
+
+
+    while ((result = strstr(result, ";\n"))) {
+        nbSanctions++;
+        result++;
+    }
+
+    for (i = 0; i < nbSanctions; ++i) {
+        //ID
+        result = strchr(classList, '|');
+        columnSize = result - classList;
+        idBuffer = malloc(columnSize + 1);
+
+        strncpy(idBuffer, classList, columnSize);
+        idBuffer[columnSize] = '\0';
+        classList += columnSize + 1;
+
+        //NAME
+        result = strchr(classList, '|');
+        columnSize = result - classList;
+        nameBuffer = malloc(columnSize + 1);
+
+        strncpy(nameBuffer, classList, columnSize);
+        nameBuffer[columnSize] = '\0';
+
+        gtk_combo_box_text_append(widgets->view_students->create_student_class, idBuffer, nameBuffer);
+
+        classList = strstr(classList, ";\n") + 2;
+        free(idBuffer);
+        free(nameBuffer);
+    }
+
+    free(firstAdress);
+}
+
+void GTKCreateStudentImage(char *path) {
+
+}
 
 void GTKListClasses() {
     gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->view_classes_fixed);
@@ -1461,6 +1539,15 @@ void connectWidgets() {
     widgets->view_students->edit_student_image = GTK_IMAGE(gtk_builder_get_object(builder, "edit_student_image"));
     widgets->view_students->edit_student_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "edit_student_image_file_picker"));
+    widgets->view_students->create_student_first_name = GTK_ENTRY(
+            gtk_builder_get_object(builder, "create_student_first_name"));
+    widgets->view_students->create_student_last_name = GTK_ENTRY(
+            gtk_builder_get_object(builder, "create_student_last_name"));
+    widgets->view_students->create_student_email = GTK_ENTRY(gtk_builder_get_object(builder, "create_student_email"));
+    widgets->view_students->create_student_class = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "create_student_class"));
+    widgets->view_students->create_student_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "create_student_image_file_picker"));
     widgets->view_students->students_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "students_tree_store"));
     widgets->view_students->students_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "students_tree_view"));

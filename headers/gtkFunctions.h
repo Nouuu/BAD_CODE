@@ -39,6 +39,11 @@ typedef struct {
     GtkComboBoxText *edit_student_class;
     GtkImage *edit_student_image;
     GtkFileChooserButton *edit_student_image_file_picker;
+    GtkEntry *create_student_first_name;
+    GtkEntry *create_student_last_name;
+    GtkEntry *create_student_email;
+    GtkComboBoxText *create_student_class;
+    GtkFileChooserButton *create_student_image_file_picker;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;
@@ -316,6 +321,14 @@ void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo
 void GTKEditStudentImage(char *path);
 
 int GTKEditStudentSetImage(char *path);
+
+void GTKCreateStudent();
+
+void GTKCreateStudentSubmit();
+
+void GTKCreateStudentFillClassComboList();
+
+void GTKCreateStudentImage(char *path);
 
 void GTKListClasses();
 
