@@ -64,7 +64,7 @@ void listClasses(char **data);
  */
 void getClass(char **data, int id);
 
-int insertStudent(char *first_name, char *last_name, char *photo_location, char *email, int class_fk);
+int insertStudent(const char *first_name, const char *last_name, const char *photo_location, const char *email, int class_fk);
 
 int addStudentBottle(int id, int count);
 
@@ -104,9 +104,9 @@ void listClassStudents(char **data, int class_fk);
  */
 void getStudent(char **data, int id);
 
-int insertSanction(char *name, char *description, int user_fk);
+int insertSanction(const char *description, const char *name, int user_fk);
 
-int updateSanction(int id, char *name, char *description, int user_fk);
+int updateSanction(int id, const char *name, const char *description, int user_fk);
 
 int classNullSanction(int sanction_fk);
 
@@ -131,12 +131,12 @@ void listSanctions(char **data);
  */
 void getSanction(char **data, int id);
 
-int insertDeliverableFile(char *column, int id, int student_fk, char *file_location);
+int insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location);
 
-int insertDeliverable(char *due_date, char *subject, char *audio_record_path, char *video_reccord_path,
-                      char *bad_code_path, char *deliverable_file_path, char *status, int student_fk);
+int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path, const char *video_reccord_path,
+                      const char *bad_code_path, const char *deliverable_file_path, const char *status, int student_fk);
 
-int updateDeliverable(int id, char *due_date, char *subject, char *status, int student_fk);
+int updateDeliverable(int id, const char *due_date, const char *subject, const char *status, int student_fk);
 
 int deleteDeliverable(int id);
 
