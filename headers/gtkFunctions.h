@@ -31,6 +31,7 @@ typedef struct {
     GtkButton *student_edit_submit_button;
     GtkButton *student_create_return_button;
     GtkButton *student_create_submit_button;
+    GtkSearchEntry *students_search_entry;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;

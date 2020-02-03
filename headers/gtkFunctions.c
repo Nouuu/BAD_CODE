@@ -428,6 +428,9 @@ void GTKListStudents() {
 
     }
 
+    gtk_tree_view_set_search_entry(widgets->view_students->students_tree_view,
+                                   GTK_ENTRY(widgets->view_students->students_search_entry));
+
     free(firstAddress);
 }
 
@@ -1225,6 +1228,8 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "student_create_submit_button"));
     widgets->view_students->student_create_return_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "student_create_return_button"));
+    widgets->view_students->students_search_entry = GTK_SEARCH_ENTRY(
+            gtk_builder_get_object(builder, "students_search_entry"));
     widgets->view_students->students_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "students_tree_store"));
     widgets->view_students->students_tree_view = GTK_TREE_VIEW(gtk_builder_get_object(builder, "students_tree_view"));

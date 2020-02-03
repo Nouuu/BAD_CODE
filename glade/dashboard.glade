@@ -212,6 +212,9 @@
       <column type="guint"/>
     </columns>
   </object>
+  <object class="GtkTreeModelFilter">
+    <property name="child_model">students_tree_store</property>
+  </object>
   <object class="GtkImage" id="submit_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -1058,6 +1061,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="model">students_tree_store</property>
                                 <property name="rules_hint">True</property>
+                                <property name="search_column">1</property>
                                 <property name="enable_grid_lines">both</property>
                                 <signal name="row-activated" handler="on_students_tree_view_row_activated" swapped="no"/>
                                 <child internal-child="selection">
@@ -2539,6 +2543,29 @@
           <packing>
             <property name="x">10</property>
             <property name="y">220</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSearchBar">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="search_mode_enabled">True</property>
+            <child>
+              <object class="GtkSearchEntry" id="students_search_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="max_length">30</property>
+                <property name="width_chars">23</property>
+                <property name="primary_icon_name">edit-find-symbolic</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">False</property>
+                <property name="placeholder_text" translatable="yes">Search by first name...</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="x">10</property>
+            <property name="y">102</property>
           </packing>
         </child>
       </object>
