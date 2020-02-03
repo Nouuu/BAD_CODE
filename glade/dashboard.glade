@@ -268,7 +268,7 @@
       <placeholder/>
     </child>
     <child>
-      <object class="GtkFixed" id="fixed1">
+      <object class="GtkFixed" id="gtk_fixed">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -294,7 +294,7 @@
             <signal name="notify::visible-child" handler="on_menu_stack_switcher_visible_child_notify" swapped="no"/>
           </object>
           <packing>
-            <property name="x">85</property>
+            <property name="x">162</property>
             <property name="y">161</property>
           </packing>
         </child>
@@ -1067,6 +1067,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkTreeViewColumn" id="students_cx_1">
+                                    <property name="visible">False</property>
                                     <property name="resizable">True</property>
                                     <property name="title" translatable="yes">id</property>
                                     <property name="expand">True</property>
@@ -2871,6 +2872,22 @@
           <packing>
             <property name="x">10</property>
             <property name="y">220</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSearchEntry" id="search_entry">
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="max_length">25</property>
+            <property name="width_chars">22</property>
+            <property name="primary_icon_name">edit-find-symbolic</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">False</property>
+          </object>
+          <packing>
+            <property name="x">10</property>
+            <property name="y">161</property>
           </packing>
         </child>
       </object>
