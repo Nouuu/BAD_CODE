@@ -183,6 +183,13 @@ typedef struct {
     GtkButton *deliverable_edit_submit_button;
     GtkButton *deliverable_create_return_button;
     GtkButton *deliverable_create_submit_button;
+    GtkLabel *edit_deliverable_id;
+    GtkLabel *edit_deliverable_student_fk;
+    GtkLabel *edit_deliverable_sanction_name;
+    GtkTextView *edit_deliverable_sanction_description;
+    GtkEntry *edit_deliverable_subject;
+    GtkComboBoxText *edit_deliverable_status;
+    GtkCalendar *edit_deliverable_due_date;
     GtkTreeStore *deliverables_tree_store;
     GtkTreeView *deliverables_tree_view;
     GtkTreeSelection *deliverables_tree_selection;
@@ -323,6 +330,8 @@ void fillClassComboList(GtkComboBoxText *comboBoxText);
 
 void fillSanctionComboList(GtkComboBoxText *comboBoxText);
 
+void fillStatusComboList(GtkComboBoxText *comboBoxText, char *status);
+
 void GTKListStudents();
 
 void GTKEditStudent(int id);
@@ -366,6 +375,16 @@ void GTKCreateSanction();
 void GTKCreateSanctionSubmit();
 
 void GTKListDeliverables();
+
+void GTKEditDelivreables(int id);
+
+void GTKEditDelivreablesSubmit();
+
+void GTKDelivreablesGetData(int id, char **due_date, char **subject, char **audio_record, char **video_record,
+                            char **bad_code, char **deliverable_file, char **status, char **student, char **student_fk,
+                            char **sanction_name, char **sanction_description);
+
+void GTKEditDeliverableSetDueDate(char *date);
 
 void GTKViewUser();
 

@@ -18,7 +18,7 @@ void checkVersion();
 
 sqlite3 *connectDB();
 
-int insertTableImage(char *table, int id, char *photo_location);
+int insertTableImage(char *table, int id, const char *photo_location);
 
 int insertUser(char *email, char *first_name, char *last_name, char *photo_location, char *birthdate);
 
@@ -64,11 +64,12 @@ void listClasses(char **data);
  */
 void getClass(char **data, int id);
 
-int insertStudent(const char *first_name, const char *last_name, const char *photo_location, const char *email, int class_fk);
+int insertStudent(const char *first_name, const char *last_name, const char *photo_location, const char *email,
+                  int class_fk);
 
 int addStudentBottle(int id, int count);
 
-int updateStudent(int id, const char *first_name, const char *last_name, const char *email,int bottles, int class_fk);
+int updateStudent(int id, const char *first_name, const char *last_name, const char *email, int bottles, int class_fk);
 
 int deleteStudentDeliverables(int student_fk);
 
@@ -133,7 +134,8 @@ void getSanction(char **data, int id);
 
 int insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location);
 
-int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path, const char *video_reccord_path,
+int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path,
+                      const char *video_reccord_path,
                       const char *bad_code_path, const char *deliverable_file_path, const char *status, int student_fk);
 
 int updateDeliverable(int id, const char *due_date, const char *subject, const char *status, int student_fk);
@@ -165,7 +167,7 @@ void listStudentDeliverables(char **data, int studentId);
  * @param data
  * @param id
  *
- * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n"
+ * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk|sanction_name|sanction_description;\n"
  */
 void getDeliverable(char **data, int id);
 

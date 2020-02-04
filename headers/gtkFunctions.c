@@ -33,8 +33,7 @@ void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *pa
 void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint id = get_id_row_activated(tree_view, path);
     printf("DELIVERABLE ID: %d\n", id);
-    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
-                                widgets->view_deliverables->edit_deliverable_fixed);
+    GTKEditDelivreables(id);
 }
 
 void on_menu_stack_visible_child_notify(GtkStack *stack) {
@@ -248,7 +247,7 @@ void on_deliverable_edit_return_button_clicked() {
 
 void on_deliverable_edit_submit_button_clicked() {
     printf("Submit deliverable edit\n");
-    GTKListDeliverables();
+    GTKEditDelivreablesSubmit();
 }
 
 void on_deliverable_create_return_button_clicked() {
@@ -446,6 +445,31 @@ void fillSanctionComboList(GtkComboBoxText *comboBoxText) {
     }
 
     free(firstAdress);
+}
+
+void fillStatusComboList(GtkComboBoxText *comboBoxText, char *status) {
+    gtk_combo_box_text_remove_all(comboBoxText);
+
+    gtk_combo_box_text_append(comboBoxText, "1", "To do");
+    if (!strcmp(status, "To do"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "1");
+
+    gtk_combo_box_text_append(comboBoxText, "2", "Completed");
+    if (!strcmp(status, "Completed"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "2");
+
+    gtk_combo_box_text_append(comboBoxText, "3", "On hold");
+    if (!strcmp(status, "On hold"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "3");
+
+    gtk_combo_box_text_append(comboBoxText, "4", "Checking");
+    if (!strcmp(status, "Checking"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "4");
+
+    gtk_combo_box_text_append(comboBoxText, "5", "Waiting deliverable");
+    if (!strcmp(status, "Waiting deliverable"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "5");
+
 }
 
 void GTKListStudents() {
@@ -1437,6 +1461,193 @@ void GTKListDeliverables() {
     free(firstAddress);
 }
 
+void GTKEditDelivreables(int id) {
+    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
+                                widgets->view_deliverables->edit_deliverable_fixed);
+    char *due_date, *subject, *audio_record, *video_record, *bad_code, *deliverable_file, *status, *student, *student_fk, *sanction_name, *sanction_description, idBuffer[6];
+    itoa(id, idBuffer, 10);
+    GTKDelivreablesGetData(id, &due_date, &subject, &audio_record, &video_record, &bad_code, &deliverable_file, &status,
+                           &student, &student_fk, &sanction_name, &sanction_description);
+
+
+    GTKEditDeliverableSetDueDate(due_date);
+    fillStatusComboList(widgets->view_deliverables->edit_deliverable_status, status);
+
+    GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(
+            widgets->view_deliverables->edit_deliverable_sanction_description);
+    gtk_text_buffer_set_text(textBuffer, sanction_description, strlen(sanction_description));
+
+    gtk_label_set_text(widgets->view_deliverables->edit_deliverable_id, idBuffer);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_id), FALSE);
+    gtk_label_set_text(widgets->view_deliverables->edit_deliverable_student_fk, student_fk);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_student_fk), FALSE);
+    gtk_label_set_text(widgets->view_deliverables->edit_deliverable_sanction_name, sanction_name);
+    gtk_entry_set_text(widgets->view_deliverables->edit_deliverable_subject, subject);
+
+
+    free(due_date);
+    free(subject);
+    free(audio_record);
+    free(video_record);
+    free(bad_code);
+    free(deliverable_file);
+    free(status);
+    free(student);
+    free(student_fk);
+    free(sanction_name);
+    free(sanction_description);
+}
+
+void GTKDelivreablesGetData(int id, char **due_date, char **subject, char **audio_record, char **video_record,
+                            char **bad_code, char **deliverable_file, char **status, char **student, char **student_fk,
+                            char **sanction_name, char **sanction_description) {
+    char *deliverableData, *firstAdress;
+    size_t columnSize;
+    getDeliverable(&deliverableData, id);
+    firstAdress = deliverableData;
+
+    //ID
+    deliverableData += strchr(deliverableData, '|') - deliverableData + 1;
+
+    //DUE_DATE
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *due_date = malloc(columnSize + 1);
+    strncpy(*due_date, deliverableData, columnSize);
+    (*due_date)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //SUBJECT
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *subject = malloc(columnSize + 1);
+    strncpy(*subject, deliverableData, columnSize);
+    (*subject)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //AUDIO_RECORD
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *audio_record = malloc(columnSize + 1);
+    strncpy(*audio_record, deliverableData, columnSize);
+    (*audio_record)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //VIDEO_RECORD
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *video_record = malloc(columnSize + 1);
+    strncpy(*video_record, deliverableData, columnSize);
+    (*video_record)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //BAD_CODE
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *bad_code = malloc(columnSize + 1);
+    strncpy(*bad_code, deliverableData, columnSize);
+    (*bad_code)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //DELIVERABLE_FILE
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *deliverable_file = malloc(columnSize + 1);
+    strncpy(*deliverable_file, deliverableData, columnSize);
+    (*deliverable_file)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //STATUS
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *status = malloc(columnSize + 1);
+    strncpy(*status, deliverableData, columnSize);
+    (*status)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //STUDENT
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *student = malloc(columnSize + 1);
+    strncpy(*student, deliverableData, columnSize);
+    (*student)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //STUDENT_FK
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *student_fk = malloc(columnSize + 1);
+    strncpy(*student_fk, deliverableData, columnSize);
+    (*student_fk)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //SANCTION_NAME
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *sanction_name = malloc(columnSize + 1);
+    strncpy(*sanction_name, deliverableData, columnSize);
+    (*sanction_name)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //SANCTION_DESCRIPTION
+    columnSize = strstr(deliverableData, ";\n") - deliverableData;
+    *sanction_description = malloc(columnSize + 1);
+    strncpy(*sanction_description, deliverableData, columnSize);
+    (*sanction_description)[columnSize] = '\0';
+
+    free(firstAdress);
+}
+
+void GTKEditDeliverableSetDueDate(char *date) {
+    // date = YYYY/MM/DD
+    guint day, month, year, columnSize;
+    char *buffer;
+    //YEAR
+    columnSize = strchr(date, '/') - date;
+    buffer = malloc(columnSize + 1);
+    strncpy(buffer, date, columnSize);
+    buffer[columnSize] = '\0';
+    year = atoi(buffer);
+    date += columnSize + 1;
+    free(buffer);
+
+    //MONTH
+    columnSize = strchr(date, '/') - date;
+    buffer = malloc(columnSize + 1);
+    strncpy(buffer, date, columnSize);
+    buffer[columnSize] = '\0';
+    month = atoi(buffer);
+    date += columnSize + 1;
+    free(buffer);
+
+    //DAY
+    columnSize = strchr(date, '\0') - date;
+    buffer = malloc(columnSize + 1);
+    strncpy(buffer, date, columnSize);
+    buffer[columnSize] = '\0';
+    day = atoi(buffer);
+    free(buffer);
+
+    //a month number between 0 and 11.
+    gtk_calendar_select_month(widgets->view_deliverables->edit_deliverable_due_date, month - 1, year);
+    gtk_calendar_select_day(widgets->view_deliverables->edit_deliverable_due_date, day);
+}
+
+void GTKEditDelivreablesSubmit() {
+    guint day, month, year;
+    char dateBuffer[9];
+    gtk_calendar_get_date(widgets->view_deliverables->edit_deliverable_due_date, &year, &month, &day);
+    sprintf(dateBuffer, "%d/%d/%d", year, month + 1, day);
+    //year decimal number (e.g. 2011), or NULL.
+    //month number (between 0 and 11), or NULL.
+    //day number (between 1 and 31), or NULL.
+
+    int returnCode = updateDeliverable(atoi(gtk_label_get_text(widgets->view_deliverables->edit_deliverable_id)),
+                                       dateBuffer,
+                                       gtk_entry_get_text(widgets->view_deliverables->edit_deliverable_subject),
+                                       gtk_combo_box_text_get_active_text(
+                                               widgets->view_deliverables->edit_deliverable_status),
+                                       atoi(gtk_label_get_text(
+                                               widgets->view_deliverables->edit_deliverable_student_fk)));
+
+    if (returnCode)
+        fprintf(stderr, "Error, could not update deliverable\n");
+    else {
+        printf("Deliverable update successful\n");
+        GTKListDeliverables();
+    }
+}
+
 void GTKViewUser() {
     gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->view_user_fixed);
     char *email, *first_name, *last_name, *photo, *birthdate, *emailURI;
@@ -1830,6 +2041,19 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "deliverable_create_return_button"));
     widgets->view_deliverables->deliverable_create_submit_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "deliverable_create_submit_button"));
+    widgets->view_deliverables->edit_deliverable_id = GTK_LABEL(gtk_builder_get_object(builder, "edit_deliverable_id"));
+    widgets->view_deliverables->edit_deliverable_student_fk = GTK_LABEL(
+            gtk_builder_get_object(builder, "edit_deliverable_student_fk"));
+    widgets->view_deliverables->edit_deliverable_sanction_name = GTK_LABEL(
+            gtk_builder_get_object(builder, "edit_deliverable_sanction_name"));
+    widgets->view_deliverables->edit_deliverable_sanction_description = GTK_TEXT_VIEW(
+            gtk_builder_get_object(builder, "edit_deliverable_sanction_description"));
+    widgets->view_deliverables->edit_deliverable_subject = GTK_ENTRY(
+            gtk_builder_get_object(builder, "edit_deliverable_subject"));
+    widgets->view_deliverables->edit_deliverable_status = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "edit_deliverable_status"));
+    widgets->view_deliverables->edit_deliverable_due_date = GTK_CALENDAR(
+            gtk_builder_get_object(builder, "edit_deliverable_due_date"));
     widgets->view_deliverables->deliverables_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "deliverables_tree_store"));
     widgets->view_deliverables->deliverables_tree_view = GTK_TREE_VIEW(

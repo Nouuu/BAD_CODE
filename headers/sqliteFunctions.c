@@ -21,7 +21,7 @@ sqlite3 *connectDB() {
     return db;
 }
 
-int insertTableImage(char *table, int id, char *photo_location) {
+int insertTableImage(char *table, int id, const char *photo_location) {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////    PARTIE FICHIER 1 ///////////////////////////////////////////////////////////////////////////
@@ -537,7 +537,8 @@ void getClass(char **data, int id) {
     sqlite3_close(db);
 }
 
-int insertStudent(const char *first_name, const char *last_name, const char *photo_location, const char *email, int class_fk) {
+int insertStudent(const char *first_name, const char *last_name, const char *photo_location, const char *email,
+                  int class_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into student (first_name, last_name, email, nb_bottles, class_fk) VALUES (?, ?, ?, 0, ?);";
@@ -1287,8 +1288,10 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
     return 0;
 }
 
-int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path, const char *video_reccord_path,
-                      const char *bad_code_path, const char *deliverable_file_path, const char *status, int student_fk) {
+int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path,
+                      const char *video_reccord_path,
+                      const char *bad_code_path, const char *deliverable_file_path, const char *status,
+                      int student_fk) {
 
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
@@ -1651,7 +1654,7 @@ void listStudentDeliverables(char **data, int studentId) {
  * @param data
  * @param id
  *
- * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n"
+ * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk|sanction_name|sanction_description;\n"
  */
 void getDeliverable(char **data, int id) {
     sqlite3 *db = connectDB();
@@ -1665,9 +1668,13 @@ void getDeliverable(char **data, int id) {
                        "       deliverable_file,\n"
                        "       status,\n"
                        "       s.first_name || ' ' || s.last_name as student,\n"
-                       "       student_fk\n"
+                       "       student_fk,\n"
+                       "       s2.name                            as sanction_name,\n"
+                       "       s2.description                     as sanction_description\n"
                        "from deliverable\n"
                        "         left join student s on deliverable.student_fk = s.id\n"
+                       "         left join class c on s.class_fk = c.id\n"
+                       "         left join sanction s2 on c.sanction_fk = s2.id\n"
                        "where deliverable.id = ?;";
     size_t rowStringSize = 1;
     char *result = malloc(rowStringSize * sizeof(char));
@@ -1746,9 +1753,22 @@ void getDeliverable(char **data, int id) {
 
     //Colonne 9
     itoa(sqlite3_column_int(pStmt, 9), intBuffer, 10);
-    rowStringSize += strlen(intBuffer) + 2;
+    rowStringSize += strlen(intBuffer) + 1;
     result = realloc(result, rowStringSize);
-    strcat(result, strcat(intBuffer, ";\n"));
+    strcat(result, strcat(intBuffer, "|"));
+
+    //Colonne 10
+    rowStringSize += sqlite3_column_bytes(pStmt, 10) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 10) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 10));
+    strcat(result, "|");
+
+    //Colonne 11
+    rowStringSize += sqlite3_column_bytes(pStmt, 11) + 2;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 11) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 11));
+    strcat(result, ";\n");
+
 
     *data = result;
     sqlite3_finalize(pStmt);
