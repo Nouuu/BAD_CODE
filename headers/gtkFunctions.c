@@ -198,8 +198,7 @@ void on_sanctions_view_delete_button_clicked() {
 
 void on_sanctions_view_create_button_clicked() {
     printf("Create sanction\n");
-    gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
-                                widgets->view_sanctions->create_sanction_fixed);
+    GTKCreateSanction();
 }
 
 void on_sanction_edit_return_button_clicked() {
@@ -219,7 +218,7 @@ void on_sanction_create_return_button_clicked() {
 
 void on_sanction_create_submit_button_clicked() {
     printf("Submit sanction create\n");
-    GTKListSanctions();
+    GTKCreateSanctionSubmit();
 }
 
 void on_deliverables_view_refresh_button_clicked() {
@@ -1298,6 +1297,40 @@ void GTKSanctionGetData(int id, char **name, char **description, char **user, ch
     free(firstAdress);
 }
 
+void GTKCreateSanction() {
+    gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
+                                widgets->view_sanctions->create_sanction_fixed);
+
+    GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->create_sanction_description);
+    gtk_text_buffer_set_text(textBuffer, "", 0);
+    gtk_entry_set_text(widgets->view_sanctions->create_sanction_name, "");
+    //TODO Create function for that, also in "create/create class"
+    gtk_combo_box_text_remove_all((widgets->view_sanctions->create_sanction_user));
+    gtk_combo_box_text_append(widgets->view_sanctions->create_sanction_user, "1", "Frédéric Sananes");
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_sanctions->create_sanction_user), "1");
+
+}
+
+void GTKCreateSanctionSubmit() {
+
+    GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->create_sanction_description);
+    GtkTextIter startIter;
+    GtkTextIter endIter;
+    gtk_text_buffer_get_start_iter(textBuffer, &startIter);
+    gtk_text_buffer_get_end_iter(textBuffer, &endIter);
+    
+    int returnCode = insertSanction(gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
+                                    gtk_entry_get_text(widgets->view_sanctions->create_sanction_name),
+                                    atoi(gtk_combo_box_get_active_id(
+                                            GTK_COMBO_BOX(widgets->view_sanctions->create_sanction_user))));
+
+    if (returnCode)
+        fprintf(stderr, "Error, could not create sanction\n");
+    else {
+        printf("Sanction create successful\n");
+        GTKListSanctions();
+    }
+}
 
 void GTKListDeliverables() {
     gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,

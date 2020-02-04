@@ -363,7 +363,7 @@ void GTKEditSanctionSubmit();
 
 void GTKSanctionGetData(int id, char **name, char **description, char **user, char **user_fk);
 
-void GTKCreateSanction(int id);
+void GTKCreateSanction();
 
 void GTKCreateSanctionSubmit();
 
