@@ -13,7 +13,7 @@
 
 void createPath(char *path);
 
-int copyFile(char *src, char *dest);
+int copyFile(const char *src, const char *dest);
 
 int removeDirectory(char *src);
 
@@ -25,5 +25,8 @@ char *get_filename_ext(char *path);
  * @return 1 if it is image, 0 if not
  */
 int checkImageExtension(char *path);
+
+int checkVideoExtension(char *path);
+int checkAudioExtension(char *path);
 
 #endif //BAD_CODE_FUNCTIONS_H
