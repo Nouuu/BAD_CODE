@@ -260,6 +260,36 @@ void on_deliverable_create_submit_button_clicked() {
     GTKListDeliverables();
 }
 
+void on_edit_deliverable_video_file_set() {
+    char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_video));
+    printf("Choose video file! : %s\n", path);
+    if (GTKDeliverableSetVideo(path))
+        fprintf(stderr, "Error while adding video\n");
+}
+
+void on_edit_deliverable_bad_code_file_set() {
+    char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_bad_code));
+    printf("Choose bad code file! : %s\n", path);
+    if (GTKDeliverableSetBadCode(path))
+        fprintf(stderr, "Error while adding bad code\n");
+}
+
+void on_edit_deliverable_deliverable_file_file_set() {
+    char *path = gtk_file_chooser_get_filename(
+            GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_deliverable_file));
+    printf("Choose deliverable file! : %s\n", path);
+    if (GTKDeliverableSetDeliverable(path))
+        fprintf(stderr, "Error while adding deliverable file\n");
+}
+
+void on_edit_deliverable_audio_file_set() {
+    char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_audio));
+    printf("Choose audio file! : %s\n", path);
+    if (GTKDeliverableSetAudio(path))
+        fprintf(stderr, "Error while adding audio\n");
+}
+
+
 void on_view_user_image_file_picker_file_set() {
     char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker));
     printf("Choose file! : %s\n", path);
@@ -1484,6 +1514,7 @@ void GTKEditDelivreables(int id) {
     gtk_label_set_text(widgets->view_deliverables->edit_deliverable_sanction_name, sanction_name);
     gtk_entry_set_text(widgets->view_deliverables->edit_deliverable_subject, subject);
 
+    //TODO set download button visible or not with strlen of paths
 
     free(due_date);
     free(subject);
@@ -1647,6 +1678,35 @@ void GTKEditDelivreablesSubmit() {
         GTKListDeliverables();
     }
 }
+
+int GTKDeliverableSetAudio(char *path) {
+    if (!checkAudioExtension(path)) {
+        fprintf(stderr, "Wrong audio file extension !\n");
+        return 1;
+    }
+
+    return 0;
+}
+
+int GTKDeliverableSetVideo(char *path) {
+    if (!checkVideoExtension(path)) {
+        fprintf(stderr, "Wrong audio file extension !\n");
+        return 1;
+    }
+
+    return 0;
+}
+
+int GTKDeliverableSetBadCode(char *path) {
+
+    return 0;
+}
+
+int GTKDeliverableSetDeliverable(char *path) {
+
+    return 0;
+}
+
 
 void GTKViewUser() {
     gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->view_user_fixed);
@@ -2054,6 +2114,17 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "edit_deliverable_status"));
     widgets->view_deliverables->edit_deliverable_due_date = GTK_CALENDAR(
             gtk_builder_get_object(builder, "edit_deliverable_due_date"));
+    widgets->view_deliverables->edit_deliverable_student_name = GTK_LABEL(
+            gtk_builder_get_object(builder, "edit_deliverable_student_name"));
+    widgets->view_deliverables->edit_deliverable_audio = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_audio"));
+    widgets->view_deliverables->edit_deliverable_video = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_video"));
+    widgets->view_deliverables->edit_deliverable_bad_code = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_bad_code"));
+    widgets->view_deliverables->edit_deliverable_deliverable_file = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_deliverable_file"));
+
     widgets->view_deliverables->deliverables_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "deliverables_tree_store"));
     widgets->view_deliverables->deliverables_tree_view = GTK_TREE_VIEW(

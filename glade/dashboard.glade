@@ -311,6 +311,7 @@
               <object class="GtkStack" id="view_classes_stack">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="transition_type">over-down-up</property>
                 <child>
                   <object class="GtkFixed" id="view_classes">
                     <property name="visible">True</property>
@@ -1038,6 +1039,7 @@
               <object class="GtkStack" id="view_students_stack">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="transition_type">over-down-up</property>
                 <child>
                   <object class="GtkFixed" id="view_students">
                     <property name="visible">True</property>
@@ -1774,6 +1776,7 @@
               <object class="GtkStack" id="view_sanctions_stack">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="transition_type">over-down-up</property>
                 <child>
                   <object class="GtkFixed" id="view_sanctions">
                     <property name="visible">True</property>
@@ -2255,6 +2258,7 @@
               <object class="GtkStack" id="view_deliverables_stack">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="transition_type">over-down-up</property>
                 <child>
                   <object class="GtkFixed" id="view_deliverables">
                     <property name="visible">True</property>
@@ -2749,6 +2753,70 @@
                         <property name="y">20</property>
                       </packing>
                     </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Deliverable file :</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Sans Bold 14"/>
+                          <attribute name="style" value="normal"/>
+                          <attribute name="underline" value="True"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="x">700</property>
+                        <property name="y">290</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Video file :</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Sans Bold 14"/>
+                          <attribute name="style" value="normal"/>
+                          <attribute name="underline" value="True"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="x">480</property>
+                        <property name="y">290</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Bad Code file :</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Sans Bold 14"/>
+                          <attribute name="style" value="normal"/>
+                          <attribute name="underline" value="True"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="x">700</property>
+                        <property name="y">200</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Audio file :</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Sans Bold 14"/>
+                          <attribute name="style" value="normal"/>
+                          <attribute name="underline" value="True"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="x">480</property>
+                        <property name="y">200</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="name">page1</property>
@@ -2836,6 +2904,7 @@
               <object class="GtkStack" id="view_user_stack">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="transition_type">over-down-up</property>
                 <child>
                   <object class="GtkFixed" id="view_user">
                     <property name="visible">True</property>
