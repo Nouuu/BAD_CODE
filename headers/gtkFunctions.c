@@ -316,6 +316,47 @@ guint get_id_row_selected(GtkTreeSelection *selection) {
     return int_data;
 }
 
+void fillUserComboList(GtkComboBoxText *comboBoxText) {
+    char *user;
+    getUser(&user, 1);
+    size_t columnSize, nameSize;
+    char *firstAdress = user, *nameBuffer, *idBuffer;
+
+    //ID
+    columnSize = strchr(user, '|') - user;
+    idBuffer = malloc(columnSize + 1);
+    strncpy(idBuffer, user, columnSize);
+    idBuffer[columnSize] = '\0';
+
+    user += columnSize + 1;
+
+    //EMAIL
+    user += strchr(user, '|') - user + 1;
+
+    //FIRST_NAME
+    columnSize = strchr(user, '|') - user;
+    nameBuffer = malloc(columnSize + 1);
+    strncpy(nameBuffer, user, columnSize);
+    nameBuffer[columnSize] = '\0';
+
+    user += columnSize + 1;
+
+    //LAST_NAME
+    columnSize = strchr(user, '|') - user;
+    nameBuffer = realloc(nameBuffer, strlen(nameBuffer)+ columnSize + 1);
+    strcat(nameBuffer, " ");
+    nameSize = strlen(nameBuffer);
+    strncat(nameBuffer, user, columnSize);
+    nameBuffer[columnSize + nameSize] = '\0';
+
+    gtk_combo_box_text_remove_all(comboBoxText);
+    gtk_combo_box_text_append(comboBoxText, idBuffer, nameBuffer);
+
+    free(idBuffer);
+    free(nameBuffer);
+    free(firstAdress);
+}
+
 void GTKListStudents() {
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->view_students_fixed);

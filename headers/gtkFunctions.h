@@ -317,6 +317,8 @@ guint get_id_row_selected(GtkTreeSelection *selection);
 
 void on_destroy();
 
+void fillUserComboList(GtkComboBoxText *comboBoxText);
+
 void GTKListStudents();
 
 void GTKEditStudent(int id);
