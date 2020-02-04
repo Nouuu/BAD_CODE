@@ -645,7 +645,6 @@ void GTKEditStudent(int id) {
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_students->edit_student_class), class_fk);
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_students->edit_student_image_file_picker));
 
-
     free(first_name);
     free(last_name);
     free(photo);

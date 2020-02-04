@@ -28,7 +28,4 @@ int checkImageExtension(char *path);
 int checkVideoExtension(char *path);
 int checkAudioExtension(char *path);
 
-int checkVideoExtension(char *path);
-int checkAudioExtension(char *path);
-
 #endif //BAD_CODE_FUNCTIONS_H
