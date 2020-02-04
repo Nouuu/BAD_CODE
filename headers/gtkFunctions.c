@@ -343,7 +343,7 @@ void fillUserComboList(GtkComboBoxText *comboBoxText) {
 
     //LAST_NAME
     columnSize = strchr(user, '|') - user;
-    nameBuffer = realloc(nameBuffer, strlen(nameBuffer)+ columnSize + 1);
+    nameBuffer = realloc(nameBuffer, strlen(nameBuffer) + columnSize + 1);
     strcat(nameBuffer, " ");
     nameSize = strlen(nameBuffer);
     strncat(nameBuffer, user, columnSize);
@@ -357,7 +357,7 @@ void fillUserComboList(GtkComboBoxText *comboBoxText) {
     free(firstAdress);
 }
 
-void fillClassComboList(GtkComboBoxText *comboBoxText){
+void fillClassComboList(GtkComboBoxText *comboBoxText) {
     char *classList;
     listClasses(&classList);
 
@@ -586,7 +586,7 @@ void GTKEditStudent(int id) {
                                 widgets->view_students->edit_student_fixed);
     char *first_name, *last_name, *photo, *email, *bottles, *class, *class_fk, idBuffer[6];
 
-    GTKEditStudentFillClassComboList();
+    fillClassComboList(widgets->view_students->edit_student_class);
     GTKStudentGetData(id, &first_name, &last_name, &photo, &email, &bottles, &class, &class_fk);
     itoa(id, idBuffer, 10);
 
@@ -626,51 +626,6 @@ void GTKEditStudentSubmit() {
         printf("Student update successful\n");
         GTKListStudents();
     }
-}
-
-void GTKEditStudentFillClassComboList() {
-    char *classList;
-    listClasses(&classList);
-
-    int nbSanctions = 0, i;
-    char *result = classList, *firstAdress = classList, *nameBuffer, *idBuffer;
-    size_t columnSize;
-
-
-    gtk_combo_box_text_remove_all(widgets->view_students->edit_student_class);
-
-
-    while ((result = strstr(result, ";\n"))) {
-        nbSanctions++;
-        result++;
-    }
-
-    for (i = 0; i < nbSanctions; ++i) {
-        //ID
-        result = strchr(classList, '|');
-        columnSize = result - classList;
-        idBuffer = malloc(columnSize + 1);
-
-        strncpy(idBuffer, classList, columnSize);
-        idBuffer[columnSize] = '\0';
-        classList += columnSize + 1;
-
-        //NAME
-        result = strchr(classList, '|');
-        columnSize = result - classList;
-        nameBuffer = malloc(columnSize + 1);
-
-        strncpy(nameBuffer, classList, columnSize);
-        nameBuffer[columnSize] = '\0';
-
-        gtk_combo_box_text_append(widgets->view_students->edit_student_class, idBuffer, nameBuffer);
-
-        classList = strstr(classList, ";\n") + 2;
-        free(idBuffer);
-        free(nameBuffer);
-    }
-
-    free(firstAdress);
 }
 
 void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo, char **email, char **bottles,
@@ -787,7 +742,7 @@ void GTKCreateStudent() {
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->create_student_fixed);
 
-    GTKCreateStudentFillClassComboList();
+    fillClassComboList(widgets->view_students->create_student_class);
 
     gtk_entry_set_text(widgets->view_students->create_student_first_name, "");
     gtk_entry_set_text(widgets->view_students->create_student_last_name, "");
@@ -822,55 +777,6 @@ void GTKCreateStudentSubmit() {
         printf("Student create successful\n");
         GTKListStudents();
     }
-}
-
-void GTKCreateStudentFillClassComboList() {
-    char *classList;
-    listClasses(&classList);
-
-    int nbSanctions = 0, i;
-    char *result = classList, *firstAdress = classList, *nameBuffer, *idBuffer;
-    size_t columnSize;
-
-
-    gtk_combo_box_text_remove_all(widgets->view_students->create_student_class);
-
-
-    while ((result = strstr(result, ";\n"))) {
-        nbSanctions++;
-        result++;
-    }
-
-    for (i = 0; i < nbSanctions; ++i) {
-        //ID
-        result = strchr(classList, '|');
-        columnSize = result - classList;
-        idBuffer = malloc(columnSize + 1);
-
-        strncpy(idBuffer, classList, columnSize);
-        idBuffer[columnSize] = '\0';
-        classList += columnSize + 1;
-
-        //NAME
-        result = strchr(classList, '|');
-        columnSize = result - classList;
-        nameBuffer = malloc(columnSize + 1);
-
-        strncpy(nameBuffer, classList, columnSize);
-        nameBuffer[columnSize] = '\0';
-
-        gtk_combo_box_text_append(widgets->view_students->create_student_class, idBuffer, nameBuffer);
-
-        classList = strstr(classList, ";\n") + 2;
-        free(idBuffer);
-        free(nameBuffer);
-    }
-
-    free(firstAdress);
-}
-
-void GTKCreateStudentImage(char *path) {
-
 }
 
 void GTKListClasses() {
@@ -1016,7 +922,9 @@ void GTKEditClass(int id) {
     char *name, *major, *user, *sanction, *year, *sanction_fk, *user_fk, idBuffer[4];
     int apprenticeship;
 
-    GTKEditClassFillSanctionComboList();
+    fillSanctionComboList(widgets->view_classes->edit_class_sanction);
+    fillUserComboList(widgets->view_classes->edit_class_user);
+
     GTKClassGetData(id, &name, &year, &apprenticeship, &major, &user, &user_fk, &sanction, &sanction_fk);
     itoa(id, idBuffer, 10);
 
@@ -1025,8 +933,6 @@ void GTKEditClass(int id) {
     gtk_entry_set_text(widgets->view_classes->edit_class_name, name);
     gtk_entry_set_text(widgets->view_classes->edit_class_major, major);
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction), sanction_fk);
-    gtk_combo_box_text_remove_all(widgets->view_classes->edit_class_user);
-    gtk_combo_box_text_append(widgets->view_classes->edit_class_user, user_fk, user);
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_user), user_fk);
     if (apprenticeship)
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widgets->view_classes->edit_class_apprenticeship), TRUE);
@@ -1041,52 +947,6 @@ void GTKEditClass(int id) {
     free(year);
     free(sanction_fk);
     free(user_fk);
-}
-
-void GTKEditClassFillSanctionComboList() {
-    char *sanctionsList;
-    listSanctions(&sanctionsList);
-
-    int nbSanctions = 0, i;
-    char *result = sanctionsList, *firstAdress = sanctionsList, *nameBuffer, *idBuffer;
-    size_t columnSize;
-
-
-    gtk_combo_box_text_remove_all(widgets->view_classes->edit_class_sanction);
-    gtk_combo_box_text_append(widgets->view_classes->edit_class_sanction, "0", "None");
-
-
-    while ((result = strstr(result, ";\n"))) {
-        nbSanctions++;
-        result++;
-    }
-
-    for (i = 0; i < nbSanctions; ++i) {
-        //ID
-        result = strchr(sanctionsList, '|');
-        columnSize = result - sanctionsList;
-        idBuffer = malloc(columnSize + 1);
-
-        strncpy(idBuffer, sanctionsList, columnSize);
-        idBuffer[columnSize] = '\0';
-        sanctionsList += columnSize + 1;
-
-        //NAME
-        result = strchr(sanctionsList, '|');
-        columnSize = result - sanctionsList;
-        nameBuffer = malloc(columnSize + 1);
-
-        strncpy(nameBuffer, sanctionsList, columnSize);
-        nameBuffer[columnSize] = '\0';
-
-        gtk_combo_box_text_append(widgets->view_classes->edit_class_sanction, idBuffer, nameBuffer);
-
-        sanctionsList = strstr(sanctionsList, ";\n") + 2;
-        free(idBuffer);
-        free(nameBuffer);
-    }
-
-    free(firstAdress);
 }
 
 void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char **major, char **user, char **user_fk,
@@ -1183,15 +1043,14 @@ void GTKEditClassSubmit() {
 void GTKCreateClass() {
     gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->create_class_fixed);
 
-    GTKCreateClassFillSanctionComboList();
+    fillSanctionComboList(widgets->view_classes->create_class_sanction);
+    fillUserComboList(widgets->view_classes->create_class_user);
+
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_sanction), "0");
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_user), "1");
 
     gtk_entry_set_text(widgets->view_classes->create_class_name, "");
     gtk_entry_set_text(widgets->view_classes->create_class_major, "");
-    gtk_combo_box_text_remove_all(widgets->view_classes->create_class_user);
-    //TODO Create function for that
-    gtk_combo_box_text_append(widgets->view_classes->create_class_user, "1", "Frédéric Sananes");
-    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_user), "1");
     gtk_entry_set_text(GTK_ENTRY(widgets->view_classes->create_class_year), "2020");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widgets->view_classes->create_class_apprenticeship), FALSE);
 
@@ -1213,53 +1072,6 @@ void GTKCreateClassSubmit() {
         printf("Class create successful\n");
         GTKListClasses();
     }
-}
-
-void GTKCreateClassFillSanctionComboList() {
-    char *sanctionsList;
-    listSanctions(&sanctionsList);
-
-    int nbSanctions = 0, i;
-    char *result = sanctionsList, *firstAdress = sanctionsList, *nameBuffer, *idBuffer;
-    size_t columnSize;
-
-
-    gtk_combo_box_text_remove_all(widgets->view_classes->create_class_sanction);
-    gtk_combo_box_text_append(widgets->view_classes->create_class_sanction, "0", "None");
-
-
-    while ((result = strstr(result, ";\n"))) {
-        nbSanctions++;
-        result++;
-    }
-
-    for (i = 0; i < nbSanctions; ++i) {
-        //ID
-        result = strchr(sanctionsList, '|');
-        columnSize = result - sanctionsList;
-        idBuffer = malloc(columnSize + 1);
-
-        strncpy(idBuffer, sanctionsList, columnSize);
-        idBuffer[columnSize] = '\0';
-        sanctionsList += columnSize + 1;
-
-        //NAME
-        result = strchr(sanctionsList, '|');
-        columnSize = result - sanctionsList;
-        nameBuffer = malloc(columnSize + 1);
-
-        strncpy(nameBuffer, sanctionsList, columnSize);
-        nameBuffer[columnSize] = '\0';
-
-        gtk_combo_box_text_append(widgets->view_classes->create_class_sanction, idBuffer, nameBuffer);
-
-        sanctionsList = strstr(sanctionsList, ";\n") + 2;
-        free(idBuffer);
-        free(nameBuffer);
-    }
-
-    free(firstAdress);
-
 }
 
 void GTKListSanctions() {
@@ -1350,12 +1162,11 @@ void GTKEditSanction(int id) {
     char *name, *description, *user, *user_fk, idBuffer[6];
     itoa(id, idBuffer, 10);
     GTKSanctionGetData(id, &name, &description, &user, &user_fk);
+    fillUserComboList(widgets->view_sanctions->edit_sanction_user);
 
     GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->edit_sanction_description);
     gtk_text_buffer_set_text(textBuffer, description, strlen(description));
     gtk_entry_set_text(widgets->view_sanctions->edit_sanction_name, name);
-    gtk_combo_box_text_remove_all((widgets->view_sanctions->edit_sanction_user));
-    gtk_combo_box_text_append(widgets->view_sanctions->edit_sanction_user, user_fk, user);
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_sanctions->edit_sanction_user), user_fk);
     gtk_label_set_text(widgets->view_sanctions->edit_sanction_id, idBuffer);
     gtk_widget_set_visible(GTK_WIDGET(widgets->view_sanctions->edit_sanction_id), FALSE);
@@ -1436,14 +1247,12 @@ void GTKCreateSanction() {
     gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
                                 widgets->view_sanctions->create_sanction_fixed);
 
+    fillUserComboList(widgets->view_sanctions->create_sanction_user);
+
     GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->create_sanction_description);
     gtk_text_buffer_set_text(textBuffer, "", 0);
     gtk_entry_set_text(widgets->view_sanctions->create_sanction_name, "");
-    //TODO Create function for that, also in "create/create class"
-    gtk_combo_box_text_remove_all((widgets->view_sanctions->create_sanction_user));
-    gtk_combo_box_text_append(widgets->view_sanctions->create_sanction_user, "1", "Frédéric Sananes");
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_sanctions->create_sanction_user), "1");
-
 }
 
 void GTKCreateSanctionSubmit() {
@@ -1453,7 +1262,7 @@ void GTKCreateSanctionSubmit() {
     GtkTextIter endIter;
     gtk_text_buffer_get_start_iter(textBuffer, &startIter);
     gtk_text_buffer_get_end_iter(textBuffer, &endIter);
-    
+
     int returnCode = insertSanction(gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
                                     gtk_entry_get_text(widgets->view_sanctions->create_sanction_name),
                                     atoi(gtk_combo_box_get_active_id(

@@ -340,15 +340,11 @@ void GTKCreateStudent();
 
 void GTKCreateStudentSubmit();
 
-void GTKCreateStudentFillClassComboList();
-
 void GTKListClasses();
 
 void GTKEditClass(int id);
 
 void GTKEditClassSubmit();
-
-void GTKEditClassFillSanctionComboList();
 
 void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char **major, char **user, char **user_fk,
                      char **sanction, char **sanction_fk);
@@ -356,8 +352,6 @@ void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char
 void GTKCreateClass();
 
 void GTKCreateClassSubmit();
-
-void GTKCreateClassFillSanctionComboList();
 
 void GTKListSanctions();
 
