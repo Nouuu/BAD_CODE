@@ -373,17 +373,7 @@ void GTKListStudents() {
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 2, buffer, -1);
         students += columnSize + 1;
 
-        //TODO PHOTO
-        free(buffer);
-        result = strchr(students, '|');
-        columnSize = result - students;
-        buffer = malloc(columnSize + 1);
-//
-//        strncpy(buffer, students, columnSize);
-//        buffer[columnSize] = '\0';
-//
-//        gtk_tree_store_set(treeStore, &iter, 3, buffer, -1);
-        students += columnSize + 1;
+        students += strchr(students, '|') - students + 1;
 
         //EMAIL
         free(buffer);
@@ -1889,7 +1879,7 @@ void dashboardGTK(int *argc, char ***argv) {
     g_signal_connect(widgets->window_dashboard, "destroy", G_CALLBACK(on_destroy), NULL);
 
     gtk_builder_connect_signals(builder, NULL);
-//    g_object_unref(builder); // Decreases the reference count of builder : if count = 0, memory is freed
+    g_object_unref(builder); // Decreases the reference count of builder : if count = 0, memory is freed
 
     gtk_widget_show_all(widgets->window_dashboard);
 
