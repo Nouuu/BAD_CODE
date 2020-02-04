@@ -15,8 +15,7 @@ void on_destroy() {
 void on_sanctions_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint id = get_id_row_activated(tree_view, path);
     printf("SANCTION ID: %d\n", id);
-    gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
-                                widgets->view_sanctions->edit_sanction_fixed);
+    GTKEditSanction(id);
 }
 
 void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
@@ -199,8 +198,7 @@ void on_sanctions_view_delete_button_clicked() {
 
 void on_sanctions_view_create_button_clicked() {
     printf("Create sanction\n");
-    gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
-                                widgets->view_sanctions->create_sanction_fixed);
+    GTKCreateSanction();
 }
 
 void on_sanction_edit_return_button_clicked() {
@@ -210,7 +208,7 @@ void on_sanction_edit_return_button_clicked() {
 
 void on_sanction_edit_submit_button_clicked() {
     printf("Submit sanction edit\n");
-    GTKListSanctions();
+    GTKEditSanctionSubmit();
 }
 
 void on_sanction_create_return_button_clicked() {
@@ -220,7 +218,7 @@ void on_sanction_create_return_button_clicked() {
 
 void on_sanction_create_submit_button_clicked() {
     printf("Submit sanction create\n");
-    GTKListSanctions();
+    GTKCreateSanctionSubmit();
 }
 
 void on_deliverables_view_refresh_button_clicked() {
@@ -885,6 +883,8 @@ void GTKEditClass(int id) {
     gtk_entry_set_text(widgets->view_classes->edit_class_name, name);
     gtk_entry_set_text(widgets->view_classes->edit_class_major, major);
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction), sanction_fk);
+    gtk_combo_box_text_remove_all(widgets->view_classes->edit_class_user);
+    gtk_combo_box_text_append(widgets->view_classes->edit_class_user, user_fk, user);
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_user), user_fk);
     if (apprenticeship)
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widgets->view_classes->edit_class_apprenticeship), TRUE);
@@ -1197,6 +1197,129 @@ void GTKListSanctions() {
         sanctions += columnSize + 2;
     }
     free(firstAddress);
+}
+
+void GTKEditSanction(int id) {
+    gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
+                                widgets->view_sanctions->edit_sanction_fixed);
+    char *name, *description, *user, *user_fk, idBuffer[6];
+    itoa(id, idBuffer, 10);
+    GTKSanctionGetData(id, &name, &description, &user, &user_fk);
+
+    GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->edit_sanction_description);
+    gtk_text_buffer_set_text(textBuffer, description, strlen(description));
+    gtk_entry_set_text(widgets->view_sanctions->edit_sanction_name, name);
+    gtk_combo_box_text_remove_all((widgets->view_sanctions->edit_sanction_user));
+    gtk_combo_box_text_append(widgets->view_sanctions->edit_sanction_user, user_fk, user);
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_sanctions->edit_sanction_user), user_fk);
+    gtk_label_set_text(widgets->view_sanctions->edit_sanction_id, idBuffer);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_sanctions->edit_sanction_id), FALSE);
+
+    free(name);
+    free(description);
+    free(user);
+    free(user_fk);
+}
+
+void GTKEditSanctionSubmit() {
+
+    GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->edit_sanction_description);
+    GtkTextIter startIter;
+    GtkTextIter endIter;
+    gtk_text_buffer_get_start_iter(textBuffer, &startIter);
+    gtk_text_buffer_get_end_iter(textBuffer, &endIter);
+
+    printf("id: %s\n", gtk_label_get_text(widgets->view_sanctions->edit_sanction_id));
+    printf("Name: %s\n", gtk_entry_get_text(widgets->view_sanctions->edit_sanction_name));
+    printf("Description: %s\n", gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE));
+    printf("Userfk: %s\n", gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_sanctions->edit_sanction_user)));
+
+    int returnCode = updateSanction(atoi(gtk_label_get_text(widgets->view_sanctions->edit_sanction_id)),
+                                    gtk_entry_get_text(widgets->view_sanctions->edit_sanction_name),
+                                    gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
+                                    atoi(gtk_combo_box_get_active_id(
+                                            GTK_COMBO_BOX(widgets->view_sanctions->edit_sanction_user))));
+
+    if (returnCode)
+        fprintf(stderr, "Error, could not edit sanction\n");
+    else {
+        printf("Sanction edit successful\n");
+        GTKListSanctions();
+    }
+}
+
+void GTKSanctionGetData(int id, char **name, char **description, char **user, char **user_fk) {
+    char *sanctionData, *firstAdress;
+    size_t columnSize;
+    getSanction(&sanctionData, id);
+    firstAdress = sanctionData;
+
+    //ID
+    sanctionData += strchr(sanctionData, '|') - sanctionData + 1;
+
+    //NAME
+    columnSize = strchr(sanctionData, '|') - sanctionData;
+    *name = malloc(columnSize + 1);
+    strncpy(*name, sanctionData, columnSize);
+    (*name)[columnSize] = '\0';
+    sanctionData += columnSize + 1;
+
+    //DESCRIPTION
+    columnSize = strchr(sanctionData, '|') - sanctionData;
+    *description = malloc(columnSize + 1);
+    strncpy(*description, sanctionData, columnSize);
+    (*description)[columnSize] = '\0';
+    sanctionData += columnSize + 1;
+
+    //USER
+    columnSize = strchr(sanctionData, '|') - sanctionData;
+    *user = malloc(columnSize + 1);
+    strncpy(*user, sanctionData, columnSize);
+    (*user)[columnSize] = '\0';
+    sanctionData += columnSize + 1;
+
+    //USER_FK
+    columnSize = strstr(sanctionData, ";\n") - sanctionData;
+    *user_fk = malloc(columnSize + 1);
+    strncpy(*user_fk, sanctionData, columnSize);
+    (*user_fk)[columnSize] = '\0';
+
+    free(firstAdress);
+}
+
+void GTKCreateSanction() {
+    gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
+                                widgets->view_sanctions->create_sanction_fixed);
+
+    GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->create_sanction_description);
+    gtk_text_buffer_set_text(textBuffer, "", 0);
+    gtk_entry_set_text(widgets->view_sanctions->create_sanction_name, "");
+    //TODO Create function for that, also in "create/create class"
+    gtk_combo_box_text_remove_all((widgets->view_sanctions->create_sanction_user));
+    gtk_combo_box_text_append(widgets->view_sanctions->create_sanction_user, "1", "Frédéric Sananes");
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_sanctions->create_sanction_user), "1");
+
+}
+
+void GTKCreateSanctionSubmit() {
+
+    GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->create_sanction_description);
+    GtkTextIter startIter;
+    GtkTextIter endIter;
+    gtk_text_buffer_get_start_iter(textBuffer, &startIter);
+    gtk_text_buffer_get_end_iter(textBuffer, &endIter);
+    
+    int returnCode = insertSanction(gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
+                                    gtk_entry_get_text(widgets->view_sanctions->create_sanction_name),
+                                    atoi(gtk_combo_box_get_active_id(
+                                            GTK_COMBO_BOX(widgets->view_sanctions->create_sanction_user))));
+
+    if (returnCode)
+        fprintf(stderr, "Error, could not create sanction\n");
+    else {
+        printf("Sanction create successful\n");
+        GTKListSanctions();
+    }
 }
 
 void GTKListDeliverables() {
@@ -1698,6 +1821,17 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "sanction_create_return_button"));
     widgets->view_sanctions->sanction_create_submit_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "sanction_create_submit_button"));
+    widgets->view_sanctions->edit_sanction_name = GTK_ENTRY(gtk_builder_get_object(builder, "edit_sanction_name"));
+    widgets->view_sanctions->edit_sanction_id = GTK_LABEL(gtk_builder_get_object(builder, "edit_sanction_id"));
+    widgets->view_sanctions->edit_sanction_description = GTK_TEXT_VIEW(
+            gtk_builder_get_object(builder, "edit_sanction_description"));
+    widgets->view_sanctions->edit_sanction_user = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "edit_sanction_user"));
+    widgets->view_sanctions->create_sanction_user = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "create_sanction_user"));
+    widgets->view_sanctions->create_sanction_name = GTK_ENTRY(gtk_builder_get_object(builder, "create_sanction_name"));
+    widgets->view_sanctions->create_sanction_description = GTK_TEXT_VIEW(
+            gtk_builder_get_object(builder, "create_sanction_description"));
     widgets->view_sanctions->sanctions_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "sanctions_tree_store"));
     widgets->view_sanctions->sanctions_tree_view = GTK_TREE_VIEW(
