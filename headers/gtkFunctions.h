@@ -319,6 +319,8 @@ void on_destroy();
 
 void fillUserComboList(GtkComboBoxText *comboBoxText);
 
+void fillClassComboList(GtkComboBoxText *comboBoxText);
+
 void GTKListStudents();
 
 void GTKEditStudent(int id);

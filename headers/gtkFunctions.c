@@ -357,6 +357,51 @@ void fillUserComboList(GtkComboBoxText *comboBoxText) {
     free(firstAdress);
 }
 
+void fillClassComboList(GtkComboBoxText *comboBoxText){
+    char *classList;
+    listClasses(&classList);
+
+    int nbSanctions = 0, i;
+    char *result = classList, *firstAdress = classList, *nameBuffer, *idBuffer;
+    size_t columnSize;
+
+
+    gtk_combo_box_text_remove_all(comboBoxText);
+
+
+    while ((result = strstr(result, ";\n"))) {
+        nbSanctions++;
+        result++;
+    }
+
+    for (i = 0; i < nbSanctions; ++i) {
+        //ID
+        result = strchr(classList, '|');
+        columnSize = result - classList;
+        idBuffer = malloc(columnSize + 1);
+
+        strncpy(idBuffer, classList, columnSize);
+        idBuffer[columnSize] = '\0';
+        classList += columnSize + 1;
+
+        //NAME
+        result = strchr(classList, '|');
+        columnSize = result - classList;
+        nameBuffer = malloc(columnSize + 1);
+
+        strncpy(nameBuffer, classList, columnSize);
+        nameBuffer[columnSize] = '\0';
+
+        gtk_combo_box_text_append(comboBoxText, idBuffer, nameBuffer);
+
+        classList = strstr(classList, ";\n") + 2;
+        free(idBuffer);
+        free(nameBuffer);
+    }
+
+    free(firstAdress);
+}
+
 void GTKListStudents() {
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->view_students_fixed);
