@@ -321,13 +321,13 @@ void fillUserComboList(GtkComboBoxText *comboBoxText);
 
 void fillClassComboList(GtkComboBoxText *comboBoxText);
 
+void fillSanctionComboList(GtkComboBoxText *comboBoxText);
+
 void GTKListStudents();
 
 void GTKEditStudent(int id);
 
 void GTKEditStudentSubmit();
-
-void GTKEditStudentFillClassComboList();
 
 void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo, char **email, char **bottles,
                        char **class, char **class_fk);

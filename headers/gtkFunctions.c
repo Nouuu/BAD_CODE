@@ -402,6 +402,52 @@ void fillClassComboList(GtkComboBoxText *comboBoxText){
     free(firstAdress);
 }
 
+void fillSanctionComboList(GtkComboBoxText *comboBoxText) {
+    char *sanctionsList;
+    listSanctions(&sanctionsList);
+
+    int nbSanctions = 0, i;
+    char *result = sanctionsList, *firstAdress = sanctionsList, *nameBuffer, *idBuffer;
+    size_t columnSize;
+
+
+    gtk_combo_box_text_remove_all(comboBoxText);
+    gtk_combo_box_text_append(comboBoxText, "0", "None");
+
+
+    while ((result = strstr(result, ";\n"))) {
+        nbSanctions++;
+        result++;
+    }
+
+    for (i = 0; i < nbSanctions; ++i) {
+        //ID
+        result = strchr(sanctionsList, '|');
+        columnSize = result - sanctionsList;
+        idBuffer = malloc(columnSize + 1);
+
+        strncpy(idBuffer, sanctionsList, columnSize);
+        idBuffer[columnSize] = '\0';
+        sanctionsList += columnSize + 1;
+
+        //NAME
+        result = strchr(sanctionsList, '|');
+        columnSize = result - sanctionsList;
+        nameBuffer = malloc(columnSize + 1);
+
+        strncpy(nameBuffer, sanctionsList, columnSize);
+        nameBuffer[columnSize] = '\0';
+
+        gtk_combo_box_text_append(comboBoxText, idBuffer, nameBuffer);
+
+        sanctionsList = strstr(sanctionsList, ";\n") + 2;
+        free(idBuffer);
+        free(nameBuffer);
+    }
+
+    free(firstAdress);
+}
+
 void GTKListStudents() {
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->view_students_fixed);
