@@ -1804,6 +1804,11 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "edit_sanction_description"));
     widgets->view_sanctions->edit_sanction_user = GTK_COMBO_BOX_TEXT(
             gtk_builder_get_object(builder, "edit_sanction_user"));
+    widgets->view_sanctions->create_sanction_user = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "create_sanction_user"));
+    widgets->view_sanctions->create_sanction_name = GTK_ENTRY(gtk_builder_get_object(builder, "create_sanction_name"));
+    widgets->view_sanctions->create_sanction_description = GTK_TEXT_VIEW(
+            gtk_builder_get_object(builder, "create_sanction_description"));
     widgets->view_sanctions->sanctions_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "sanctions_tree_store"));
     widgets->view_sanctions->sanctions_tree_view = GTK_TREE_VIEW(

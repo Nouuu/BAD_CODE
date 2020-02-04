@@ -133,6 +133,9 @@ typedef struct {
     GtkEntry *edit_sanction_name;
     GtkTextView *edit_sanction_description;
     GtkComboBoxText *edit_sanction_user;
+    GtkEntry *create_sanction_name;
+    GtkTextView *create_sanction_description;
+    GtkComboBoxText *create_sanction_user;
     GtkTreeStore *sanctions_tree_store;
     GtkTreeView *sanctions_tree_view;
     GtkTreeSelection *sanctions_tree_selection;
