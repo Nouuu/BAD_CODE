@@ -1056,6 +1056,9 @@ void GTKCreateClass() {
 
     gtk_entry_set_text(widgets->view_classes->create_class_name, "");
     gtk_entry_set_text(widgets->view_classes->create_class_major, "");
+    gtk_combo_box_text_remove_all(widgets->view_classes->create_class_user);
+    //TODO Create function for that
+    gtk_combo_box_text_append(widgets->view_classes->create_class_user, "1", "Frédéric Sananes");
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_user), "1");
     gtk_entry_set_text(GTK_ENTRY(widgets->view_classes->create_class_year), "2020");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widgets->view_classes->create_class_apprenticeship), FALSE);
