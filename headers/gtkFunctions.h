@@ -317,13 +317,17 @@ guint get_id_row_selected(GtkTreeSelection *selection);
 
 void on_destroy();
 
+void fillUserComboList(GtkComboBoxText *comboBoxText);
+
+void fillClassComboList(GtkComboBoxText *comboBoxText);
+
+void fillSanctionComboList(GtkComboBoxText *comboBoxText);
+
 void GTKListStudents();
 
 void GTKEditStudent(int id);
 
 void GTKEditStudentSubmit();
-
-void GTKEditStudentFillClassComboList();
 
 void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo, char **email, char **bottles,
                        char **class, char **class_fk);
@@ -336,15 +340,11 @@ void GTKCreateStudent();
 
 void GTKCreateStudentSubmit();
 
-void GTKCreateStudentFillClassComboList();
-
 void GTKListClasses();
 
 void GTKEditClass(int id);
 
 void GTKEditClassSubmit();
-
-void GTKEditClassFillSanctionComboList();
 
 void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char **major, char **user, char **user_fk,
                      char **sanction, char **sanction_fk);
@@ -352,8 +352,6 @@ void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char
 void GTKCreateClass();
 
 void GTKCreateClassSubmit();
-
-void GTKCreateClassFillSanctionComboList();
 
 void GTKListSanctions();
 
