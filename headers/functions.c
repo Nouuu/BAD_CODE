@@ -20,11 +20,11 @@ void createPath(char *path) {
     mkdir(buffer);
 }
 
-int copyFile(char *src, char *dest) {
-
+int copyFile(const char *src, const char *dest) {
+    //TODO use wfopen and convert char* to wchar* to fix UTF-8 encoding issue
     FILE *file = fopen(src, "rb");
     if (file == NULL) {
-        fprintf(stderr, "Cannot open image\n");
+        fprintf(stderr, "Cannot open file\n");
         return 1;
     }
 
@@ -35,6 +35,7 @@ int copyFile(char *src, char *dest) {
     createPath(targetFolderBuffer);
     free(targetFolderBuffer);
 
+    //TODO use wfopen and convert char* to wchar* to fix UTF-8 encoding issue
     FILE *target = fopen(dest, "wb");
     if (target == NULL) {
         fclose(file);
