@@ -2239,6 +2239,41 @@ void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeho
     }
 }
 
+void GTKSaveFile(const char *path) {
+    GtkWidget *dialog;
+    GtkFileChooser *chooser;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+    gint res;
+
+
+    dialog = gtk_file_chooser_dialog_new("Save File",
+                                         GTK_WINDOW(widgets->window_dashboard),
+                                         action,
+                                         "_Cancel",
+                                         GTK_RESPONSE_CANCEL,
+                                         "Save",
+                                         GTK_RESPONSE_ACCEPT,
+                                         NULL);
+    chooser = GTK_FILE_CHOOSER (dialog);
+
+    gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
+
+
+    gtk_file_chooser_set_filename(chooser, path);
+
+    res = gtk_dialog_run(GTK_DIALOG (dialog));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        char *filename;
+
+        filename = gtk_file_chooser_get_filename(chooser);
+        copyFile(path, filename);
+        g_free(filename);
+    }
+
+    gtk_widget_destroy(dialog);
+
+}
+
 void dashboardGTK(int *argc, char ***argv) {
     // Déclaration des variables
     widgets = g_slice_new(App_widgets);

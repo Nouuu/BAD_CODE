@@ -420,6 +420,8 @@ void connectWidgets();
 
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder);
 
+void GTKSaveFile(const char *path);
+
 void dashboardGTK(int *argc, char ***argv);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -25,6 +25,8 @@ char *get_filename_ext(char *path);
  * @return 1 if it is image, 0 if not
  */
 int checkImageExtension(char *path);
+int checkVideoExtension(char *path);
+int checkAudioExtension(char *path);
 
 int checkVideoExtension(char *path);
 int checkAudioExtension(char *path);
