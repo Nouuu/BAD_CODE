@@ -426,6 +426,8 @@ void GTKEditSanctionSubmit();
 
 void GTKSanctionGetData(int id, char **name, char **description, char **user, char **user_fk);
 
+void GTKSanctionGetDataStudentId(int student_id, char **name, char **description, char **student, char **student_fk);
+
 void GTKCreateSanction();
 
 void GTKCreateSanctionSubmit();
@@ -437,7 +439,8 @@ void GTKEditDelivreables(int id);
 void GTKEditDelivreablesSubmit();
 
 void GTKDelivreablesGetData(int id, char **due_date, char **subject, char **audio_record, char **video_record,
-                            char **bad_code, char **deliverable_file, char **status, char **student, char **student_fk,
+                            char **bad_code, char **deliverable_file, char **status, char **student,
+                            char **student_fk,
                             char **sanction_name, char **sanction_description);
 
 void GTKEditDeliverableSetDueDate(char *date);
@@ -449,6 +452,10 @@ int GTKDeliverableSetVideo(char *path);
 int GTKDeliverableSetBadCode(char *path);
 
 int GTKDeliverableSetDeliverable(char *path);
+
+void GTKCreateDelivreables(int student_fk);
+
+void GTKCreateDelivreablesSubmit();
 
 void GTKViewUser();
 
