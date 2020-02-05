@@ -183,6 +183,37 @@ typedef struct {
     GtkButton *deliverable_edit_submit_button;
     GtkButton *deliverable_create_return_button;
     GtkButton *deliverable_create_submit_button;
+    GtkLabel *edit_deliverable_id;
+    GtkLabel *edit_deliverable_student_fk;
+    GtkLabel *edit_deliverable_sanction_name;
+    GtkLabel *edit_deliverable_student_name;
+    GtkTextView *edit_deliverable_sanction_description;
+    GtkEntry *edit_deliverable_subject;
+    GtkComboBoxText *edit_deliverable_status;
+    GtkCalendar *edit_deliverable_due_date;
+    GtkFileChooserButton *edit_deliverable_audio;
+    GtkFileChooserButton *edit_deliverable_video;
+    GtkFileChooserButton *edit_deliverable_bad_code;
+    GtkFileChooserButton *edit_deliverable_deliverable_file;
+    GtkButton *edit_deliverable_audio_download;
+    GtkButton *edit_deliverable_video_download;
+    GtkButton *edit_deliverable_bad_code_download;
+    GtkButton *edit_deliverable_deliverable_file_download;
+    GtkLabel *create_deliverable_student_fk;
+    GtkLabel *create_deliverable_sanction_name;
+    GtkLabel *create_deliverable_student_name;
+    GtkTextView *create_deliverable_sanction_description;
+    GtkEntry *create_deliverable_subject;
+    GtkComboBoxText *create_deliverable_status;
+    GtkCalendar *create_deliverable_due_date;
+    GtkFileChooserButton *create_deliverable_audio;
+    GtkFileChooserButton *create_deliverable_video;
+    GtkFileChooserButton *create_deliverable_bad_code;
+    GtkFileChooserButton *create_deliverable_deliverable_file;
+    GtkButton *create_deliverable_audio_clear;
+    GtkButton *create_deliverable_video_clear;
+    GtkButton *create_deliverable_bad_code_clear;
+    GtkButton *create_deliverable_deliverable_file_clear;
     GtkTreeStore *deliverables_tree_store;
     GtkTreeView *deliverables_tree_view;
     GtkTreeSelection *deliverables_tree_selection;
@@ -302,6 +333,38 @@ G_MODULE_EXPORT void on_deliverable_create_return_button_clicked();
 
 G_MODULE_EXPORT void on_deliverable_create_submit_button_clicked();
 
+G_MODULE_EXPORT void on_edit_deliverable_video_file_set();
+
+G_MODULE_EXPORT void on_edit_deliverable_bad_code_file_set();
+
+G_MODULE_EXPORT void on_edit_deliverable_deliverable_file_file_set();
+
+G_MODULE_EXPORT void on_edit_deliverable_audio_file_set();
+
+G_MODULE_EXPORT void on_edit_deliverable_audio_download_clicked();
+
+G_MODULE_EXPORT void on_edit_deliverable_video_download_clicked();
+
+G_MODULE_EXPORT void on_edit_deliverable_bad_code_download_clicked();
+
+G_MODULE_EXPORT void on_edit_deliverable_deliverable_file_download_clicked();
+
+G_MODULE_EXPORT void on_create_deliverable_audio_clear_clicked();
+
+G_MODULE_EXPORT void on_create_deliverable_video_clear_clicked();
+
+G_MODULE_EXPORT void on_create_deliverable_bad_code_clear_clicked();
+
+G_MODULE_EXPORT void on_create_deliverable_deliverable_file_clear_clicked();
+
+G_MODULE_EXPORT void on_create_deliverable_video_file_set();
+
+G_MODULE_EXPORT void on_create_deliverable_bad_code_file_set();
+
+G_MODULE_EXPORT void on_create_deliverable_deliverable_file_file_set();
+
+G_MODULE_EXPORT void on_create_deliverable_audio_file_set();
+
 G_MODULE_EXPORT void on_view_user_image_file_picker_file_set();
 
 G_MODULE_EXPORT void on_user_view_edit_button_clicked();
@@ -322,6 +385,8 @@ void fillUserComboList(GtkComboBoxText *comboBoxText);
 void fillClassComboList(GtkComboBoxText *comboBoxText);
 
 void fillSanctionComboList(GtkComboBoxText *comboBoxText);
+
+void fillStatusComboList(GtkComboBoxText *comboBoxText, char *status);
 
 void GTKListStudents();
 
@@ -361,11 +426,36 @@ void GTKEditSanctionSubmit();
 
 void GTKSanctionGetData(int id, char **name, char **description, char **user, char **user_fk);
 
+void GTKSanctionGetDataStudentId(int student_id, char **name, char **description, char **student, char **student_fk);
+
 void GTKCreateSanction();
 
 void GTKCreateSanctionSubmit();
 
 void GTKListDeliverables();
+
+void GTKEditDelivreables(int id);
+
+void GTKEditDelivreablesSubmit();
+
+void GTKDelivreablesGetData(int id, char **due_date, char **subject, char **audio_record, char **video_record,
+                            char **bad_code, char **deliverable_file, char **status, char **student,
+                            char **student_fk,
+                            char **sanction_name, char **sanction_description);
+
+void GTKEditDeliverableSetDueDate(char *date);
+
+int GTKDeliverableSetAudio(char *path);
+
+int GTKDeliverableSetVideo(char *path);
+
+int GTKDeliverableSetBadCode(char *path);
+
+int GTKDeliverableSetDeliverable(char *path);
+
+void GTKCreateDelivreables(int student_fk);
+
+void GTKCreateDelivreablesSubmit();
 
 void GTKViewUser();
 
@@ -382,6 +472,8 @@ int GTKUserSetImage(char *path);
 void connectWidgets();
 
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder);
+
+void GTKSaveFile(char *path);
 
 void dashboardGTK(int *argc, char ***argv);
 

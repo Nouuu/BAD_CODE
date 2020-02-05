@@ -33,8 +33,7 @@ void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *pa
 void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint id = get_id_row_activated(tree_view, path);
     printf("DELIVERABLE ID: %d\n", id);
-    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
-                                widgets->view_deliverables->edit_deliverable_fixed);
+    GTKEditDelivreables(id);
 }
 
 void on_menu_stack_visible_child_notify(GtkStack *stack) {
@@ -236,9 +235,13 @@ void on_deliverables_view_delete_button_clicked() {
 }
 
 void on_deliverables_view_create_button_clicked() {
-    printf("Create deliverable\n");
-    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
-                                widgets->view_deliverables->create_deliverable_fixed);
+
+    guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
+    if (int_data) {
+
+        printf("Create deliverable student id: %d\n", int_data);
+        GTKCreateDelivreables(int_data);
+    }
 }
 
 void on_deliverable_edit_return_button_clicked() {
@@ -248,7 +251,7 @@ void on_deliverable_edit_return_button_clicked() {
 
 void on_deliverable_edit_submit_button_clicked() {
     printf("Submit deliverable edit\n");
-    GTKListDeliverables();
+    GTKEditDelivreablesSubmit();
 }
 
 void on_deliverable_create_return_button_clicked() {
@@ -258,7 +261,103 @@ void on_deliverable_create_return_button_clicked() {
 
 void on_deliverable_create_submit_button_clicked() {
     printf("Submit deliverable create\n");
-    GTKListDeliverables();
+    GTKCreateDelivreablesSubmit();
+}
+
+void on_edit_deliverable_video_file_set() {
+    char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_video));
+    printf("Choose video file! : %s\n", path);
+    if (GTKDeliverableSetVideo(path))
+        fprintf(stderr, "Error while adding video\n");
+}
+
+void on_edit_deliverable_bad_code_file_set() {
+    char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_bad_code));
+    printf("Choose bad code file! : %s\n", path);
+    if (GTKDeliverableSetBadCode(path))
+        fprintf(stderr, "Error while adding bad code\n");
+
+}
+
+void on_edit_deliverable_deliverable_file_file_set() {
+    char *path = gtk_file_chooser_get_filename(
+            GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_deliverable_file));
+    printf("Choose deliverable file! : %s\n", path);
+    if (GTKDeliverableSetDeliverable(path))
+        fprintf(stderr, "Error while adding deliverable file\n");
+}
+
+void on_edit_deliverable_audio_file_set() {
+    char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_audio));
+    printf("Choose audio file! : %s\n", path);
+    if (GTKDeliverableSetAudio(path))
+        fprintf(stderr, "Error while adding audio\n");
+}
+
+void on_edit_deliverable_audio_download_clicked() {
+    char *path = gtk_widget_get_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download));
+
+    printf("Download audio: %s\n", path);
+    GTKSaveFile(path);
+}
+
+void on_edit_deliverable_video_download_clicked() {
+    char *path = gtk_widget_get_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download));
+
+    printf("Download video\n");
+    GTKSaveFile(path);
+}
+
+void on_edit_deliverable_bad_code_download_clicked() {
+    char *path = gtk_widget_get_tooltip_text(
+            GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download));
+
+    printf("Download bad code\n");
+    GTKSaveFile(path);
+}
+
+void on_edit_deliverable_deliverable_file_download_clicked() {
+    char *path = gtk_widget_get_tooltip_text(
+            GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download));
+
+    printf("Download deliverable\n");
+    GTKSaveFile(path);
+}
+
+void on_create_deliverable_audio_clear_clicked() {
+    printf("Clear audio\n");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_audio));
+}
+
+void on_create_deliverable_video_clear_clicked() {
+    printf("Clear video\n");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_video));
+}
+
+void on_create_deliverable_bad_code_clear_clicked() {
+    printf("Clear bad_code\n");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_bad_code));
+}
+
+void on_create_deliverable_deliverable_file_clear_clicked() {
+    printf("Clear deliverable\n");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_deliverable_file));
+}
+
+void on_create_deliverable_video_file_set() {
+
+}
+
+void on_create_deliverable_bad_code_file_set() {
+
+}
+
+void on_create_deliverable_deliverable_file_file_set() {
+
+}
+
+void on_create_deliverable_audio_file_set() {
+
 }
 
 void on_view_user_image_file_picker_file_set() {
@@ -448,6 +547,31 @@ void fillSanctionComboList(GtkComboBoxText *comboBoxText) {
     free(firstAdress);
 }
 
+void fillStatusComboList(GtkComboBoxText *comboBoxText, char *status) {
+    gtk_combo_box_text_remove_all(comboBoxText);
+
+    gtk_combo_box_text_append(comboBoxText, "1", "To do");
+    if (!strcmp(status, "To do"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "1");
+
+    gtk_combo_box_text_append(comboBoxText, "2", "Completed");
+    if (!strcmp(status, "Completed"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "2");
+
+    gtk_combo_box_text_append(comboBoxText, "3", "On hold");
+    if (!strcmp(status, "On hold"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "3");
+
+    gtk_combo_box_text_append(comboBoxText, "4", "Checking");
+    if (!strcmp(status, "Checking"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "4");
+
+    gtk_combo_box_text_append(comboBoxText, "5", "Waiting deliverable");
+    if (!strcmp(status, "Waiting deliverable"))
+        gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "5");
+
+}
+
 void GTKListStudents() {
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->view_students_fixed);
@@ -590,7 +714,6 @@ void GTKEditStudent(int id) {
     gtk_entry_set_text(GTK_ENTRY(widgets->view_students->edit_student_bottles), bottles);
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_students->edit_student_class), class_fk);
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_students->edit_student_image_file_picker));
-
 
     free(first_name);
     free(last_name);
@@ -1233,6 +1356,46 @@ void GTKSanctionGetData(int id, char **name, char **description, char **user, ch
     free(firstAdress);
 }
 
+void GTKSanctionGetDataStudentId(int student_id, char **name, char **description, char **student, char **student_fk) {
+    char *sanctionData, *firstAdress;
+    size_t columnSize;
+    getSanctionStudentId(&sanctionData, student_id);
+    firstAdress = sanctionData;
+
+    //ID
+    sanctionData += strchr(sanctionData, '|') - sanctionData + 1;
+
+    //NAME
+    columnSize = strchr(sanctionData, '|') - sanctionData;
+    *name = malloc(columnSize + 1);
+    strncpy(*name, sanctionData, columnSize);
+    (*name)[columnSize] = '\0';
+    sanctionData += columnSize + 1;
+
+    //DESCRIPTION
+    columnSize = strchr(sanctionData, '|') - sanctionData;
+    *description = malloc(columnSize + 1);
+    strncpy(*description, sanctionData, columnSize);
+    (*description)[columnSize] = '\0';
+    sanctionData += columnSize + 1;
+
+    //STUDENT
+    columnSize = strchr(sanctionData, '|') - sanctionData;
+    *student = malloc(columnSize + 1);
+    strncpy(*student, sanctionData, columnSize);
+    (*student)[columnSize] = '\0';
+    sanctionData += columnSize + 1;
+
+    //STUDENT_FK
+    columnSize = strstr(sanctionData, ";\n") - sanctionData;
+    *student_fk = malloc(columnSize + 1);
+    strncpy(*student_fk, sanctionData, columnSize);
+    (*student_fk)[columnSize] = '\0';
+
+    free(firstAdress);
+
+}
+
 void GTKCreateSanction() {
     gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
                                 widgets->view_sanctions->create_sanction_fixed);
@@ -1435,6 +1598,381 @@ void GTKListDeliverables() {
     }
 
     free(firstAddress);
+}
+
+void GTKEditDelivreables(int id) {
+    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
+                                widgets->view_deliverables->edit_deliverable_fixed);
+    char *due_date, *subject, *audio_record, *video_record, *bad_code, *deliverable_file, *status, *student, *student_fk, *sanction_name, *sanction_description, idBuffer[6];
+    itoa(id, idBuffer, 10);
+    GTKDelivreablesGetData(id, &due_date, &subject, &audio_record, &video_record, &bad_code, &deliverable_file, &status,
+                           &student, &student_fk, &sanction_name, &sanction_description);
+
+
+    GTKEditDeliverableSetDueDate(due_date);
+    fillStatusComboList(widgets->view_deliverables->edit_deliverable_status, status);
+
+    GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(
+            widgets->view_deliverables->edit_deliverable_sanction_description);
+    gtk_text_buffer_set_text(textBuffer, sanction_description, strlen(sanction_description));
+
+    gtk_label_set_text(widgets->view_deliverables->edit_deliverable_id, idBuffer);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_id), FALSE);
+    gtk_label_set_text(widgets->view_deliverables->edit_deliverable_student_fk, student_fk);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_student_fk), FALSE);
+    gtk_label_set_text(widgets->view_deliverables->edit_deliverable_sanction_name, sanction_name);
+    gtk_label_set_text(widgets->view_deliverables->edit_deliverable_student_name, student);
+    gtk_entry_set_text(widgets->view_deliverables->edit_deliverable_subject, subject);
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_video));
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_audio));
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_deliverable_file));
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_bad_code));
+
+
+    if (audio_record != NULL && !strlen(audio_record)) {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), FALSE);
+    } else {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), TRUE);
+        gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download),
+                                    audio_record);
+    }
+    if (video_record != NULL && !strlen(video_record)) {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), FALSE);
+    } else {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), TRUE);
+        gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download),
+                                    video_record);
+
+    }
+    if (deliverable_file != NULL && !strlen(deliverable_file)) {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download),
+                               FALSE);
+    } else {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download),
+                               TRUE);
+        gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download),
+                                    deliverable_file);
+
+    }
+    if (bad_code != NULL && !strlen(bad_code)) {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), FALSE);
+    } else {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), TRUE);
+        gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download),
+                                    bad_code);
+
+    }
+
+
+    free(due_date);
+    free(subject);
+    free(audio_record);
+    free(video_record);
+    free(bad_code);
+    free(deliverable_file);
+    free(status);
+    free(student);
+    free(student_fk);
+    free(sanction_name);
+    free(sanction_description);
+}
+
+void GTKDelivreablesGetData(int id, char **due_date, char **subject, char **audio_record, char **video_record,
+                            char **bad_code, char **deliverable_file, char **status, char **student, char **student_fk,
+                            char **sanction_name, char **sanction_description) {
+    char *deliverableData, *firstAdress;
+    size_t columnSize;
+    getDeliverable(&deliverableData, id);
+    firstAdress = deliverableData;
+
+    //ID
+    deliverableData += strchr(deliverableData, '|') - deliverableData + 1;
+
+    //DUE_DATE
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *due_date = malloc(columnSize + 1);
+    strncpy(*due_date, deliverableData, columnSize);
+    (*due_date)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //SUBJECT
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *subject = malloc(columnSize + 1);
+    strncpy(*subject, deliverableData, columnSize);
+    (*subject)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //AUDIO_RECORD
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *audio_record = malloc(columnSize + 1);
+    strncpy(*audio_record, deliverableData, columnSize);
+    (*audio_record)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //VIDEO_RECORD
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *video_record = malloc(columnSize + 1);
+    strncpy(*video_record, deliverableData, columnSize);
+    (*video_record)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //BAD_CODE
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *bad_code = malloc(columnSize + 1);
+    strncpy(*bad_code, deliverableData, columnSize);
+    (*bad_code)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //DELIVERABLE_FILE
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *deliverable_file = malloc(columnSize + 1);
+    strncpy(*deliverable_file, deliverableData, columnSize);
+    (*deliverable_file)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //STATUS
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *status = malloc(columnSize + 1);
+    strncpy(*status, deliverableData, columnSize);
+    (*status)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //STUDENT
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *student = malloc(columnSize + 1);
+    strncpy(*student, deliverableData, columnSize);
+    (*student)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //STUDENT_FK
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *student_fk = malloc(columnSize + 1);
+    strncpy(*student_fk, deliverableData, columnSize);
+    (*student_fk)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //SANCTION_NAME
+    columnSize = strchr(deliverableData, '|') - deliverableData;
+    *sanction_name = malloc(columnSize + 1);
+    strncpy(*sanction_name, deliverableData, columnSize);
+    (*sanction_name)[columnSize] = '\0';
+    deliverableData += columnSize + 1;
+
+    //SANCTION_DESCRIPTION
+    columnSize = strstr(deliverableData, ";\n") - deliverableData;
+    *sanction_description = malloc(columnSize + 1);
+    strncpy(*sanction_description, deliverableData, columnSize);
+    (*sanction_description)[columnSize] = '\0';
+
+    free(firstAdress);
+}
+
+void GTKEditDeliverableSetDueDate(char *date) {
+    // date = YYYY/MM/DD
+    guint day, month, year, columnSize;
+    char *buffer;
+    //YEAR
+    columnSize = strchr(date, '/') - date;
+    buffer = malloc(columnSize + 1);
+    strncpy(buffer, date, columnSize);
+    buffer[columnSize] = '\0';
+    year = atoi(buffer);
+    date += columnSize + 1;
+    free(buffer);
+
+    //MONTH
+    columnSize = strchr(date, '/') - date;
+    buffer = malloc(columnSize + 1);
+    strncpy(buffer, date, columnSize);
+    buffer[columnSize] = '\0';
+    month = atoi(buffer);
+    date += columnSize + 1;
+    free(buffer);
+
+    //DAY
+    columnSize = strchr(date, '\0') - date;
+    buffer = malloc(columnSize + 1);
+    strncpy(buffer, date, columnSize);
+    buffer[columnSize] = '\0';
+    day = atoi(buffer);
+    free(buffer);
+
+    //a month number between 0 and 11.
+    gtk_calendar_select_month(widgets->view_deliverables->edit_deliverable_due_date, month - 1, year);
+    gtk_calendar_select_day(widgets->view_deliverables->edit_deliverable_due_date, day);
+}
+
+void GTKEditDelivreablesSubmit() {
+    guint day, month, year;
+    char dateBuffer[9];
+    gtk_calendar_get_date(widgets->view_deliverables->edit_deliverable_due_date, &year, &month, &day);
+    sprintf(dateBuffer, "%d/%d/%d", year, month + 1, day);
+    //year decimal number (e.g. 2011), or NULL.
+    //month number (between 0 and 11), or NULL.
+    //day number (between 1 and 31), or NULL.
+
+    int returnCode = updateDeliverable(atoi(gtk_label_get_text(widgets->view_deliverables->edit_deliverable_id)),
+                                       dateBuffer,
+                                       gtk_entry_get_text(widgets->view_deliverables->edit_deliverable_subject),
+                                       gtk_combo_box_text_get_active_text(
+                                               widgets->view_deliverables->edit_deliverable_status),
+                                       atoi(gtk_label_get_text(
+                                               widgets->view_deliverables->edit_deliverable_student_fk)));
+
+    if (returnCode)
+        fprintf(stderr, "Error, could not update deliverable\n");
+    else {
+        printf("Deliverable update successful\n");
+        GTKListDeliverables();
+    }
+}
+
+int GTKDeliverableSetAudio(char *path) {
+    if (!checkAudioExtension(path)) {
+        fprintf(stderr, "Wrong audio file extension !\n");
+        return 1;
+    }
+
+    char *newPath;
+
+    if (!strlen(newPath = insertDeliverableFile("audio_record",
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_id)),
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_student_fk)),
+                                                path))) {
+        fprintf(stderr, "Error while adding %s audio record", path);
+        return 1;
+    }
+
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), TRUE);
+    gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), newPath);
+    free(newPath);
+    return 0;
+}
+
+int GTKDeliverableSetVideo(char *path) {
+    if (!checkVideoExtension(path)) {
+        fprintf(stderr, "Wrong video file extension !\n");
+        return 1;
+    }
+
+    char *newPath;
+
+    if (!strlen(newPath = insertDeliverableFile("video_record",
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_id)),
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_student_fk)),
+                                                path))) {
+        fprintf(stderr, "Error while adding %s video record", path);
+        return 1;
+    }
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), TRUE);
+    gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), newPath);
+    free(newPath);
+    return 0;
+}
+
+int GTKDeliverableSetBadCode(char *path) {
+    char *newPath;
+
+    if (!strlen(newPath = insertDeliverableFile("bad_code",
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_id)),
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_student_fk)),
+                                                path))) {
+        fprintf(stderr, "Error while adding %s bad code", path);
+        return 1;
+    }
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), TRUE);
+    gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), newPath);
+    free(newPath);
+    return 0;
+}
+
+int GTKDeliverableSetDeliverable(char *path) {
+    char *newPath;
+
+    if (!strlen(newPath = insertDeliverableFile("deliverable_file",
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_id)),
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_student_fk)),
+                                                path))) {
+        fprintf(stderr, "Error while adding %s audio record", path);
+        return 1;
+    }
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download), TRUE);
+    gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download),
+                                newPath);
+    free(newPath);
+    return 0;
+}
+
+void GTKCreateDelivreables(int student_fk) {
+    gtk_stack_set_visible_child_name(widgets->menu_stack, "view_deliverables");
+    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
+                                widgets->view_deliverables->create_deliverable_fixed);
+
+    char *sanction_name, *sanction_description, *student, *student_fk_c;
+    GTKSanctionGetDataStudentId(student_fk, &sanction_name, &sanction_description, &student, &student_fk_c);
+    fillStatusComboList(widgets->view_deliverables->create_deliverable_status, "To do");
+    GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(
+            widgets->view_deliverables->create_deliverable_sanction_description);
+    gtk_text_buffer_set_text(textBuffer, sanction_description, strlen(sanction_description));
+
+    gtk_label_set_text(widgets->view_deliverables->create_deliverable_student_fk, student_fk_c);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->create_deliverable_student_fk), FALSE);
+    gtk_label_set_text(widgets->view_deliverables->create_deliverable_sanction_name, sanction_name);
+    gtk_label_set_text(widgets->view_deliverables->create_deliverable_student_name, student);
+    gtk_entry_set_text(widgets->view_deliverables->edit_deliverable_subject, "");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_video));
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_audio));
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_deliverable_file));
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_bad_code));
+
+    free(sanction_name);
+    free(sanction_description);
+    free(student);
+    free(student_fk_c);
+}
+
+void GTKCreateDelivreablesSubmit() {
+    guint day, month, year;
+    char dateBuffer[9];
+    gtk_calendar_get_date(widgets->view_deliverables->create_deliverable_due_date, &year, &month, &day);
+    sprintf(dateBuffer, "%d/%d/%d", year, month + 1, day);
+
+    char *audioPath = gtk_file_chooser_get_filename(
+            GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_audio));
+    char *videoPath = gtk_file_chooser_get_filename(
+            GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_video));
+    char *bcPath = gtk_file_chooser_get_filename(
+            GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_bad_code));
+    char *deliverablePath = gtk_file_chooser_get_filename(
+            GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_deliverable_file));
+    int audioGood = checkAudioExtension(audioPath);
+    int videoGood = checkVideoExtension(videoPath);
+
+    int returnCode = insertDeliverable(dateBuffer,
+                                       gtk_entry_get_text(widgets->view_deliverables->create_deliverable_subject),
+                                       audioGood ? audioPath : NULL,
+                                       videoGood ? videoPath : NULL,
+                                       bcPath,
+                                       deliverablePath,
+                                       gtk_combo_box_text_get_active_text(
+                                               widgets->view_deliverables->create_deliverable_status),
+                                       atoi(gtk_label_get_text(
+                                               widgets->view_deliverables->create_deliverable_student_fk)));
+
+    if (returnCode)
+        fprintf(stderr, "Error, could not update deliverable\n");
+    else {
+        printf("Deliverable update successful\n");
+        GTKListDeliverables();
+    }
 }
 
 void GTKViewUser() {
@@ -1830,6 +2368,67 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "deliverable_create_return_button"));
     widgets->view_deliverables->deliverable_create_submit_button = GTK_BUTTON(
             gtk_builder_get_object(builder, "deliverable_create_submit_button"));
+    widgets->view_deliverables->edit_deliverable_id = GTK_LABEL(gtk_builder_get_object(builder, "edit_deliverable_id"));
+    widgets->view_deliverables->edit_deliverable_student_fk = GTK_LABEL(
+            gtk_builder_get_object(builder, "edit_deliverable_student_fk"));
+    widgets->view_deliverables->edit_deliverable_sanction_name = GTK_LABEL(
+            gtk_builder_get_object(builder, "edit_deliverable_sanction_name"));
+    widgets->view_deliverables->edit_deliverable_sanction_description = GTK_TEXT_VIEW(
+            gtk_builder_get_object(builder, "edit_deliverable_sanction_description"));
+    widgets->view_deliverables->edit_deliverable_subject = GTK_ENTRY(
+            gtk_builder_get_object(builder, "edit_deliverable_subject"));
+    widgets->view_deliverables->edit_deliverable_status = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "edit_deliverable_status"));
+    widgets->view_deliverables->edit_deliverable_due_date = GTK_CALENDAR(
+            gtk_builder_get_object(builder, "edit_deliverable_due_date"));
+    widgets->view_deliverables->edit_deliverable_student_name = GTK_LABEL(
+            gtk_builder_get_object(builder, "edit_deliverable_student_name"));
+    widgets->view_deliverables->edit_deliverable_audio = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_audio"));
+    widgets->view_deliverables->edit_deliverable_video = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_video"));
+    widgets->view_deliverables->edit_deliverable_bad_code = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_bad_code"));
+    widgets->view_deliverables->edit_deliverable_deliverable_file = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_deliverable_file"));
+    widgets->view_deliverables->edit_deliverable_audio_download = GTK_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_audio_download"));
+    widgets->view_deliverables->edit_deliverable_video_download = GTK_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_video_download"));
+    widgets->view_deliverables->edit_deliverable_bad_code_download = GTK_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_bad_code_download"));
+    widgets->view_deliverables->edit_deliverable_deliverable_file_download = GTK_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_deliverable_file_download"));
+    widgets->view_deliverables->create_deliverable_student_fk = GTK_LABEL(
+            gtk_builder_get_object(builder, "create_deliverable_student_fk"));
+    widgets->view_deliverables->create_deliverable_sanction_name = GTK_LABEL(
+            gtk_builder_get_object(builder, "create_deliverable_sanction_name"));
+    widgets->view_deliverables->create_deliverable_student_name = GTK_LABEL(
+            gtk_builder_get_object(builder, "create_deliverable_student_name"));
+    widgets->view_deliverables->create_deliverable_sanction_description = GTK_TEXT_VIEW(
+            gtk_builder_get_object(builder, "create_deliverable_sanction_description"));
+    widgets->view_deliverables->create_deliverable_subject = GTK_ENTRY(
+            gtk_builder_get_object(builder, "create_deliverable_subject"));
+    widgets->view_deliverables->create_deliverable_status = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "create_deliverable_status"));
+    widgets->view_deliverables->create_deliverable_due_date = GTK_CALENDAR(
+            gtk_builder_get_object(builder, "create_deliverable_due_date"));
+    widgets->view_deliverables->create_deliverable_audio = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_audio"));
+    widgets->view_deliverables->create_deliverable_video = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_video"));
+    widgets->view_deliverables->create_deliverable_bad_code = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_bad_code"));
+    widgets->view_deliverables->create_deliverable_deliverable_file = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_deliverable_file"));
+    widgets->view_deliverables->create_deliverable_audio_clear = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_audio_clear"));
+    widgets->view_deliverables->create_deliverable_video_clear = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_video_clear"));
+    widgets->view_deliverables->create_deliverable_bad_code_clear = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_bad_code_clear"));
+    widgets->view_deliverables->create_deliverable_deliverable_file_clear = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_deliverable_file_clear"));
     widgets->view_deliverables->deliverables_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "deliverables_tree_store"));
     widgets->view_deliverables->deliverables_tree_view = GTK_TREE_VIEW(
@@ -1942,6 +2541,41 @@ void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeho
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), FALSE);
         gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 85, 161);
     }
+}
+
+void GTKSaveFile(char *path) {
+    GtkWidget *dialog;
+    GtkFileChooser *chooser;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+    gint res;
+
+
+    dialog = gtk_file_chooser_dialog_new("Save File",
+                                         GTK_WINDOW(widgets->window_dashboard),
+                                         action,
+                                         "Cancel",
+                                         GTK_RESPONSE_CANCEL,
+                                         "Save",
+                                         GTK_RESPONSE_ACCEPT,
+                                         NULL);
+    chooser = GTK_FILE_CHOOSER (dialog);
+
+    gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
+
+
+    gtk_file_chooser_set_filename(chooser, path);
+
+    res = gtk_dialog_run(GTK_DIALOG (dialog));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        char *filename;
+
+        filename = gtk_file_chooser_get_filename(chooser);
+        copyFile(path, filename);
+        g_free(filename);
+    }
+
+    gtk_widget_destroy(dialog);
+
 }
 
 void dashboardGTK(int *argc, char ***argv) {
