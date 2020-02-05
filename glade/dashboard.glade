@@ -98,6 +98,26 @@
       <column type="guint"/>
     </columns>
   </object>
+  <object class="GtkImage" id="document_save">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">document-save-symbolic</property>
+  </object>
+  <object class="GtkImage" id="document_save1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">document-save-symbolic</property>
+  </object>
+  <object class="GtkImage" id="document_save2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">document-save-symbolic</property>
+  </object>
+  <object class="GtkImage" id="document_save3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">document-save-symbolic</property>
+  </object>
   <object class="GtkImage" id="edit_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -2684,62 +2704,6 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkFileChooserButton" id="edit_deliverable_audio">
-                        <property name="width_request">100</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="create_folders">False</property>
-                        <property name="title" translatable="yes">Audio file</property>
-                        <signal name="file-set" handler="on_edit_deliverable_audio_file_set" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="x">480</property>
-                        <property name="y">230</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkFileChooserButton" id="edit_deliverable_deliverable_file">
-                        <property name="width_request">100</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="create_folders">False</property>
-                        <property name="title" translatable="yes">Deliverable file</property>
-                        <signal name="file-set" handler="on_edit_deliverable_deliverable_file_file_set" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="x">700</property>
-                        <property name="y">320</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkFileChooserButton" id="edit_deliverable_bad_code">
-                        <property name="width_request">100</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="create_folders">False</property>
-                        <property name="title" translatable="yes">BAD CODE file</property>
-                        <signal name="file-set" handler="on_edit_deliverable_bad_code_file_set" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="x">700</property>
-                        <property name="y">230</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkFileChooserButton" id="edit_deliverable_video">
-                        <property name="width_request">100</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="create_folders">False</property>
-                        <property name="title" translatable="yes">Video file</property>
-                        <signal name="file-set" handler="on_edit_deliverable_video_file_set" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="x">480</property>
-                        <property name="y">320</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkLabel" id="edit_deliverable_student_name">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -2815,6 +2779,167 @@
                       <packing>
                         <property name="x">480</property>
                         <property name="y">200</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">15</property>
+                        <child>
+                          <object class="GtkFileChooserButton" id="edit_deliverable_audio">
+                            <property name="width_request">95</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="create_folders">False</property>
+                            <property name="title" translatable="yes">Audio file</property>
+                            <signal name="file-set" handler="on_edit_deliverable_audio_file_set" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="edit_deliverable_audio_download">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="image">document_save</property>
+                            <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_edit_deliverable_audio_download_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="x">480</property>
+                        <property name="y">230</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">15</property>
+                        <child>
+                          <object class="GtkFileChooserButton" id="edit_deliverable_deliverable_file">
+                            <property name="width_request">95</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="create_folders">False</property>
+                            <property name="title" translatable="yes">Audio file</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="edit_deliverable_deliverable_file_download">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="image">document_save1</property>
+                            <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_edit_deliverable_deliverable_file_download_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="x">700</property>
+                        <property name="y">330</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">15</property>
+                        <child>
+                          <object class="GtkFileChooserButton" id="edit_deliverable_video">
+                            <property name="width_request">95</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="create_folders">False</property>
+                            <property name="title" translatable="yes">Audio file</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="edit_deliverable_video_download">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="image">document_save2</property>
+                            <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_edit_deliverable_video_download_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="x">480</property>
+                        <property name="y">330</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">15</property>
+                        <child>
+                          <object class="GtkFileChooserButton" id="edit_deliverable_bad_code">
+                            <property name="width_request">95</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="create_folders">False</property>
+                            <property name="title" translatable="yes">Audio file</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="edit_deliverable_bad_code_download">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="image">document_save3</property>
+                            <property name="always_show_image">True</property>
+                            <signal name="clicked" handler="on_edit_deliverable_bad_code_download_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="x">700</property>
+                        <property name="y">230</property>
                       </packing>
                     </child>
                   </object>
