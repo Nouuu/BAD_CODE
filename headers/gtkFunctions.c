@@ -1741,28 +1741,83 @@ int GTKDeliverableSetAudio(char *path) {
         return 1;
     }
 
+    char *newPath;
+
+    if (!strlen(newPath = insertDeliverableFile("audio_record",
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_id)),
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_student_fk)),
+                                                path))) {
+        fprintf(stderr, "Error while adding %s audio record", path);
+        return 1;
+    }
+
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), TRUE);
+    gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), newPath);
+    free(newPath);
     return 0;
 }
 
 int GTKDeliverableSetVideo(char *path) {
     if (!checkVideoExtension(path)) {
-        fprintf(stderr, "Wrong audio file extension !\n");
+        fprintf(stderr, "Wrong video file extension !\n");
         return 1;
     }
 
+    char *newPath;
+
+    if (!strlen(newPath = insertDeliverableFile("video_record",
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_id)),
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_student_fk)),
+                                                path))) {
+        fprintf(stderr, "Error while adding %s video record", path);
+        return 1;
+    }
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), TRUE);
+    gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), newPath);
+    free(newPath);
     return 0;
 }
 
 int GTKDeliverableSetBadCode(char *path) {
+    char *newPath;
 
+    if (!strlen(newPath = insertDeliverableFile("bad_code",
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_id)),
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_student_fk)),
+                                                path))) {
+        fprintf(stderr, "Error while adding %s bad code", path);
+        return 1;
+    }
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), TRUE);
+    gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), newPath);
+    free(newPath);
     return 0;
 }
 
 int GTKDeliverableSetDeliverable(char *path) {
+    char *newPath;
 
+    if (!strlen(newPath = insertDeliverableFile("deliverable_file",
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_id)),
+                                                atoi(gtk_label_get_text(
+                                                        widgets->view_deliverables->edit_deliverable_student_fk)),
+                                                path))) {
+        fprintf(stderr, "Error while adding %s audio record", path);
+        return 1;
+    }
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download), TRUE);
+    gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download),
+                                newPath);
+    free(newPath);
     return 0;
 }
-
 
 void GTKViewUser() {
     gtk_stack_set_visible_child(widgets->view_user->view_user_stack, widgets->view_user->view_user_fixed);

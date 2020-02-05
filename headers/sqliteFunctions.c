@@ -1219,7 +1219,7 @@ void getSanction(char **data, int id) {
 }
 
 
-int insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location) {
+char * insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location) {
 
     /////////////// DELETE OLDER FILE //////////////////////////////////////////////////////////////////////////////////
 
@@ -1231,14 +1231,14 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
         fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
-        exit(1);
+        return "";
     }
 
     sqlite3_bind_int(pStmt, 1, id);
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_ROW) {
         fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
-        return 1;
+        return "";
     }
 
     char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0));
@@ -1246,6 +1246,8 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
     if (strlen(filePathBuffer) > 0) {
         remove(filePathBuffer);
     }
+
+    sqlite3_finalize(pStmt);
     free(filePathBuffer);
 
     /////////////////// COPY NEW FILE //////////////////////////////////////////////////////////////////////////////////
@@ -1259,7 +1261,7 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
 
     returnCode = copyFile(file_location, targetFileBuffer);
     if (returnCode)
-        return 1;
+        return "";
 
     /////////////////// UPDATE SQL WITH LOCATION ///////////////////////////////////////////////////////////////////////
 
@@ -1268,7 +1270,7 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
     returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
         fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
-        return 1;
+        return "";
     }
 
     sqlite3_bind_text(pStmt, 1, targetFileBuffer, -1, 0);
@@ -1277,15 +1279,14 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {
         fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
-        return 1;
+        return "";
     }
 
     free(sqlRequest);
-    free(targetFileBuffer);
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
 
-    return 0;
+    return targetFileBuffer;
 }
 
 int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path,

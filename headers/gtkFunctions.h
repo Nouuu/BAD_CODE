@@ -412,8 +412,11 @@ void GTKDelivreablesGetData(int id, char **due_date, char **subject, char **audi
 void GTKEditDeliverableSetDueDate(char *date);
 
 int GTKDeliverableSetAudio(char *path);
+
 int GTKDeliverableSetVideo(char *path);
+
 int GTKDeliverableSetBadCode(char *path);
+
 int GTKDeliverableSetDeliverable(char *path);
 
 void GTKViewUser();

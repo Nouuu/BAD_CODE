@@ -132,7 +132,7 @@ void listSanctions(char **data);
  */
 void getSanction(char **data, int id);
 
-int insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location);
+char * insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location);
 
 int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path,
                       const char *video_reccord_path,
