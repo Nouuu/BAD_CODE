@@ -1511,9 +1511,36 @@ void GTKEditDelivreables(int id) {
     gtk_label_set_text(widgets->view_deliverables->edit_deliverable_student_fk, student_fk);
     gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_student_fk), FALSE);
     gtk_label_set_text(widgets->view_deliverables->edit_deliverable_sanction_name, sanction_name);
+    gtk_label_set_text(widgets->view_deliverables->edit_deliverable_student_name, student);
     gtk_entry_set_text(widgets->view_deliverables->edit_deliverable_subject, subject);
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_video));
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_audio));
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_deliverable_file));
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_bad_code));
 
-    //TODO set download button visible or not with strlen of paths
+
+    if (!strlen(audio_record)) {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), FALSE);
+    } else {
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), TRUE);
+        gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download),
+                                    audio_record);
+    }
+    if (!strlen(video_record))
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), FALSE);
+    else
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), TRUE);
+    if (!strlen(deliverable_file))
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download),
+                               FALSE);
+    else
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download),
+                               TRUE);
+    if (!strlen(bad_code))
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), FALSE);
+    else
+        gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), TRUE);
+
 
     free(due_date);
     free(subject);
