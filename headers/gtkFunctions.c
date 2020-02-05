@@ -235,9 +235,14 @@ void on_deliverables_view_delete_button_clicked() {
 }
 
 void on_deliverables_view_create_button_clicked() {
-    printf("Create deliverable\n");
-    gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
-                                widgets->view_deliverables->create_deliverable_fixed);
+
+    guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
+    if (int_data) {
+        printf("Create deliverable student id: %d\n", int_data);
+        gtk_stack_set_visible_child_name(widgets->menu_stack, "view_deliverables");
+        gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
+                                    widgets->view_deliverables->create_deliverable_fixed);
+    }
 }
 
 void on_deliverable_edit_return_button_clicked() {
@@ -318,6 +323,42 @@ void on_edit_deliverable_deliverable_file_download_clicked() {
 
     printf("Download deliverable\n");
     GTKSaveFile(path);
+}
+
+void on_create_deliverable_audio_clear_clicked() {
+    printf("Clear audio\n");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_audio));
+}
+
+void on_create_deliverable_video_clear_clicked() {
+    printf("Clear video\n");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_video));
+}
+
+void on_create_deliverable_bad_code_clear_clicked() {
+    printf("Clear bad_code\n");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_bad_code));
+}
+
+void on_create_deliverable_deliverable_file_clear_clicked() {
+    printf("Clear deliverable\n");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_deliverable_file));
+}
+
+void on_create_deliverable_video_file_set() {
+
+}
+
+void on_create_deliverable_bad_code_file_set() {
+
+}
+
+void on_create_deliverable_deliverable_file_file_set() {
+
+}
+
+void on_create_deliverable_audio_file_set() {
+
 }
 
 void on_view_user_image_file_picker_file_set() {
@@ -2243,6 +2284,36 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "edit_deliverable_bad_code_download"));
     widgets->view_deliverables->edit_deliverable_deliverable_file_download = GTK_BUTTON(
             gtk_builder_get_object(builder, "edit_deliverable_deliverable_file_download"));
+    widgets->view_deliverables->create_deliverable_student_fk = GTK_LABEL(
+            gtk_builder_get_object(builder, "create_deliverable_student_fk"));
+    widgets->view_deliverables->create_deliverable_sanction_name = GTK_LABEL(
+            gtk_builder_get_object(builder, "create_deliverable_sanction_name"));
+    widgets->view_deliverables->create_deliverable_student_name = GTK_LABEL(
+            gtk_builder_get_object(builder, "create_deliverable_student_name"));
+    widgets->view_deliverables->create_deliverable_sanction_description = GTK_TEXT_VIEW(
+            gtk_builder_get_object(builder, "create_deliverable_sanction_description"));;
+    widgets->view_deliverables->create_deliverable_subject = GTK_ENTRY(
+            gtk_builder_get_object(builder, "create_deliverable_subject"));
+    widgets->view_deliverables->create_deliverable_status = GTK_COMBO_BOX_TEXT(
+            gtk_builder_get_object(builder, "create_deliverable_status"));
+    widgets->view_deliverables->create_deliverable_due_date = GTK_CALENDAR(
+            gtk_builder_get_object(builder, "create_deliverable_due_date"));
+    widgets->view_deliverables->create_deliverable_audio = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_audio"));
+    widgets->view_deliverables->create_deliverable_video = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_video"));
+    widgets->view_deliverables->create_deliverable_bad_code = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_bad_code"));
+    widgets->view_deliverables->create_deliverable_deliverable_file = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_deliverable_file"));
+    widgets->view_deliverables->create_deliverable_audio_clear = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_audio_clear"));
+    widgets->view_deliverables->create_deliverable_video_clear = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_video_clear"));
+    widgets->view_deliverables->create_deliverable_bad_code_clear = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_bad_code_clear"));
+    widgets->view_deliverables->create_deliverable_deliverable_file_clear = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_deliverable_deliverable_file_clear"));
     widgets->view_deliverables->deliverables_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "deliverables_tree_store"));
     widgets->view_deliverables->deliverables_tree_view = GTK_TREE_VIEW(
