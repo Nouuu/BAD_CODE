@@ -1328,7 +1328,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="deliverables_view_create_button">
-                            <property name="label" translatable="yes">Deliverable</property>
+                            <property name="label" translatable="yes">Add deliverable</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -3405,6 +3405,16 @@
                         <property name="x">480</property>
                         <property name="y">290</property>
                       </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="create_deliverable_student_fk">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Sans Bold 14"/>
+                          <attribute name="style" value="normal"/>
+                        </attributes>
+                      </object>
                     </child>
                   </object>
                   <packing>
