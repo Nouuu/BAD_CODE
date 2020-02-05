@@ -91,3 +91,29 @@ int checkImageExtension(char *path) {
 
     return 1;
 }
+
+int checkVideoExtension(char *path) {
+    char *fileExt = get_filename_ext(path);
+
+    if (strcmp(fileExt, "webm") != 0 && strcmp(fileExt, "mkv") != 0 && strcmp(fileExt, "flv") != 0 &&
+        strcmp(fileExt, "vob") != 0 && strcmp(fileExt, "ogg") != 0 && strcmp(fileExt, "gif") != 0 &&
+        strcmp(fileExt, "avi") != 0 && strcmp(fileExt, "TS") != 0 && strcmp(fileExt, "mov") != 0 &&
+        strcmp(fileExt, "wmv") != 0 && strcmp(fileExt, "mp4") != 0 && strcmp(fileExt, "m4v") != 0 &&
+        strcmp(fileExt, "3gp") != 0)
+        return 0;
+
+    return 1;
+}
+
+int checkAudioExtension(char *path) {
+    char *fileExt = get_filename_ext(path);
+
+    if (strcmp(fileExt, "3gp") != 0 && strcmp(fileExt, "aac") != 0 && strcmp(fileExt, "flac") != 0 &&
+        strcmp(fileExt, "m4a") != 0 && strcmp(fileExt, "mp3") != 0 && strcmp(fileExt, "ogg") != 0 &&
+        strcmp(fileExt, "opus") != 0 && strcmp(fileExt, "wav") != 0 && strcmp(fileExt, "wma") != 0 &&
+        strcmp(fileExt, "webm") != 0 && strcmp(fileExt, "aiff") != 0 && strcmp(fileExt, "alac") != 0 &&
+        strcmp(fileExt, "m4p") != 0)
+        return 0;
+
+    return 1;
+}

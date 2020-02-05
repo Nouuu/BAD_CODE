@@ -21,7 +21,7 @@ sqlite3 *connectDB() {
     return db;
 }
 
-int insertTableImage(char *table, int id, char *photo_location) {
+int insertTableImage(char *table, int id, const char *photo_location) {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////    PARTIE FICHIER 1 ///////////////////////////////////////////////////////////////////////////
@@ -537,7 +537,8 @@ void getClass(char **data, int id) {
     sqlite3_close(db);
 }
 
-int insertStudent(const char *first_name, const char *last_name, const char *photo_location, const char *email, int class_fk) {
+int insertStudent(const char *first_name, const char *last_name, const char *photo_location, const char *email,
+                  int class_fk) {
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
     char *sqlRequest = "insert into student (first_name, last_name, email, nb_bottles, class_fk) VALUES (?, ?, ?, 0, ?);";
@@ -1217,8 +1218,69 @@ void getSanction(char **data, int id) {
     sqlite3_close(db);
 }
 
+void getSanctionStudentId(char **data, int student_id) {
+    sqlite3 *db = connectDB();
+    sqlite3_stmt *pStmt;
+    char *sqlRequest = "select sanction.id, sanction.name, description, s.first_name || ' ' || s.last_name as student, s.id as student_id\n"
+                       "from sanction\n"
+                       "         left join class c on sanction.id = c.sanction_fk\n"
+                       "         left join student s on c.id = s.class_fk\n"
+                       "where s.id = ?;";
 
-int insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location) {
+    size_t rowStringSize = 1;
+    char *result = malloc(rowStringSize * sizeof(char));
+    strcpy(result, "");
+
+    int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
+    if (returnCode != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
+        *data = result;
+        return;
+    }
+
+    sqlite3_bind_int(pStmt, 1, student_id);
+
+    returnCode = sqlite3_step(pStmt);
+    if (returnCode != SQLITE_ROW) {
+        *data = result;
+        return;
+    }
+
+    char intBuffer[6];
+
+    //Colonne 0 (id)
+    itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
+    rowStringSize += strlen(intBuffer) + 1;// pour le "|"
+    result = realloc(result, rowStringSize);
+    strcat(result, strcat(intBuffer, "|"));
+    //Colonne 1 (name)
+    rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
+    strcat(result, "|");
+    //Colonne 2 (description)
+    rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 2) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 2));
+    strcat(result, "|");
+    //Colonne 3 (student (name))
+    rowStringSize += sqlite3_column_bytes(pStmt, 3) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 3) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 3));
+    strcat(result, "|");
+    //Colonne 4 (user_fk)
+    itoa(sqlite3_column_int(pStmt, 4), intBuffer, 10);
+    rowStringSize += strlen(intBuffer) + 2;// pour le ";\n"
+    result = realloc(result, rowStringSize);
+    strcat(result, strcat(intBuffer, ";\n"));
+
+    *data = result;
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+
+}
+
+char *insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location) {
 
     /////////////// DELETE OLDER FILE //////////////////////////////////////////////////////////////////////////////////
 
@@ -1230,14 +1292,14 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
         fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
-        exit(1);
+        return "";
     }
 
     sqlite3_bind_int(pStmt, 1, id);
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_ROW) {
         fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
-        return 1;
+        return "";
     }
 
     char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0));
@@ -1245,6 +1307,8 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
     if (strlen(filePathBuffer) > 0) {
         remove(filePathBuffer);
     }
+
+    sqlite3_finalize(pStmt);
     free(filePathBuffer);
 
     /////////////////// COPY NEW FILE //////////////////////////////////////////////////////////////////////////////////
@@ -1258,7 +1322,7 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
 
     returnCode = copyFile(file_location, targetFileBuffer);
     if (returnCode)
-        return 1;
+        return "";
 
     /////////////////// UPDATE SQL WITH LOCATION ///////////////////////////////////////////////////////////////////////
 
@@ -1267,7 +1331,7 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
     returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
         fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
-        return 1;
+        return "";
     }
 
     sqlite3_bind_text(pStmt, 1, targetFileBuffer, -1, 0);
@@ -1276,19 +1340,20 @@ int insertDeliverableFile(const char *column, int id, int student_fk, const char
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {
         fprintf(stderr, "execution failed: %s", sqlite3_errmsg(db));
-        return 1;
+        return "";
     }
 
     free(sqlRequest);
-    free(targetFileBuffer);
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
 
-    return 0;
+    return targetFileBuffer;
 }
 
-int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path, const char *video_reccord_path,
-                      const char *bad_code_path, const char *deliverable_file_path, const char *status, int student_fk) {
+int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path,
+                      const char *video_reccord_path,
+                      const char *bad_code_path, const char *deliverable_file_path, const char *status,
+                      int student_fk) {
 
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
@@ -1312,37 +1377,41 @@ int insertDeliverable(const char *due_date, const char *subject, const char *aud
     }
 
     int last_id = sqlite3_last_insert_rowid(db);
-
+    char *returnCode_c;
     if (audio_record_path != NULL && strlen(audio_record_path) > 0) {
-        returnCode = insertDeliverableFile("audio_record", last_id, student_fk, audio_record_path);
-        if (returnCode) {
+        returnCode_c = insertDeliverableFile("audio_record", last_id, student_fk, audio_record_path);
+        if (!strcmp(returnCode_c, "")) {
             fprintf(stderr, "adding deliverable audio record failed");
             return 1;
         }
+        free(returnCode_c);
     }
 
     if (video_reccord_path != NULL && strlen(video_reccord_path) > 0) {
-        returnCode = insertDeliverableFile("video_record", last_id, student_fk, video_reccord_path);
-        if (returnCode) {
+        returnCode_c = insertDeliverableFile("video_record", last_id, student_fk, video_reccord_path);
+        if (!strcmp(returnCode_c, "")) {
             fprintf(stderr, "adding deliverable audio record failed");
             return 1;
         }
+        free(returnCode_c);
     }
 
     if (bad_code_path != NULL && strlen(bad_code_path) > 0) {
-        returnCode = insertDeliverableFile("bad_code", last_id, student_fk, bad_code_path);
-        if (returnCode) {
+        returnCode_c = insertDeliverableFile("bad_code", last_id, student_fk, bad_code_path);
+        if (!strcmp(returnCode_c, "")) {
             fprintf(stderr, "adding deliverable audio record failed");
             return 1;
         }
+        free(returnCode_c);
     }
 
     if (deliverable_file_path != NULL && strlen(deliverable_file_path) > 0) {
-        returnCode = insertDeliverableFile("deliverable_file", last_id, student_fk, deliverable_file_path);
-        if (returnCode) {
+        returnCode_c = insertDeliverableFile("deliverable_file", last_id, student_fk, deliverable_file_path);
+        if (!strcmp(returnCode_c, "")) {
             fprintf(stderr, "adding deliverable audio record failed");
             return 1;
         }
+        free(returnCode_c);
     }
 
     return 0;
@@ -1651,7 +1720,7 @@ void listStudentDeliverables(char **data, int studentId) {
  * @param data
  * @param id
  *
- * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n"
+ * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk|sanction_name|sanction_description;\n"
  */
 void getDeliverable(char **data, int id) {
     sqlite3 *db = connectDB();
@@ -1665,9 +1734,13 @@ void getDeliverable(char **data, int id) {
                        "       deliverable_file,\n"
                        "       status,\n"
                        "       s.first_name || ' ' || s.last_name as student,\n"
-                       "       student_fk\n"
+                       "       student_fk,\n"
+                       "       s2.name                            as sanction_name,\n"
+                       "       s2.description                     as sanction_description\n"
                        "from deliverable\n"
                        "         left join student s on deliverable.student_fk = s.id\n"
+                       "         left join class c on s.class_fk = c.id\n"
+                       "         left join sanction s2 on c.sanction_fk = s2.id\n"
                        "where deliverable.id = ?;";
     size_t rowStringSize = 1;
     char *result = malloc(rowStringSize * sizeof(char));
@@ -1746,9 +1819,22 @@ void getDeliverable(char **data, int id) {
 
     //Colonne 9
     itoa(sqlite3_column_int(pStmt, 9), intBuffer, 10);
-    rowStringSize += strlen(intBuffer) + 2;
+    rowStringSize += strlen(intBuffer) + 1;
     result = realloc(result, rowStringSize);
-    strcat(result, strcat(intBuffer, ";\n"));
+    strcat(result, strcat(intBuffer, "|"));
+
+    //Colonne 10
+    rowStringSize += sqlite3_column_bytes(pStmt, 10) + 1;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 10) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 10));
+    strcat(result, "|");
+
+    //Colonne 11
+    rowStringSize += sqlite3_column_bytes(pStmt, 11) + 2;
+    result = realloc(result, rowStringSize);
+    strcat(result, sqlite3_column_text(pStmt, 11) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 11));
+    strcat(result, ";\n");
+
 
     *data = result;
     sqlite3_finalize(pStmt);
