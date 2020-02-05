@@ -124,7 +124,6 @@ void listSanctions(char **data);
 
 /**
  * @name  getSanction
- * @param dbname
  * @param data
  * @param id
  *
@@ -132,7 +131,16 @@ void listSanctions(char **data);
  */
 void getSanction(char **data, int id);
 
-char * insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location);
+/**
+ * @name getSanctionStudentId
+ * @param data
+ * @param student_id
+ *
+ * @data = "id|name|description|student(first_name + last_name)|student_fk;\n
+ */
+void getSanctionStudentId(char **data, int student_id);
+
+char *insertDeliverableFile(const char *column, int id, int student_fk, const char *file_location);
 
 int insertDeliverable(const char *due_date, const char *subject, const char *audio_record_path,
                       const char *video_reccord_path,
@@ -144,7 +152,6 @@ int deleteDeliverable(int id);
 
 /**
  * @name listDeliverables
- * @param dbname
  * @param data
  *
  * @data = "id|due_date|subject|audio_record|video_record|bad_code|deliverable_file|status|student(first_name + last_name)|student_fk;\n..."
@@ -153,7 +160,6 @@ void listDeliverables(char **data);
 
 /**
  * @name listStudentDeliverables
- * @param dbname
  * @param data
  * @param studentId
  *
