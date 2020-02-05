@@ -191,6 +191,10 @@ typedef struct {
     GtkFileChooserButton *edit_deliverable_video;
     GtkFileChooserButton *edit_deliverable_bad_code;
     GtkFileChooserButton *edit_deliverable_deliverable_file;
+    GtkButton *edit_deliverable_audio_download;
+    GtkButton *edit_deliverable_video_download;
+    GtkButton *edit_deliverable_bad_code_download;
+    GtkButton *edit_deliverable_deliverable_file_download;
     GtkTextView *edit_deliverable_sanction_description;
     GtkEntry *edit_deliverable_subject;
     GtkComboBoxText *edit_deliverable_status;
@@ -322,6 +326,14 @@ G_MODULE_EXPORT void on_edit_deliverable_deliverable_file_file_set();
 
 G_MODULE_EXPORT void on_edit_deliverable_audio_file_set();
 
+G_MODULE_EXPORT void on_edit_deliverable_audio_download_clicked();
+
+G_MODULE_EXPORT void on_edit_deliverable_video_download_clicked();
+
+G_MODULE_EXPORT void on_edit_deliverable_bad_code_download_clicked();
+
+G_MODULE_EXPORT void on_edit_deliverable_deliverable_file_download_clicked();
+
 G_MODULE_EXPORT void on_view_user_image_file_picker_file_set();
 
 G_MODULE_EXPORT void on_user_view_edit_button_clicked();
@@ -420,7 +432,7 @@ void connectWidgets();
 
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder);
 
-void GTKSaveFile(const char *path);
+void GTKSaveFile(char *path);
 
 void dashboardGTK(int *argc, char ***argv);
 

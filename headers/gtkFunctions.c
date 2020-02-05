@@ -272,6 +272,7 @@ void on_edit_deliverable_bad_code_file_set() {
     printf("Choose bad code file! : %s\n", path);
     if (GTKDeliverableSetBadCode(path))
         fprintf(stderr, "Error while adding bad code\n");
+
 }
 
 void on_edit_deliverable_deliverable_file_file_set() {
@@ -289,6 +290,35 @@ void on_edit_deliverable_audio_file_set() {
         fprintf(stderr, "Error while adding audio\n");
 }
 
+void on_edit_deliverable_audio_download_clicked() {
+    char *path = gtk_widget_get_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download));
+
+    printf("Download audio: %s\n", path);
+    GTKSaveFile(path);
+}
+
+void on_edit_deliverable_video_download_clicked() {
+    char *path = gtk_widget_get_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download));
+
+    printf("Download video\n");
+    GTKSaveFile(path);
+}
+
+void on_edit_deliverable_bad_code_download_clicked() {
+    char *path = gtk_widget_get_tooltip_text(
+            GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download));
+
+    printf("Download bad code\n");
+    GTKSaveFile(path);
+}
+
+void on_edit_deliverable_deliverable_file_download_clicked() {
+    char *path = gtk_widget_get_tooltip_text(
+            GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download));
+
+    printf("Download deliverable\n");
+    GTKSaveFile(path);
+}
 
 void on_view_user_image_file_picker_file_set() {
     char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker));
@@ -2150,7 +2180,14 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "edit_deliverable_bad_code"));
     widgets->view_deliverables->edit_deliverable_deliverable_file = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "edit_deliverable_deliverable_file"));
-
+    widgets->view_deliverables->edit_deliverable_audio_download = GTK_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_audio_download"));
+    widgets->view_deliverables->edit_deliverable_video_download = GTK_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_video_download"));
+    widgets->view_deliverables->edit_deliverable_bad_code_download = GTK_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_bad_code_download"));
+    widgets->view_deliverables->edit_deliverable_deliverable_file_download = GTK_BUTTON(
+            gtk_builder_get_object(builder, "edit_deliverable_deliverable_file_download"));
     widgets->view_deliverables->deliverables_tree_store = GTK_TREE_STORE(
             gtk_builder_get_object(builder, "deliverables_tree_store"));
     widgets->view_deliverables->deliverables_tree_view = GTK_TREE_VIEW(
@@ -2265,7 +2302,7 @@ void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeho
     }
 }
 
-void GTKSaveFile(const char *path) {
+void GTKSaveFile(char *path) {
     GtkWidget *dialog;
     GtkFileChooser *chooser;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
@@ -2275,7 +2312,7 @@ void GTKSaveFile(const char *path) {
     dialog = gtk_file_chooser_dialog_new("Save File",
                                          GTK_WINDOW(widgets->window_dashboard),
                                          action,
-                                         "_Cancel",
+                                         "Cancel",
                                          GTK_RESPONSE_CANCEL,
                                          "Save",
                                          GTK_RESPONSE_ACCEPT,
