@@ -53,7 +53,7 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
             GTKListSanctions();
         } else if (!strcmp(menu, "view_deliverables")) {
             printf("Deliverables view\n");
-            setSearchEntry(FALSE, NULL, NULL);
+            setSearchEntry(TRUE, widgets->view_deliverables->deliverables_tree_view, "Search by student name");
             GTKListDeliverables();
         } else if (!strcmp(menu, "view_user")) {
             printf("User view\n");
@@ -395,29 +395,43 @@ void on_view_settings_switch_theme_button_state_set() {
 
     darkTheme = gtk_switch_get_active(widgets->view_settings->view_settings_switch_theme_button);
 
-    GtkCssProvider *pCssProvider = NULL;
-    pCssProvider = gtk_css_provider_new();
-    GError *error = NULL;
-
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(pCssProvider),
-                                              GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(pCssProvider);
-
-    if (darkTheme) {
-        if (!gtk_css_provider_load_from_path(pCssProvider, darkThemePath, &error)) {
-            fprintf(stderr, "%s\n", error->message);
-
-            exit(error->code);
-        }
-    } else {
-        if (!gtk_css_provider_load_from_path(pCssProvider, defaultThemePath, &error)) {
-            fprintf(stderr, "%s\n", error->message);
-
-            exit(error->code);
-        }
-    }
+    GTKSetTheme();
 
     writeConf();
+}
+
+void on_view_settings_submit_button_clicked() {
+    printf("Submit settings \n");
+    GTKViewSettingsSubmit();
+}
+
+void on_settings_storage_refresh_clicked() {
+    printf("storage refresh \n");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser));
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser),
+                                        storageFolder);
+}
+
+void on_settings_dark_theme_refresh_clicked() {
+    printf("dark theme refresh \n");
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_dark_theme_file_chooser),
+                                  darkThemePath);
+}
+
+void on_settings_default_theme_refresh_clicked() {
+    printf("default theme refresh \n");
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_default_theme_file_chooser),
+                                  defaultThemePath);
+}
+
+void on_settings_glade_refresh_clicked() {
+    printf("glade refresh \n");
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_glade_file_chooser), gladeFile);
+}
+
+void on_settings_database_refresh_clicked() {
+    printf("database refresh \n");
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_database_file_chooser), dbname);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2136,6 +2150,72 @@ int GTKUserSetImage(char *path) {
 
 void GTKViewSettings() {
     gtk_switch_set_active(widgets->view_settings->view_settings_switch_theme_button, darkTheme ? TRUE : FALSE);
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser));
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser),
+                                        storageFolder);
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_database_file_chooser), dbname);
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_glade_file_chooser), gladeFile);
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_default_theme_file_chooser),
+                                  defaultThemePath);
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_dark_theme_file_chooser),
+                                  darkThemePath);
+}
+
+void GTKViewSettingsSubmit() {
+    storageFolder = realloc(storageFolder,
+                            strlen(gtk_file_chooser_get_filename(
+                                    GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser))));
+    strcpy(storageFolder,
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser)));
+
+    dbname = realloc(dbname,
+                     strlen(gtk_file_chooser_get_filename(
+                             GTK_FILE_CHOOSER(widgets->view_settings->settings_database_file_chooser))));
+    strcpy(dbname,
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_database_file_chooser)));
+
+    gladeFile = realloc(gladeFile,
+                        strlen(gtk_file_chooser_get_filename(
+                                GTK_FILE_CHOOSER(widgets->view_settings->settings_glade_file_chooser))));
+    strcpy(gladeFile,
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_glade_file_chooser)));
+
+    defaultThemePath = realloc(defaultThemePath,
+                               strlen(gtk_file_chooser_get_filename(
+                                       GTK_FILE_CHOOSER(widgets->view_settings->settings_default_theme_file_chooser))));
+    strcpy(defaultThemePath, gtk_file_chooser_get_filename(
+            GTK_FILE_CHOOSER(widgets->view_settings->settings_default_theme_file_chooser)));
+
+    darkThemePath = realloc(darkThemePath,
+                            strlen(gtk_file_chooser_get_filename(
+                                    GTK_FILE_CHOOSER(widgets->view_settings->settings_dark_theme_file_chooser))));
+    strcpy(darkThemePath,
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_dark_theme_file_chooser)));
+    writeConf();
+}
+
+void GTKSetTheme() {
+    GtkCssProvider *pCssProvider = NULL;
+    pCssProvider = gtk_css_provider_new();
+    GError *error = NULL;
+
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(pCssProvider),
+                                              GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(pCssProvider);
+
+    if (darkTheme) {
+        if (!gtk_css_provider_load_from_path(pCssProvider, darkThemePath, &error)) {
+            fprintf(stderr, "%s\n", error->message);
+
+            exit(error->code);
+        }
+    } else {
+        if (!gtk_css_provider_load_from_path(pCssProvider, defaultThemePath, &error)) {
+            fprintf(stderr, "%s\n", error->message);
+
+            exit(error->code);
+        }
+    }
 }
 
 void connectWidgets() {
@@ -2568,6 +2648,29 @@ void connectWidgets() {
     widgets->view_settings = g_slice_new(Settings);
     widgets->view_settings->view_settings_switch_theme_button = GTK_SWITCH(
             gtk_builder_get_object(builder, "view_settings_switch_theme_button"));
+    widgets->view_settings->settings_database_file_chooser = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "settings_database_file_chooser"));
+    widgets->view_settings->settings_database_refresh = GTK_BUTTON(
+            gtk_builder_get_object(builder, "settings_database_refresh"));
+    widgets->view_settings->settings_storage_folder_chooser = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "settings_storage_folder_chooser"));
+    widgets->view_settings->settings_storage_refresh = GTK_BUTTON(
+            gtk_builder_get_object(builder, "settings_storage_refresh"));
+    widgets->view_settings->settings_glade_file_chooser = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "settings_glade_file_chooser"));
+    widgets->view_settings->settings_glade_refresh = GTK_BUTTON(
+            gtk_builder_get_object(builder, "settings_glade_refresh"));
+    widgets->view_settings->settings_default_theme_file_chooser = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "settings_default_theme_file_chooser"));
+    widgets->view_settings->settings_default_theme_refresh = GTK_BUTTON(
+            gtk_builder_get_object(builder, "settings_default_theme_refresh"));
+    widgets->view_settings->settings_dark_theme_file_chooser = GTK_FILE_CHOOSER_BUTTON(
+            gtk_builder_get_object(builder, "settings_dark_theme_file_chooser"));
+    widgets->view_settings->settings_dark_theme_refresh = GTK_BUTTON(
+            gtk_builder_get_object(builder, "settings_dark_theme_refresh"));
+    widgets->view_settings->view_settings_submit_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "view_settings_submit_button"));
+
 }
 
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
@@ -2633,28 +2736,7 @@ void dashboardGTK(int *argc, char ***argv) {
     gtk_builder_connect_signals(builder, NULL);
     g_object_unref(builder); // Decreases the reference count of builder : if count = 0, memory is freed
 
-    //TODO Finish that
-    GtkCssProvider *pCssProvider = NULL;
-    pCssProvider = gtk_css_provider_new();
-    GError *error = NULL;
-
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(pCssProvider),
-                                              GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(pCssProvider);
-
-    if (darkTheme) {
-        if (!gtk_css_provider_load_from_path(pCssProvider, darkThemePath, &error)) {
-            fprintf(stderr, "%s\n", error->message);
-
-            exit(error->code);
-        }
-    } else {
-        if (!gtk_css_provider_load_from_path(pCssProvider, defaultThemePath, &error)) {
-            fprintf(stderr, "%s\n", error->message);
-
-            exit(error->code);
-        }
-    }
+    GTKSetTheme();
 
     gtk_widget_show_all(widgets->window_dashboard);
 

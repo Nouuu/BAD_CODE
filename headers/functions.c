@@ -176,6 +176,7 @@ void readConf() {
 
     fclose(file);
     free(fileString);
+    printf("Done!\n");
 }
 
 void writeConf() {

@@ -242,6 +242,17 @@ typedef struct {
 
 typedef struct {
     GtkSwitch *view_settings_switch_theme_button;
+    GtkFileChooserButton *settings_database_file_chooser;
+    GtkButton *settings_database_refresh;
+    GtkFileChooserButton *settings_storage_folder_chooser;
+    GtkButton *settings_storage_refresh;
+    GtkFileChooserButton *settings_glade_file_chooser;
+    GtkButton *settings_glade_refresh;
+    GtkFileChooserButton *settings_default_theme_file_chooser;
+    GtkButton *settings_default_theme_refresh;
+    GtkFileChooserButton *settings_dark_theme_file_chooser;
+    GtkButton *settings_dark_theme_refresh;
+    GtkButton *view_settings_submit_button;
 } Settings;
 
 typedef struct {
@@ -381,6 +392,18 @@ G_MODULE_EXPORT void on_user_edit_return_button_clicked();
 
 G_MODULE_EXPORT void on_view_settings_switch_theme_button_state_set();
 
+G_MODULE_EXPORT void on_view_settings_submit_button_clicked();
+
+G_MODULE_EXPORT void on_settings_storage_refresh_clicked();
+
+G_MODULE_EXPORT void on_settings_dark_theme_refresh_clicked();
+
+G_MODULE_EXPORT void on_settings_default_theme_refresh_clicked();
+
+G_MODULE_EXPORT void on_settings_glade_refresh_clicked();
+
+G_MODULE_EXPORT void on_settings_database_refresh_clicked();
+
 //Functions prototype
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
 
@@ -478,6 +501,10 @@ void GTKUserImage(char *path);
 int GTKUserSetImage(char *path);
 
 void GTKViewSettings();
+
+void GTKViewSettingsSubmit();
+
+void GTKSetTheme();
 
 void connectWidgets();
 
