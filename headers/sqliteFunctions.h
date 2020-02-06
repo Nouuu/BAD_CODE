@@ -13,6 +13,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 extern char *dbname;
+extern char *storageFolder;
 
 void checkVersion();
 

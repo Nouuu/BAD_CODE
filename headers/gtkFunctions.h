@@ -15,6 +15,7 @@
 
 // link builder to the one in main.c
 extern GtkBuilder *builder;
+extern char *gladeFile;
 
 typedef struct {
     GtkStack *view_students_stack;
@@ -240,6 +241,10 @@ typedef struct {
 } Deliverables;
 
 typedef struct {
+
+} Settings;
+
+typedef struct {
     GtkWidget *window_dashboard;
     GtkFixed *gtk_fixed;
     GtkStack *menu_stack;
@@ -250,6 +255,7 @@ typedef struct {
     Sanctions *view_sanctions;
     Deliverables *view_deliverables;
     User *view_user;
+    Settings *view_settings;
 } App_widgets;
 
 App_widgets *widgets;

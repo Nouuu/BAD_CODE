@@ -86,7 +86,7 @@ int checkImageExtension(char *path) {
 
     if (strcmp(fileExt, "bmp") != 0 && strcmp(fileExt, "gif") != 0 && strcmp(fileExt, "ico") != 0 &&
         strcmp(fileExt, "jpeg") != 0 && strcmp(fileExt, "jpg") != 0 && strcmp(fileExt, "svg") != 0 &&
-        strcmp(fileExt, "tiff") != 0 && strcmp(fileExt, "png") != 0)
+        strcmp(fileExt, "tiff") != 0 && strcmp(fileExt, "png") != 0 && strcmp(fileExt, "jfif") != 0)
         return 0;
 
     return 1;
@@ -116,4 +116,52 @@ int checkAudioExtension(char *path) {
         return 0;
 
     return 1;
+}
+
+void readConf() {
+    printf("Reading conf file...\n%s\n", configFile);
+    FILE *file = fopen(configFile, "rb");
+    if (file == NULL) {
+        fprintf(stderr, "Cannot open file\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fseek(file, 0, SEEK_END);
+    size_t size = ftell(file) / sizeof(char);
+    fseek(file, 0, SEEK_SET);
+
+    char *fileString = malloc(size * sizeof(char));
+
+    if (fread(fileString, sizeof(char), size, file) != size) {
+        fprintf(stderr, "Error while reading conf file ...\n");
+        exit(EXIT_FAILURE);
+    }
+
+    //DATABASE
+    char *P = strstr(fileString, "[DATABASE]");
+    P = strchr(P, '\n') + 1;
+
+    char buffer[255];
+    sscanf(P, "path : %s\n", buffer);
+    dbname = malloc(strlen(buffer));
+    strcpy(dbname, buffer);
+
+    //STORAGE
+    P = strstr(fileString, "[STORAGE]");
+    P = strchr(P, '\n') + 1;
+    sscanf(P, "path : %s\n", buffer);
+    storageFolder = malloc(strlen(buffer));
+    strcpy(storageFolder, buffer);
+
+    //GLADE
+    P = strstr(fileString, "[GLADE]");
+    P = strchr(P, '\n') + 1;
+    sscanf(P, "path : %s\n", buffer);
+    gladeFile = malloc(strlen(buffer));
+    strcpy(gladeFile, buffer);
+
+    P = strchr(P, '\n') + 1;
+    sscanf(P, "dark : %d\n", &darkTheme);
+
+    free(fileString);
 }

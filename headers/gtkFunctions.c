@@ -2528,6 +2528,9 @@ void connectWidgets() {
     widgets->view_user->view_user_email = GTK_LINK_BUTTON(gtk_builder_get_object(builder, "view_user_email"));
     widgets->view_user->view_user_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "view_user_image_file_picker"));
+
+    //Connect view_settings
+    widgets->view_settings = g_slice_new(Settings);
 }
 
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
@@ -2584,7 +2587,7 @@ void dashboardGTK(int *argc, char ***argv) {
 
     gtk_init(argc, argv);
 
-    builder = gtk_builder_new_from_file("..\\glade\\dashboard.glade"); // Chemin absolu à modifier
+    builder = gtk_builder_new_from_file(gladeFile); // Chemin absolu à modifier
 
     connectWidgets();
 
@@ -2602,5 +2605,6 @@ void dashboardGTK(int *argc, char ***argv) {
     g_slice_free(Sanctions, widgets->view_sanctions);
     g_slice_free(Deliverables, widgets->view_deliverables);
     g_slice_free(User, widgets->view_user);
+    g_slice_free(Settings, widgets->view_settings);
     g_slice_free(App_widgets, widgets);
 }
