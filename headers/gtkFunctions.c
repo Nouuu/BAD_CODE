@@ -393,6 +393,8 @@ void on_user_edit_return_button_clicked() {
 void on_view_settings_switch_theme_button_state_set() {
     printf("Switch theme button !\n");
 
+    darkTheme = gtk_switch_get_active(widgets->view_settings->view_settings_switch_theme_button);
+
     GtkCssProvider *pCssProvider = NULL;
     pCssProvider = gtk_css_provider_new();
     GError *error = NULL;
@@ -401,7 +403,7 @@ void on_view_settings_switch_theme_button_state_set() {
                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     g_object_unref(pCssProvider);
 
-    if (gtk_switch_get_active(widgets->view_settings->view_settings_switch_theme_button)) {
+    if (darkTheme) {
         if (!gtk_css_provider_load_from_path(pCssProvider, darkThemePath, &error)) {
             fprintf(stderr, "%s\n", error->message);
 
@@ -415,7 +417,7 @@ void on_view_settings_switch_theme_button_state_set() {
         }
     }
 
-
+    writeConf();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

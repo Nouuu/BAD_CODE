@@ -40,4 +40,6 @@ int checkAudioExtension(char *path);
 
 void readConf();
 
+void writeConf();
+
 #endif //BAD_CODE_FUNCTIONS_H

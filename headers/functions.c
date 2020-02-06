@@ -174,5 +174,35 @@ void readConf() {
     P = strchr(P, '\n') + 1;
     sscanf(P, "dark : %d\n", &darkTheme);
 
+    fclose(file);
     free(fileString);
+}
+
+void writeConf() {
+    printf("Writing conf file...\n%s\n", configFile);
+    FILE *file = fopen(configFile, "wb");
+    if (file == NULL) {
+        fprintf(stderr, "Cannot open file\n");
+        exit(EXIT_FAILURE);
+    }
+
+    //DATABASE
+    fprintf(file, "[DATABASE]\n");
+    fprintf(file, "path : %s\n\n", dbname);
+
+    //STORAGE
+    fprintf(file, "[STORAGE]\n");
+    fprintf(file, "path : %s\n\n", storageFolder);
+
+    //GLADE
+    fprintf(file, "[GLADE]\n");
+    fprintf(file, "path : %s\n\n", gladeFile);
+
+    //THEME
+    fprintf(file, "[THEME]\n");
+    fprintf(file, "default_path : %s\n", defaultThemePath);
+    fprintf(file, "dark_path : %s\n", darkThemePath);
+    fprintf(file, "dark : %d\n", darkTheme);
+
+    fclose(file);
 }
