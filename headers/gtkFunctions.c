@@ -2596,6 +2596,22 @@ void dashboardGTK(int *argc, char ***argv) {
     gtk_builder_connect_signals(builder, NULL);
     g_object_unref(builder); // Decreases the reference count of builder : if count = 0, memory is freed
 
+    //TODO Finish that
+    GtkCssProvider *pCssProvider = NULL;
+    pCssProvider = gtk_css_provider_new();
+    GError *error = NULL;
+
+    if (!gtk_css_provider_load_from_path(pCssProvider, "../dark/gtk-dark.css", &error)) {
+        fprintf(stderr,"%s\n", error->message);
+
+        exit (error->code);
+    }
+
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(pCssProvider),
+                                              GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(pCssProvider);
+
+
     gtk_widget_show_all(widgets->window_dashboard);
 
     gtk_main();
