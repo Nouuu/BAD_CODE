@@ -60,8 +60,8 @@ int insertTableImage(char *table, int id, const char *photo_location) {
     char fileName[strlen(photo_location)];
     strcpy(fileName, photo_location);
 
-    char *targetFileBuffer = malloc(strlen(fileName) + 50);
-    sprintf(targetFileBuffer, "storage/%s/%d/%s", table, id, basename(fileName));
+    char *targetFileBuffer = malloc(strlen(fileName) + strlen(storageFolder) + 50);
+    sprintf(targetFileBuffer, "%s/%s/%d/%s", storageFolder, table, id, basename(fileName));
 
     returnCode = copyFile(photo_location, targetFileBuffer);
     if (returnCode)
@@ -676,8 +676,8 @@ int deleteStudent(int id) {
 
     char *studentIdBuffer = malloc(4);
     itoa(id, studentIdBuffer, 10);
-    char *studentStoragePathBuffer = malloc(14 + strlen(studentIdBuffer));
-    strcat(strcat(strcpy(studentStoragePathBuffer, "storage/user/"), studentIdBuffer), "/");
+    char *studentStoragePathBuffer = malloc(7 + strlen(studentIdBuffer) + strlen(storageFolder));
+    strcat(strcat(strcat(strcpy(studentStoragePathBuffer, storageFolder), "/user/"), studentIdBuffer), "/");
     removeDirectory(studentStoragePathBuffer);
     free(studentIdBuffer);
     free(studentStoragePathBuffer);
@@ -1316,9 +1316,10 @@ char *insertDeliverableFile(const char *column, int id, int student_fk, const ch
     char fileName[strlen(file_location)];
     strcpy(fileName, file_location);
 
-    char *targetFileBuffer = malloc(strlen(basename(fileName)) + strlen(column) + 50);
+    char *targetFileBuffer = malloc(strlen(basename(fileName)) + strlen(column) + strlen(storageFolder + 50));
     // 11 for "deliverable", 3 for "_" * 3
-    sprintf(targetFileBuffer, "storage/student/%d/deliverable_%d_%s_%s", student_fk, id, column, basename(fileName));
+    sprintf(targetFileBuffer, "%s/student/%d/deliverable_%d_%s_%s", storageFolder, student_fk, id, column,
+            basename(fileName));
 
     returnCode = copyFile(file_location, targetFileBuffer);
     if (returnCode)

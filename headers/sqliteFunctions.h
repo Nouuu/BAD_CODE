@@ -13,6 +13,10 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 extern char *dbname;
+extern char *storageFolder;
+extern char *darkThemePath;
+extern char *defaultThemePath;
+extern int darkTheme;
 
 void checkVersion();
 

@@ -11,6 +11,14 @@
 #include <stdlib.h>
 #include <dirent.h>
 
+extern char *dbname;
+extern char *configFile;
+extern char *storageFolder;
+extern char *gladeFile;
+extern char *darkThemePath;
+extern char *defaultThemePath;
+extern int darkTheme;
+
 void createPath(char *path);
 
 int copyFile(const char *src, const char *dest);
@@ -25,7 +33,13 @@ char *get_filename_ext(char *path);
  * @return 1 if it is image, 0 if not
  */
 int checkImageExtension(char *path);
+
 int checkVideoExtension(char *path);
+
 int checkAudioExtension(char *path);
+
+void readConf();
+
+void writeConf();
 
 #endif //BAD_CODE_FUNCTIONS_H
