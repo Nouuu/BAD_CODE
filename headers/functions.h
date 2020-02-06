@@ -15,6 +15,8 @@ extern char *dbname;
 extern char *configFile;
 extern char *storageFolder;
 extern char *gladeFile;
+extern char *darkThemePath;
+extern char *defaultThemePath;
 extern int darkTheme;
 
 void createPath(char *path);

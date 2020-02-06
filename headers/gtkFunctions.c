@@ -62,6 +62,7 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
         } else if (!strcmp(menu, "view_settings")) {
             printf("Settings view\n");
             setSearchEntry(FALSE, NULL, NULL);
+            GTKViewSettings();
         }
     }
 }
@@ -387,6 +388,34 @@ void on_user_edit_submit_button_clicked() {
 void on_user_edit_return_button_clicked() {
     printf("User return to view\n");
     GTKViewUser();
+}
+
+void on_view_settings_switch_theme_button_state_set() {
+    printf("Switch theme button !\n");
+
+    GtkCssProvider *pCssProvider = NULL;
+    pCssProvider = gtk_css_provider_new();
+    GError *error = NULL;
+
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(pCssProvider),
+                                              GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(pCssProvider);
+
+    if (gtk_switch_get_active(widgets->view_settings->view_settings_switch_theme_button)) {
+        if (!gtk_css_provider_load_from_path(pCssProvider, darkThemePath, &error)) {
+            fprintf(stderr, "%s\n", error->message);
+
+            exit(error->code);
+        }
+    } else {
+        if (!gtk_css_provider_load_from_path(pCssProvider, defaultThemePath, &error)) {
+            fprintf(stderr, "%s\n", error->message);
+
+            exit(error->code);
+        }
+    }
+
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2103,6 +2132,10 @@ int GTKUserSetImage(char *path) {
     return insertTableImage("user", 1, path);
 }
 
+void GTKViewSettings() {
+    gtk_switch_set_active(widgets->view_settings->view_settings_switch_theme_button, darkTheme ? TRUE : FALSE);
+}
+
 void connectWidgets() {
 
     widgets->window_dashboard = GTK_WIDGET(gtk_builder_get_object(builder, "window_dashboard"));
@@ -2531,6 +2564,8 @@ void connectWidgets() {
 
     //Connect view_settings
     widgets->view_settings = g_slice_new(Settings);
+    widgets->view_settings->view_settings_switch_theme_button = GTK_SWITCH(
+            gtk_builder_get_object(builder, "view_settings_switch_theme_button"));
 }
 
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
@@ -2601,16 +2636,23 @@ void dashboardGTK(int *argc, char ***argv) {
     pCssProvider = gtk_css_provider_new();
     GError *error = NULL;
 
-    if (!gtk_css_provider_load_from_path(pCssProvider, "../dark/gtk-dark.css", &error)) {
-        fprintf(stderr,"%s\n", error->message);
-
-        exit (error->code);
-    }
-
     gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(pCssProvider),
                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     g_object_unref(pCssProvider);
 
+    if (darkTheme) {
+        if (!gtk_css_provider_load_from_path(pCssProvider, darkThemePath, &error)) {
+            fprintf(stderr, "%s\n", error->message);
+
+            exit(error->code);
+        }
+    } else {
+        if (!gtk_css_provider_load_from_path(pCssProvider, defaultThemePath, &error)) {
+            fprintf(stderr, "%s\n", error->message);
+
+            exit(error->code);
+        }
+    }
 
     gtk_widget_show_all(widgets->window_dashboard);
 

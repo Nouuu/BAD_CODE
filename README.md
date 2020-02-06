@@ -1,5 +1,7 @@
 # BAD_CODE
 
+[![time tracker](https://wakatime.com/badge/github/Nouuu/BAD_CODE.svg)](https://wakatime.com/badge/github/Nouuu/BAD_CODE)
+
 ## Header files
 
 [https://www.tutorialspoint.com/cprogramming/c_header_files.htm](https://www.tutorialspoint.com/cprogramming/c_header_files.htm)

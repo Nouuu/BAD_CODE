@@ -241,7 +241,7 @@ typedef struct {
 } Deliverables;
 
 typedef struct {
-
+    GtkSwitch *view_settings_switch_theme_button;
 } Settings;
 
 typedef struct {
@@ -379,6 +379,8 @@ G_MODULE_EXPORT void on_user_edit_submit_button_clicked();
 
 G_MODULE_EXPORT void on_user_edit_return_button_clicked();
 
+G_MODULE_EXPORT void on_view_settings_switch_theme_button_state_set();
+
 //Functions prototype
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
 
@@ -474,6 +476,8 @@ void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, 
 void GTKUserImage(char *path);
 
 int GTKUserSetImage(char *path);
+
+void GTKViewSettings();
 
 void connectWidgets();
 

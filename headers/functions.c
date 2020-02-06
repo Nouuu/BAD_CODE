@@ -160,6 +160,17 @@ void readConf() {
     gladeFile = malloc(strlen(buffer));
     strcpy(gladeFile, buffer);
 
+    //THEME
+    P = strstr(fileString, "[THEME]");
+    P = strchr(P, '\n') + 1;
+    sscanf(P, "default_path : %s\n", buffer);
+    defaultThemePath = malloc(strlen(buffer));
+    strcpy(defaultThemePath, buffer);
+
+    P = strchr(P, '\n') + 1;
+    sscanf(P, "dark_path : %s\n", buffer);
+    darkThemePath = malloc(strlen(buffer));
+    strcpy(darkThemePath, buffer);
     P = strchr(P, '\n') + 1;
     sscanf(P, "dark : %d\n", &darkTheme);
 

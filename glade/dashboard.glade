@@ -3839,6 +3839,17 @@
               <object class="GtkFixed" id="view_settings">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkSwitch" id="view_settings_switch_theme_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <signal name="state-set" handler="on_view_settings_switch_theme_button_state_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="x">61</property>
+                    <property name="y">44</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="name">view_settings</property>
