@@ -45,6 +45,7 @@ typedef struct {
     GtkEntry *create_student_email;
     GtkComboBoxText *create_student_class;
     GtkFileChooserButton *create_student_image_file_picker;
+    GtkButton *create_student_image_clear_button;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;
@@ -316,6 +317,8 @@ G_MODULE_EXPORT void on_student_edit_return_button_clicked();
 
 G_MODULE_EXPORT void on_student_edit_submit_button_clicked();
 
+G_MODULE_EXPORT void on_create_student_image_clear_button_clicked();
+
 G_MODULE_EXPORT void on_student_create_return_button_clicked();
 
 G_MODULE_EXPORT void on_student_create_submit_button_clicked();
@@ -425,6 +428,8 @@ void GTKEditStudent(int id);
 
 void GTKEditStudentSubmit();
 
+int GTKEditStudentSubmitCheckRequiredField();
+
 void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo, char **email, char **bottles,
                        char **class, char **class_fk);
 
@@ -436,11 +441,15 @@ void GTKCreateStudent();
 
 void GTKCreateStudentSubmit();
 
+int GTKCreateStudentSubmitCheckRequiredField();
+
 void GTKListClasses();
 
 void GTKEditClass(int id);
 
 void GTKEditClassSubmit();
+
+int GTKEditClassSubmitCheckRequiredField();
 
 void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char **major, char **user, char **user_fk,
                      char **sanction, char **sanction_fk);
@@ -449,11 +458,15 @@ void GTKCreateClass();
 
 void GTKCreateClassSubmit();
 
+int GTKCreateClassSubmitCheckRequiredField();
+
 void GTKListSanctions();
 
 void GTKEditSanction(int id);
 
 void GTKEditSanctionSubmit();
+
+int GTKEditSanctionSubmitCheckRequiredField(char *textIter);
 
 void GTKSanctionGetData(int id, char **name, char **description, char **user, char **user_fk);
 
@@ -463,11 +476,15 @@ void GTKCreateSanction();
 
 void GTKCreateSanctionSubmit();
 
+int GTKCreateSanctionSubmitCheckRequiredField(char *textIter);
+
 void GTKListDeliverables();
 
 void GTKEditDelivreables(int id);
 
 void GTKEditDelivreablesSubmit();
+
+int GTKEditDeliverableSubmitCheckRequiredField();
 
 void GTKDelivreablesGetData(int id, char **due_date, char **subject, char **audio_record, char **video_record,
                             char **bad_code, char **deliverable_file, char **status, char **student,
@@ -488,11 +505,15 @@ void GTKCreateDelivreables(int student_fk);
 
 void GTKCreateDelivreablesSubmit();
 
+int GTKCreateDeliverableSubmitCheckRequiredField();
+
 void GTKViewUser();
 
 void GTKEditUser();
 
 void GTKEditUserSubmit();
+
+int GTKEditUserSubmitCheckRequiredField();
 
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate);
 
