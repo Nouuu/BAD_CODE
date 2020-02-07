@@ -1228,15 +1228,18 @@ void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char
 
 void GTKEditClassSubmit() {
 
-    int returnCode = updateClass(
-            atoi(gtk_label_get_text(widgets->view_classes->edit_class_id)),
-            gtk_entry_get_text(widgets->view_classes->edit_class_name),
-            gtk_entry_get_text(widgets->view_classes->edit_class_major),
-            atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))),
-            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->view_classes->edit_class_apprenticeship)) ? 1 : 0,
-            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_user))),
-            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction)))
-    );
+    int returnCode = GTKEditClassSubmitCheckRequiredField() ||
+                     updateClass(atoi(gtk_label_get_text(widgets->view_classes->edit_class_id)),
+                                 gtk_entry_get_text(widgets->view_classes->edit_class_name),
+                                 gtk_entry_get_text(widgets->view_classes->edit_class_major),
+                                 atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))),
+                                 gtk_toggle_button_get_active(
+                                         GTK_TOGGLE_BUTTON(widgets->view_classes->edit_class_apprenticeship)) ? 1 : 0,
+                                 atoi(gtk_combo_box_get_active_id(
+                                         GTK_COMBO_BOX(widgets->view_classes->edit_class_user))),
+                                 atoi(gtk_combo_box_get_active_id(
+                                         GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction)))
+                     );
 
     if (returnCode)
         fprintf(stderr, "Error, could not update class\n");
@@ -1244,6 +1247,19 @@ void GTKEditClassSubmit() {
         printf("Class update successful\n");
         GTKListClasses();
     }
+}
+
+int GTKEditClassSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_classes->edit_class_name)) == 0) {
+        fprintf(stderr, "Name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))) != 4) {
+        fprintf(stderr, "Wrong year !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKCreateClass() {

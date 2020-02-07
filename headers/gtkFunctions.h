@@ -449,6 +449,8 @@ void GTKEditClass(int id);
 
 void GTKEditClassSubmit();
 
+int GTKEditClassSubmitCheckRequiredField();
+
 void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char **major, char **user, char **user_fk,
                      char **sanction, char **sanction_fk);
 
