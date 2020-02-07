@@ -776,7 +776,8 @@ void GTKEditStudent(int id) {
 
 void GTKEditStudentSubmit() {
 
-    int returnCode = updateStudent(atoi(gtk_label_get_text(widgets->view_students->edit_student_id)),
+    int returnCode = GTKEditStudentSubmitCheckRequiredField() ||
+                     updateStudent(atoi(gtk_label_get_text(widgets->view_students->edit_student_id)),
                                    gtk_entry_get_text(widgets->view_students->edit_student_first_name),
                                    gtk_entry_get_text(widgets->view_students->edit_student_last_name),
                                    gtk_entry_get_text(widgets->view_students->edit_student_email),
@@ -789,6 +790,26 @@ void GTKEditStudentSubmit() {
         printf("Student update successful\n");
         GTKListStudents();
     }
+}
+
+int GTKEditStudentSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_students->edit_student_bottles))) < 0)
+        gtk_entry_set_text(GTK_ENTRY(widgets->view_students->edit_student_bottles), "0");
+    if (strlen(gtk_entry_get_text(widgets->view_students->edit_student_first_name)) == 0) {
+        fprintf(stderr, "First name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_students->edit_student_last_name)) == 0) {
+        fprintf(stderr, "Last name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_students->edit_student_email)) == 0) {
+        fprintf(stderr, "Email empty !\n");
+        returnCode = 1;
+    }
+
+    return returnCode;
 }
 
 void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo, char **email, char **bottles,

@@ -428,6 +428,8 @@ void GTKEditStudent(int id);
 
 void GTKEditStudentSubmit();
 
+int GTKEditStudentSubmitCheckRequiredField();
+
 void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo, char **email, char **bottles,
                        char **class, char **class_fk);
 
