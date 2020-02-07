@@ -6,8 +6,6 @@
 #include "sqliteFunctions.h"
 #include "functions.h"
 
-//TODO check strlen on all submit to avoid some empty required field
-
 void on_destroy() {
     gtk_main_quit();
 }
