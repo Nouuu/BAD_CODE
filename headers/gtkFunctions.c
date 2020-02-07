@@ -2872,14 +2872,14 @@ void dashboardGTK(int *argc, char ***argv) {
 
     gtk_init(argc, argv);
 
-    builder = gtk_builder_new_from_file(gladeFile); // Chemin absolu à modifier
+    builder = gtk_builder_new_from_file(gladeFile);
 
     connectWidgets();
 
     g_signal_connect(widgets->window_dashboard, "destroy", G_CALLBACK(on_destroy), NULL);
 
     gtk_builder_connect_signals(builder, NULL);
-    g_object_unref(builder); // Decreases the reference count of builder : if count = 0, memory is freed
+    g_object_unref(builder);
 
     GTKSetTheme();
 
