@@ -28,14 +28,13 @@ int copyFile(const char *src, const char *dest) {
         return 1;
     }
 
-    char *targetFolderBuffer = malloc(strlen(dest));
+    char *targetFolderBuffer = malloc(strlen(dest)+1);
     strcpy(targetFolderBuffer, dest);
     dirname(targetFolderBuffer);
 
     createPath(targetFolderBuffer);
     free(targetFolderBuffer);
 
-    //TODO use wfopen and convert char* to wchar* to fix UTF-8 encoding issue
     FILE *target = fopen(dest, "wb");
     if (target == NULL) {
         fclose(file);
@@ -130,7 +129,7 @@ void readConf() {
     size_t size = ftell(file) / sizeof(char);
     fseek(file, 0, SEEK_SET);
 
-    char *fileString = malloc(size * sizeof(char));
+    char *fileString = malloc((size + 1) * sizeof(char));
 
     if (fread(fileString, sizeof(char), size, file) != size) {
         fprintf(stderr, "Error while reading conf file ...\n");
@@ -143,33 +142,33 @@ void readConf() {
 
     char buffer[255];
     sscanf(P, "path : %s\n", buffer);
-    dbname = malloc(strlen(buffer));
+    dbname = malloc(strlen(buffer)+1);
     strcpy(dbname, buffer);
 
     //STORAGE
     P = strstr(fileString, "[STORAGE]");
     P = strchr(P, '\n') + 1;
     sscanf(P, "path : %s\n", buffer);
-    storageFolder = malloc(strlen(buffer));
+    storageFolder = malloc(strlen(buffer)+1);
     strcpy(storageFolder, buffer);
 
     //GLADE
     P = strstr(fileString, "[GLADE]");
     P = strchr(P, '\n') + 1;
     sscanf(P, "path : %s\n", buffer);
-    gladeFile = malloc(strlen(buffer));
+    gladeFile = malloc(strlen(buffer)+1);
     strcpy(gladeFile, buffer);
 
     //THEME
     P = strstr(fileString, "[THEME]");
     P = strchr(P, '\n') + 1;
     sscanf(P, "default_path : %s\n", buffer);
-    defaultThemePath = malloc(strlen(buffer));
+    defaultThemePath = malloc(strlen(buffer)+1);
     strcpy(defaultThemePath, buffer);
 
     P = strchr(P, '\n') + 1;
     sscanf(P, "dark_path : %s\n", buffer);
-    darkThemePath = malloc(strlen(buffer));
+    darkThemePath = malloc(strlen(buffer)+1);
     strcpy(darkThemePath, buffer);
     P = strchr(P, '\n') + 1;
     sscanf(P, "dark : %d\n", &darkTheme);

@@ -44,7 +44,7 @@ int insertTableImage(char *table, int id, const char *photo_location) {
         return 1;
     }
 
-    char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0));
+    char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0) + 1);
     strcpy(filePathBuffer, sqlite3_column_text(pStmt, 0) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 0));
 
     if (strlen(filePathBuffer) > 0) {
@@ -60,8 +60,8 @@ int insertTableImage(char *table, int id, const char *photo_location) {
     char fileName[strlen(photo_location)];
     strcpy(fileName, photo_location);
 
-    char *targetFileBuffer = malloc(strlen(fileName) + strlen(storageFolder) + 50);
-    sprintf(targetFileBuffer, "%s/%s/%d/%s", storageFolder, table, id, basename(fileName));
+    char *targetFileBuffer = malloc(strlen(fileName) + strlen(storageFolder) + 60);
+    sprintf(targetFileBuffer, "%s/%s/%d/image.%s", storageFolder, table, id, get_filename_ext(basename(fileName)));
 
     returnCode = copyFile(photo_location, targetFileBuffer);
     if (returnCode)
@@ -674,10 +674,10 @@ int deleteStudent(int id) {
 
     deleteStudentDeliverables(id);
 
-    char *studentIdBuffer = malloc(4);
+    char *studentIdBuffer = malloc(5);
     itoa(id, studentIdBuffer, 10);
-    char *studentStoragePathBuffer = malloc(7 + strlen(studentIdBuffer) + strlen(storageFolder));
-    strcat(strcat(strcat(strcpy(studentStoragePathBuffer, storageFolder), "/user/"), studentIdBuffer), "/");
+    char *studentStoragePathBuffer = malloc(10 + strlen(studentIdBuffer) + strlen(storageFolder));
+    strcat(strcat(strcat(strcpy(studentStoragePathBuffer, storageFolder), "/student/"), studentIdBuffer), "/");
     removeDirectory(studentStoragePathBuffer);
     free(studentIdBuffer);
     free(studentStoragePathBuffer);
@@ -1286,7 +1286,7 @@ char *insertDeliverableFile(const char *column, int id, int student_fk, const ch
 
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
-    char *sqlRequest = malloc(60);
+    char *sqlRequest = malloc(100);
     sprintf(sqlRequest, "select %s from deliverable WHERE id = ?", column);
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
@@ -1302,7 +1302,7 @@ char *insertDeliverableFile(const char *column, int id, int student_fk, const ch
         return "";
     }
 
-    char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0));
+    char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0) + 1);
     strcpy(filePathBuffer, sqlite3_column_text(pStmt, 0) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 0));
     if (strlen(filePathBuffer) > 0) {
         remove(filePathBuffer);
@@ -1316,10 +1316,10 @@ char *insertDeliverableFile(const char *column, int id, int student_fk, const ch
     char fileName[strlen(file_location)];
     strcpy(fileName, file_location);
 
-    char *targetFileBuffer = malloc(strlen(basename(fileName)) + strlen(column) + strlen(storageFolder + 50));
+    char *targetFileBuffer = malloc(strlen(basename(fileName)) + strlen(column) + strlen(storageFolder) + 50);
     // 11 for "deliverable", 3 for "_" * 3
-    sprintf(targetFileBuffer, "%s/student/%d/deliverable_%d_%s_%s", storageFolder, student_fk, id, column,
-            basename(fileName));
+    sprintf(targetFileBuffer, "%s/student/%d/deliverable_%d_%s.%s", storageFolder, student_fk, id, column,
+            get_filename_ext(basename(fileName)));
 
     returnCode = copyFile(file_location, targetFileBuffer);
     if (returnCode)
@@ -1451,7 +1451,7 @@ int deleteDeliverable(int id) {
 
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
-    char *sqlRequest = malloc(60);
+    char *sqlRequest = malloc(100);
 
     char *column[4][16] = {{"audio_record"},
                            {"video_record"},
@@ -1473,7 +1473,7 @@ int deleteDeliverable(int id) {
             return 1;
         }
 
-        char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0));
+        char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0) + 1);
         strcpy(filePathBuffer, sqlite3_column_text(pStmt, 0) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 0));
         if (strlen(filePathBuffer) > 0) {
             remove(filePathBuffer);
@@ -1499,6 +1499,7 @@ int deleteDeliverable(int id) {
         return 1;
     }
 
+    free(sqlRequest);
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
     return 0;
