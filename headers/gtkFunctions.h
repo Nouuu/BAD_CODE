@@ -458,6 +458,8 @@ void GTKCreateClass();
 
 void GTKCreateClassSubmit();
 
+int GTKCreateClassSubmitCheckRequiredField();
+
 void GTKListSanctions();
 
 void GTKEditSanction(int id);

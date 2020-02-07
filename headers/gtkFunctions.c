@@ -1280,13 +1280,16 @@ void GTKCreateClass() {
 
 void GTKCreateClassSubmit() {
 
-    int returnCode = insertClass(
-            gtk_entry_get_text(widgets->view_classes->create_class_name),
-            gtk_entry_get_text(widgets->view_classes->create_class_major),
-            atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->create_class_year))),
-            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->view_classes->create_class_apprenticeship)) ? 1 : 0,
-            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_user))),
-            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_sanction))));
+    int returnCode = GTKCreateClassSubmitCheckRequiredField() ||
+                     insertClass(gtk_entry_get_text(widgets->view_classes->create_class_name),
+                                 gtk_entry_get_text(widgets->view_classes->create_class_major),
+                                 atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->create_class_year))),
+                                 gtk_toggle_button_get_active(
+                                         GTK_TOGGLE_BUTTON(widgets->view_classes->create_class_apprenticeship)) ? 1 : 0,
+                                 atoi(gtk_combo_box_get_active_id(
+                                         GTK_COMBO_BOX(widgets->view_classes->create_class_user))),
+                                 atoi(gtk_combo_box_get_active_id(
+                                         GTK_COMBO_BOX(widgets->view_classes->create_class_sanction))));
 
     if (returnCode)
         fprintf(stderr, "Error, could not create class\n");
@@ -1294,6 +1297,19 @@ void GTKCreateClassSubmit() {
         printf("Class create successful\n");
         GTKListClasses();
     }
+}
+
+int GTKCreateClassSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_classes->create_class_name)) == 0) {
+        fprintf(stderr, "Name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->create_class_year))) != 4) {
+        fprintf(stderr, "Wrong year !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKListSanctions() {
