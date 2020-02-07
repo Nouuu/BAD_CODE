@@ -45,6 +45,7 @@ typedef struct {
     GtkEntry *create_student_email;
     GtkComboBoxText *create_student_class;
     GtkFileChooserButton *create_student_image_file_picker;
+    GtkButton *create_student_image_clear_button;
     GtkTreeStore *students_tree_store;
     GtkTreeView *students_tree_view;
     GtkTreeSelection *students_tree_selection;
@@ -315,6 +316,8 @@ G_MODULE_EXPORT void on_students_view_add_bottle_button_clicked();
 G_MODULE_EXPORT void on_student_edit_return_button_clicked();
 
 G_MODULE_EXPORT void on_student_edit_submit_button_clicked();
+
+G_MODULE_EXPORT void on_create_student_image_clear_button_clicked();
 
 G_MODULE_EXPORT void on_student_create_return_button_clicked();
 

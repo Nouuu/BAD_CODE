@@ -255,6 +255,11 @@ void on_deliverable_edit_submit_button_clicked() {
     GTKEditDelivreablesSubmit();
 }
 
+void on_create_student_image_clear_button_clicked() {
+    printf("Clear student create image");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker));
+}
+
 void on_deliverable_create_return_button_clicked() {
     printf("Return to deliverables view\n");
     GTKListDeliverables();
@@ -900,7 +905,6 @@ int GTKEditStudentSetImage(char *path) {
 }
 
 void GTKCreateStudent() {
-    //TODO add cancel button on image chooser
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->create_student_fixed);
 
@@ -2269,6 +2273,8 @@ void connectWidgets() {
     widgets->view_students->edit_student_image = GTK_IMAGE(gtk_builder_get_object(builder, "edit_student_image"));
     widgets->view_students->edit_student_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "edit_student_image_file_picker"));
+    widgets->view_students->create_student_image_clear_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_student_image_clear_button"));
     widgets->view_students->create_student_first_name = GTK_ENTRY(
             gtk_builder_get_object(builder, "create_student_first_name"));
     widgets->view_students->create_student_last_name = GTK_ENTRY(
