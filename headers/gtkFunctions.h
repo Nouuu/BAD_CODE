@@ -484,6 +484,8 @@ void GTKEditDelivreables(int id);
 
 void GTKEditDelivreablesSubmit();
 
+int GTKEditDeliverableSubmitCheckRequiredField();
+
 void GTKDelivreablesGetData(int id, char **due_date, char **subject, char **audio_record, char **video_record,
                             char **bad_code, char **deliverable_file, char **status, char **student,
                             char **student_fk,

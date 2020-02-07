@@ -1962,7 +1962,8 @@ void GTKEditDelivreablesSubmit() {
     //month number (between 0 and 11), or NULL.
     //day number (between 1 and 31), or NULL.
 
-    int returnCode = updateDeliverable(atoi(gtk_label_get_text(widgets->view_deliverables->edit_deliverable_id)),
+    int returnCode = GTKEditDeliverableSubmitCheckRequiredField() ||
+                     updateDeliverable(atoi(gtk_label_get_text(widgets->view_deliverables->edit_deliverable_id)),
                                        dateBuffer,
                                        gtk_entry_get_text(widgets->view_deliverables->edit_deliverable_subject),
                                        gtk_combo_box_text_get_active_text(
@@ -1976,6 +1977,15 @@ void GTKEditDelivreablesSubmit() {
         printf("Deliverable update successful\n");
         GTKListDeliverables();
     }
+}
+
+int GTKEditDeliverableSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_deliverables->edit_deliverable_subject)) == 0) {
+        fprintf(stderr, "Subject empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 int GTKDeliverableSetAudio(char *path) {
