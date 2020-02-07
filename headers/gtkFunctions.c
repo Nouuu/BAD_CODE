@@ -855,8 +855,10 @@ void GTKEditStudentImage(char *path) {
     gtk_image_clear(widgets->view_students->edit_student_image);
     GdkPixbuf *pixbuf;
     if (strlen(path) < 1) {
-        if ((pixbuf = gdk_pixbuf_new_from_file("storage/profil.png", NULL)) == NULL) {
-            fprintf(stderr, "Error while loading user profil picture\n");
+        char *defaultProfilPicture = malloc(strlen(storageFolder) + 12);
+        sprintf(defaultProfilPicture, "%s/profil.png", storageFolder);
+        if ((pixbuf = gdk_pixbuf_new_from_file(defaultProfilPicture, NULL)) == NULL) {
+            fprintf(stderr, "Error while loading default user profil picture\n");
         } else {
             printf("loaded!\n");
             int width = gdk_pixbuf_get_width(pixbuf);
@@ -867,6 +869,7 @@ void GTKEditStudentImage(char *path) {
                                       gdk_pixbuf_scale_simple(pixbuf, floor(width * ratio), floor(height * ratio),
                                                               GDK_INTERP_BILINEAR));
         }
+        free(defaultProfilPicture);
     } else {
         if ((pixbuf = gdk_pixbuf_new_from_file(path, NULL)) == NULL) {
             fprintf(stderr, "Error while loading user profil picture\n");
@@ -897,6 +900,7 @@ int GTKEditStudentSetImage(char *path) {
 }
 
 void GTKCreateStudent() {
+    //TODO add cancel button on image chooser
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->create_student_fixed);
 
@@ -1000,10 +1004,10 @@ void GTKListClasses() {
         strncpy(buffer, classes, columnSize);
         buffer[columnSize] = '\0';
         if (!strcmp(buffer, "1")) {
-            buffer = realloc(buffer, 3 * sizeof(char));
+            buffer = realloc(buffer, 4 * sizeof(char));
             strcpy(buffer, "Yes");
         } else {
-            buffer = realloc(buffer, 2 * sizeof(char));
+            buffer = realloc(buffer, 3 * sizeof(char));
             strcpy(buffer, "No");
         }
 
@@ -1538,10 +1542,10 @@ void GTKListDeliverables() {
         strncpy(buffer, deliverables, columnSize);
         buffer[columnSize] = '\0';
         if (strlen(buffer) > 0) {
-            buffer = realloc(buffer, 3 * sizeof(char));
+            buffer = realloc(buffer, 4 * sizeof(char));
             strcpy(buffer, "Yes");
         } else {
-            buffer = realloc(buffer, 2 * sizeof(char));
+            buffer = realloc(buffer, 3 * sizeof(char));
             strcpy(buffer, "No");
         }
 
@@ -1557,10 +1561,10 @@ void GTKListDeliverables() {
         strncpy(buffer, deliverables, columnSize);
         buffer[columnSize] = '\0';
         if (strlen(buffer) > 0) {
-            buffer = realloc(buffer, 3 * sizeof(char));
+            buffer = realloc(buffer, 4 * sizeof(char));
             strcpy(buffer, "Yes");
         } else {
-            buffer = realloc(buffer, 2 * sizeof(char));
+            buffer = realloc(buffer, 3 * sizeof(char));
             strcpy(buffer, "No");
         }
 
@@ -1576,10 +1580,10 @@ void GTKListDeliverables() {
         strncpy(buffer, deliverables, columnSize);
         buffer[columnSize] = '\0';
         if (strlen(buffer) > 0) {
-            buffer = realloc(buffer, 3 * sizeof(char));
+            buffer = realloc(buffer, 4 * sizeof(char));
             strcpy(buffer, "Yes");
         } else {
-            buffer = realloc(buffer, 2 * sizeof(char));
+            buffer = realloc(buffer, 3 * sizeof(char));
             strcpy(buffer, "No");
         }
 
@@ -1595,10 +1599,10 @@ void GTKListDeliverables() {
         strncpy(buffer, deliverables, columnSize);
         buffer[columnSize] = '\0';
         if (strlen(buffer) > 0) {
-            buffer = realloc(buffer, 3 * sizeof(char));
+            buffer = realloc(buffer, 4 * sizeof(char));
             strcpy(buffer, "Yes");
         } else {
-            buffer = realloc(buffer, 2 * sizeof(char));
+            buffer = realloc(buffer, 3 * sizeof(char));
             strcpy(buffer, "No");
         }
 
@@ -2025,7 +2029,7 @@ void GTKViewUser() {
     char *email, *first_name, *last_name, *photo, *birthdate, *emailURI;
     int id;
     GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
-    emailURI = malloc(strlen(email + 7));
+    emailURI = malloc(strlen(email) + 8);
     strcat(strcpy(emailURI, "mailto:"), email);
 
     GTKUserImage(photo);
@@ -2164,31 +2168,32 @@ void GTKViewSettings() {
 void GTKViewSettingsSubmit() {
     storageFolder = realloc(storageFolder,
                             strlen(gtk_file_chooser_get_filename(
-                                    GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser))));
+                                    GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser)) + 1));
     strcpy(storageFolder,
            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser)));
 
     dbname = realloc(dbname,
                      strlen(gtk_file_chooser_get_filename(
-                             GTK_FILE_CHOOSER(widgets->view_settings->settings_database_file_chooser))));
+                             GTK_FILE_CHOOSER(widgets->view_settings->settings_database_file_chooser)) + 1));
     strcpy(dbname,
            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_database_file_chooser)));
 
     gladeFile = realloc(gladeFile,
                         strlen(gtk_file_chooser_get_filename(
-                                GTK_FILE_CHOOSER(widgets->view_settings->settings_glade_file_chooser))));
+                                GTK_FILE_CHOOSER(widgets->view_settings->settings_glade_file_chooser))) + 1);
     strcpy(gladeFile,
            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_glade_file_chooser)));
 
     defaultThemePath = realloc(defaultThemePath,
                                strlen(gtk_file_chooser_get_filename(
-                                       GTK_FILE_CHOOSER(widgets->view_settings->settings_default_theme_file_chooser))));
+                                       GTK_FILE_CHOOSER(widgets->view_settings->settings_default_theme_file_chooser))) +
+                               1);
     strcpy(defaultThemePath, gtk_file_chooser_get_filename(
             GTK_FILE_CHOOSER(widgets->view_settings->settings_default_theme_file_chooser)));
 
     darkThemePath = realloc(darkThemePath,
                             strlen(gtk_file_chooser_get_filename(
-                                    GTK_FILE_CHOOSER(widgets->view_settings->settings_dark_theme_file_chooser))));
+                                    GTK_FILE_CHOOSER(widgets->view_settings->settings_dark_theme_file_chooser)) + 1));
     strcpy(darkThemePath,
            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_dark_theme_file_chooser)));
     writeConf();
