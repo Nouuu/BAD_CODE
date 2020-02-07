@@ -441,6 +441,8 @@ void GTKCreateStudent();
 
 void GTKCreateStudentSubmit();
 
+int GTKCreateStudentSubmitCheckRequiredField();
+
 void GTKListClasses();
 
 void GTKEditClass(int id);

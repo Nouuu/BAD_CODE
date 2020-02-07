@@ -951,7 +951,8 @@ void GTKCreateStudentSubmit() {
                                    atoi(gtk_combo_box_get_active_id(
                                            GTK_COMBO_BOX(widgets->view_students->create_student_class))));
     else
-        returnCode = insertStudent(gtk_entry_get_text(widgets->view_students->create_student_first_name),
+        returnCode = GTKCreateStudentSubmitCheckRequiredField() ||
+                     insertStudent(gtk_entry_get_text(widgets->view_students->create_student_first_name),
                                    gtk_entry_get_text(widgets->view_students->create_student_last_name),
                                    NULL,
                                    gtk_entry_get_text(widgets->view_students->create_student_email),
@@ -964,6 +965,24 @@ void GTKCreateStudentSubmit() {
         printf("Student create successful\n");
         GTKListStudents();
     }
+}
+
+int GTKCreateStudentSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_students->create_student_first_name)) == 0) {
+        fprintf(stderr, "First name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_students->create_student_last_name)) == 0) {
+        fprintf(stderr, "Last name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_students->create_student_email)) == 0) {
+        fprintf(stderr, "Email empty !\n");
+        returnCode = 1;
+    }
+
+    return returnCode;
 }
 
 void GTKListClasses() {
