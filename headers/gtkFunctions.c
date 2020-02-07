@@ -2189,8 +2189,8 @@ void GTKEditUser() {
 }
 
 void GTKEditUserSubmit() {
-    int returnCode = updateUser(1,
-                                gtk_entry_get_text(widgets->view_user->edit_user_email),
+    int returnCode = GTKEditUserSubmitCheckRequiredField() ||
+                     updateUser(1, gtk_entry_get_text(widgets->view_user->edit_user_email),
                                 gtk_entry_get_text(widgets->view_user->edit_user_first_name),
                                 gtk_entry_get_text(widgets->view_user->edit_user_last_name),
                                 gtk_label_get_text(widgets->view_user->edit_user_birthdate));
@@ -2200,6 +2200,24 @@ void GTKEditUserSubmit() {
         printf("User update successful\n");
         GTKViewUser();
     }
+}
+
+int GTKEditUserSubmitCheckRequiredField() {
+    //fn, ln, mail
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_user->edit_user_first_name)) == 0) {
+        fprintf(stderr, "First name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_user->edit_user_last_name)) == 0) {
+        fprintf(stderr, "Last name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_user->edit_user_email)) == 0) {
+        fprintf(stderr, "Email empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate) {

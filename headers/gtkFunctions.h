@@ -513,6 +513,8 @@ void GTKEditUser();
 
 void GTKEditUserSubmit();
 
+int GTKEditUserSubmitCheckRequiredField();
+
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate);
 
 void GTKUserImage(char *path);
