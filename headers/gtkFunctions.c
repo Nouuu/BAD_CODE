@@ -1552,7 +1552,9 @@ void GTKCreateSanctionSubmit() {
     gtk_text_buffer_get_start_iter(textBuffer, &startIter);
     gtk_text_buffer_get_end_iter(textBuffer, &endIter);
 
-    int returnCode = insertSanction(gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
+    int returnCode = GTKCreateSanctionSubmitCheckRequiredField(
+            gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE)) ||
+                     insertSanction(gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
                                     gtk_entry_get_text(widgets->view_sanctions->create_sanction_name),
                                     atoi(gtk_combo_box_get_active_id(
                                             GTK_COMBO_BOX(widgets->view_sanctions->create_sanction_user))));
@@ -1563,6 +1565,19 @@ void GTKCreateSanctionSubmit() {
         printf("Sanction create successful\n");
         GTKListSanctions();
     }
+}
+
+int GTKCreateSanctionSubmitCheckRequiredField(char *textIter) {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_sanctions->create_sanction_name)) == 0) {
+        fprintf(stderr, "Name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(textIter) == 0) {
+        fprintf(stderr, "Description empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKListDeliverables() {

@@ -476,6 +476,8 @@ void GTKCreateSanction();
 
 void GTKCreateSanctionSubmit();
 
+int GTKCreateSanctionSubmitCheckRequiredField(char *textIter);
+
 void GTKListDeliverables();
 
 void GTKEditDelivreables(int id);
