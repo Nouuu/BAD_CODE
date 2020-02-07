@@ -6,8 +6,6 @@
 #include "sqliteFunctions.h"
 #include "functions.h"
 
-//TODO check strlen on all submit to avoid some empty required field
-
 void on_destroy() {
     gtk_main_quit();
 }
@@ -253,6 +251,11 @@ void on_deliverable_edit_return_button_clicked() {
 void on_deliverable_edit_submit_button_clicked() {
     printf("Submit deliverable edit\n");
     GTKEditDelivreablesSubmit();
+}
+
+void on_create_student_image_clear_button_clicked() {
+    printf("Clear student create image");
+    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker));
 }
 
 void on_deliverable_create_return_button_clicked() {
@@ -771,7 +774,8 @@ void GTKEditStudent(int id) {
 
 void GTKEditStudentSubmit() {
 
-    int returnCode = updateStudent(atoi(gtk_label_get_text(widgets->view_students->edit_student_id)),
+    int returnCode = GTKEditStudentSubmitCheckRequiredField() ||
+                     updateStudent(atoi(gtk_label_get_text(widgets->view_students->edit_student_id)),
                                    gtk_entry_get_text(widgets->view_students->edit_student_first_name),
                                    gtk_entry_get_text(widgets->view_students->edit_student_last_name),
                                    gtk_entry_get_text(widgets->view_students->edit_student_email),
@@ -784,6 +788,26 @@ void GTKEditStudentSubmit() {
         printf("Student update successful\n");
         GTKListStudents();
     }
+}
+
+int GTKEditStudentSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_students->edit_student_bottles))) < 0)
+        gtk_entry_set_text(GTK_ENTRY(widgets->view_students->edit_student_bottles), "0");
+    if (strlen(gtk_entry_get_text(widgets->view_students->edit_student_first_name)) == 0) {
+        fprintf(stderr, "First name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_students->edit_student_last_name)) == 0) {
+        fprintf(stderr, "Last name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_students->edit_student_email)) == 0) {
+        fprintf(stderr, "Email empty !\n");
+        returnCode = 1;
+    }
+
+    return returnCode;
 }
 
 void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo, char **email, char **bottles,
@@ -900,7 +924,6 @@ int GTKEditStudentSetImage(char *path) {
 }
 
 void GTKCreateStudent() {
-    //TODO add cancel button on image chooser
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->create_student_fixed);
 
@@ -926,7 +949,8 @@ void GTKCreateStudentSubmit() {
                                    atoi(gtk_combo_box_get_active_id(
                                            GTK_COMBO_BOX(widgets->view_students->create_student_class))));
     else
-        returnCode = insertStudent(gtk_entry_get_text(widgets->view_students->create_student_first_name),
+        returnCode = GTKCreateStudentSubmitCheckRequiredField() ||
+                     insertStudent(gtk_entry_get_text(widgets->view_students->create_student_first_name),
                                    gtk_entry_get_text(widgets->view_students->create_student_last_name),
                                    NULL,
                                    gtk_entry_get_text(widgets->view_students->create_student_email),
@@ -939,6 +963,24 @@ void GTKCreateStudentSubmit() {
         printf("Student create successful\n");
         GTKListStudents();
     }
+}
+
+int GTKCreateStudentSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_students->create_student_first_name)) == 0) {
+        fprintf(stderr, "First name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_students->create_student_last_name)) == 0) {
+        fprintf(stderr, "Last name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_students->create_student_email)) == 0) {
+        fprintf(stderr, "Email empty !\n");
+        returnCode = 1;
+    }
+
+    return returnCode;
 }
 
 void GTKListClasses() {
@@ -1184,15 +1226,18 @@ void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char
 
 void GTKEditClassSubmit() {
 
-    int returnCode = updateClass(
-            atoi(gtk_label_get_text(widgets->view_classes->edit_class_id)),
-            gtk_entry_get_text(widgets->view_classes->edit_class_name),
-            gtk_entry_get_text(widgets->view_classes->edit_class_major),
-            atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))),
-            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->view_classes->edit_class_apprenticeship)) ? 1 : 0,
-            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_user))),
-            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction)))
-    );
+    int returnCode = GTKEditClassSubmitCheckRequiredField() ||
+                     updateClass(atoi(gtk_label_get_text(widgets->view_classes->edit_class_id)),
+                                 gtk_entry_get_text(widgets->view_classes->edit_class_name),
+                                 gtk_entry_get_text(widgets->view_classes->edit_class_major),
+                                 atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))),
+                                 gtk_toggle_button_get_active(
+                                         GTK_TOGGLE_BUTTON(widgets->view_classes->edit_class_apprenticeship)) ? 1 : 0,
+                                 atoi(gtk_combo_box_get_active_id(
+                                         GTK_COMBO_BOX(widgets->view_classes->edit_class_user))),
+                                 atoi(gtk_combo_box_get_active_id(
+                                         GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction)))
+                     );
 
     if (returnCode)
         fprintf(stderr, "Error, could not update class\n");
@@ -1200,6 +1245,19 @@ void GTKEditClassSubmit() {
         printf("Class update successful\n");
         GTKListClasses();
     }
+}
+
+int GTKEditClassSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_classes->edit_class_name)) == 0) {
+        fprintf(stderr, "Name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))) != 4) {
+        fprintf(stderr, "Wrong year !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKCreateClass() {
@@ -1220,13 +1278,16 @@ void GTKCreateClass() {
 
 void GTKCreateClassSubmit() {
 
-    int returnCode = insertClass(
-            gtk_entry_get_text(widgets->view_classes->create_class_name),
-            gtk_entry_get_text(widgets->view_classes->create_class_major),
-            atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->create_class_year))),
-            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->view_classes->create_class_apprenticeship)) ? 1 : 0,
-            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_user))),
-            atoi(gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_classes->create_class_sanction))));
+    int returnCode = GTKCreateClassSubmitCheckRequiredField() ||
+                     insertClass(gtk_entry_get_text(widgets->view_classes->create_class_name),
+                                 gtk_entry_get_text(widgets->view_classes->create_class_major),
+                                 atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->create_class_year))),
+                                 gtk_toggle_button_get_active(
+                                         GTK_TOGGLE_BUTTON(widgets->view_classes->create_class_apprenticeship)) ? 1 : 0,
+                                 atoi(gtk_combo_box_get_active_id(
+                                         GTK_COMBO_BOX(widgets->view_classes->create_class_user))),
+                                 atoi(gtk_combo_box_get_active_id(
+                                         GTK_COMBO_BOX(widgets->view_classes->create_class_sanction))));
 
     if (returnCode)
         fprintf(stderr, "Error, could not create class\n");
@@ -1234,6 +1295,19 @@ void GTKCreateClassSubmit() {
         printf("Class create successful\n");
         GTKListClasses();
     }
+}
+
+int GTKCreateClassSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_classes->create_class_name)) == 0) {
+        fprintf(stderr, "Name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->create_class_year))) != 4) {
+        fprintf(stderr, "Wrong year !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKListSanctions() {
@@ -1347,12 +1421,9 @@ void GTKEditSanctionSubmit() {
     gtk_text_buffer_get_start_iter(textBuffer, &startIter);
     gtk_text_buffer_get_end_iter(textBuffer, &endIter);
 
-    printf("id: %s\n", gtk_label_get_text(widgets->view_sanctions->edit_sanction_id));
-    printf("Name: %s\n", gtk_entry_get_text(widgets->view_sanctions->edit_sanction_name));
-    printf("Description: %s\n", gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE));
-    printf("Userfk: %s\n", gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_sanctions->edit_sanction_user)));
-
-    int returnCode = updateSanction(atoi(gtk_label_get_text(widgets->view_sanctions->edit_sanction_id)),
+    int returnCode = GTKEditSanctionSubmitCheckRequiredField(
+            gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE)) ||
+                     updateSanction(atoi(gtk_label_get_text(widgets->view_sanctions->edit_sanction_id)),
                                     gtk_entry_get_text(widgets->view_sanctions->edit_sanction_name),
                                     gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
                                     atoi(gtk_combo_box_get_active_id(
@@ -1365,6 +1436,20 @@ void GTKEditSanctionSubmit() {
         GTKListSanctions();
     }
 }
+
+int GTKEditSanctionSubmitCheckRequiredField(char *textIter) {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_sanctions->edit_sanction_name)) == 0) {
+        fprintf(stderr, "Name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(textIter) == 0) {
+        fprintf(stderr, "Description empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
+}
+
 
 void GTKSanctionGetData(int id, char **name, char **description, char **user, char **user_fk) {
     char *sanctionData, *firstAdress;
@@ -1465,7 +1550,9 @@ void GTKCreateSanctionSubmit() {
     gtk_text_buffer_get_start_iter(textBuffer, &startIter);
     gtk_text_buffer_get_end_iter(textBuffer, &endIter);
 
-    int returnCode = insertSanction(gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
+    int returnCode = GTKCreateSanctionSubmitCheckRequiredField(
+            gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE)) ||
+                     insertSanction(gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
                                     gtk_entry_get_text(widgets->view_sanctions->create_sanction_name),
                                     atoi(gtk_combo_box_get_active_id(
                                             GTK_COMBO_BOX(widgets->view_sanctions->create_sanction_user))));
@@ -1476,6 +1563,19 @@ void GTKCreateSanctionSubmit() {
         printf("Sanction create successful\n");
         GTKListSanctions();
     }
+}
+
+int GTKCreateSanctionSubmitCheckRequiredField(char *textIter) {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_sanctions->create_sanction_name)) == 0) {
+        fprintf(stderr, "Name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(textIter) == 0) {
+        fprintf(stderr, "Description empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKListDeliverables() {
@@ -1860,7 +1960,8 @@ void GTKEditDelivreablesSubmit() {
     //month number (between 0 and 11), or NULL.
     //day number (between 1 and 31), or NULL.
 
-    int returnCode = updateDeliverable(atoi(gtk_label_get_text(widgets->view_deliverables->edit_deliverable_id)),
+    int returnCode = GTKEditDeliverableSubmitCheckRequiredField() ||
+                     updateDeliverable(atoi(gtk_label_get_text(widgets->view_deliverables->edit_deliverable_id)),
                                        dateBuffer,
                                        gtk_entry_get_text(widgets->view_deliverables->edit_deliverable_subject),
                                        gtk_combo_box_text_get_active_text(
@@ -1874,6 +1975,15 @@ void GTKEditDelivreablesSubmit() {
         printf("Deliverable update successful\n");
         GTKListDeliverables();
     }
+}
+
+int GTKEditDeliverableSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_deliverables->edit_deliverable_subject)) == 0) {
+        fprintf(stderr, "Subject empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 int GTKDeliverableSetAudio(char *path) {
@@ -2005,7 +2115,8 @@ void GTKCreateDelivreablesSubmit() {
     int audioGood = checkAudioExtension(audioPath);
     int videoGood = checkVideoExtension(videoPath);
 
-    int returnCode = insertDeliverable(dateBuffer,
+    int returnCode = GTKCreateDeliverableSubmitCheckRequiredField() ||
+                     insertDeliverable(dateBuffer,
                                        gtk_entry_get_text(widgets->view_deliverables->create_deliverable_subject),
                                        audioGood ? audioPath : NULL,
                                        videoGood ? videoPath : NULL,
@@ -2022,6 +2133,15 @@ void GTKCreateDelivreablesSubmit() {
         printf("Deliverable update successful\n");
         GTKListDeliverables();
     }
+}
+
+int GTKCreateDeliverableSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_deliverables->create_deliverable_subject)) == 0) {
+        fprintf(stderr, "Subject empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKViewUser() {
@@ -2067,8 +2187,8 @@ void GTKEditUser() {
 }
 
 void GTKEditUserSubmit() {
-    int returnCode = updateUser(1,
-                                gtk_entry_get_text(widgets->view_user->edit_user_email),
+    int returnCode = GTKEditUserSubmitCheckRequiredField() ||
+                     updateUser(1, gtk_entry_get_text(widgets->view_user->edit_user_email),
                                 gtk_entry_get_text(widgets->view_user->edit_user_first_name),
                                 gtk_entry_get_text(widgets->view_user->edit_user_last_name),
                                 gtk_label_get_text(widgets->view_user->edit_user_birthdate));
@@ -2078,6 +2198,24 @@ void GTKEditUserSubmit() {
         printf("User update successful\n");
         GTKViewUser();
     }
+}
+
+int GTKEditUserSubmitCheckRequiredField() {
+    //fn, ln, mail
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_user->edit_user_first_name)) == 0) {
+        fprintf(stderr, "First name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_user->edit_user_last_name)) == 0) {
+        fprintf(stderr, "Last name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(gtk_entry_get_text(widgets->view_user->edit_user_email)) == 0) {
+        fprintf(stderr, "Email empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKUserGetData(int *id, char **email, char **first_name, char **last_name, char **photo, char **birthdate) {
@@ -2269,6 +2407,8 @@ void connectWidgets() {
     widgets->view_students->edit_student_image = GTK_IMAGE(gtk_builder_get_object(builder, "edit_student_image"));
     widgets->view_students->edit_student_image_file_picker = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "edit_student_image_file_picker"));
+    widgets->view_students->create_student_image_clear_button = GTK_BUTTON(
+            gtk_builder_get_object(builder, "create_student_image_clear_button"));
     widgets->view_students->create_student_first_name = GTK_ENTRY(
             gtk_builder_get_object(builder, "create_student_first_name"));
     widgets->view_students->create_student_last_name = GTK_ENTRY(
