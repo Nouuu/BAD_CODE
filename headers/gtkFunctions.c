@@ -2117,7 +2117,8 @@ void GTKCreateDelivreablesSubmit() {
     int audioGood = checkAudioExtension(audioPath);
     int videoGood = checkVideoExtension(videoPath);
 
-    int returnCode = insertDeliverable(dateBuffer,
+    int returnCode = GTKCreateDeliverableSubmitCheckRequiredField() ||
+                     insertDeliverable(dateBuffer,
                                        gtk_entry_get_text(widgets->view_deliverables->create_deliverable_subject),
                                        audioGood ? audioPath : NULL,
                                        videoGood ? videoPath : NULL,
@@ -2134,6 +2135,15 @@ void GTKCreateDelivreablesSubmit() {
         printf("Deliverable update successful\n");
         GTKListDeliverables();
     }
+}
+
+int GTKCreateDeliverableSubmitCheckRequiredField() {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_deliverables->create_deliverable_subject)) == 0) {
+        fprintf(stderr, "Subject empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
 }
 
 void GTKViewUser() {

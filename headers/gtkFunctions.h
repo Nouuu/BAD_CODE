@@ -505,6 +505,8 @@ void GTKCreateDelivreables(int student_fk);
 
 void GTKCreateDelivreablesSubmit();
 
+int GTKCreateDeliverableSubmitCheckRequiredField();
+
 void GTKViewUser();
 
 void GTKEditUser();
