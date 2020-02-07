@@ -466,6 +466,8 @@ void GTKEditSanction(int id);
 
 void GTKEditSanctionSubmit();
 
+int GTKEditSanctionSubmitCheckRequiredField(char *textIter);
+
 void GTKSanctionGetData(int id, char **name, char **description, char **user, char **user_fk);
 
 void GTKSanctionGetDataStudentId(int student_id, char **name, char **description, char **student, char **student_fk);

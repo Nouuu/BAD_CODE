@@ -1423,12 +1423,9 @@ void GTKEditSanctionSubmit() {
     gtk_text_buffer_get_start_iter(textBuffer, &startIter);
     gtk_text_buffer_get_end_iter(textBuffer, &endIter);
 
-    printf("id: %s\n", gtk_label_get_text(widgets->view_sanctions->edit_sanction_id));
-    printf("Name: %s\n", gtk_entry_get_text(widgets->view_sanctions->edit_sanction_name));
-    printf("Description: %s\n", gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE));
-    printf("Userfk: %s\n", gtk_combo_box_get_active_id(GTK_COMBO_BOX(widgets->view_sanctions->edit_sanction_user)));
-
-    int returnCode = updateSanction(atoi(gtk_label_get_text(widgets->view_sanctions->edit_sanction_id)),
+    int returnCode = GTKEditSanctionSubmitCheckRequiredField(
+            gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE)) ||
+                     updateSanction(atoi(gtk_label_get_text(widgets->view_sanctions->edit_sanction_id)),
                                     gtk_entry_get_text(widgets->view_sanctions->edit_sanction_name),
                                     gtk_text_buffer_get_text(textBuffer, &startIter, &endIter, FALSE),
                                     atoi(gtk_combo_box_get_active_id(
@@ -1441,6 +1438,20 @@ void GTKEditSanctionSubmit() {
         GTKListSanctions();
     }
 }
+
+int GTKEditSanctionSubmitCheckRequiredField(char *textIter) {
+    int returnCode = 0;
+    if (strlen(gtk_entry_get_text(widgets->view_sanctions->edit_sanction_name)) == 0) {
+        fprintf(stderr, "Name empty !\n");
+        returnCode = 1;
+    }
+    if (strlen(textIter) == 0) {
+        fprintf(stderr, "Description empty !\n");
+        returnCode = 1;
+    }
+    return returnCode;
+}
+
 
 void GTKSanctionGetData(int id, char **name, char **description, char **user, char **user_fk) {
     char *sanctionData, *firstAdress;
