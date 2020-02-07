@@ -2374,6 +2374,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkTreeViewColumn" id="deliverables_cx_1">
+                                    <property name="visible">False</property>
                                     <property name="resizable">True</property>
                                     <property name="title" translatable="yes">id</property>
                                     <property name="expand">True</property>
@@ -2388,7 +2389,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="deliverables_cx_2">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">due_date</property>
+                                    <property name="title" translatable="yes">Due date</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">1</property>
@@ -2400,7 +2401,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="deliverables_cx_3">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">subject</property>
+                                    <property name="title" translatable="yes">Subject</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">2</property>
@@ -2412,7 +2413,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="deliverables_cx_4">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">audio_record</property>
+                                    <property name="title" translatable="yes">Audio record</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">3</property>
@@ -2424,7 +2425,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="deliverables_cx_5">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">video_record</property>
+                                    <property name="title" translatable="yes">Video record</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">4</property>
@@ -2436,7 +2437,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="deliverables_cx_6">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">bad_code</property>
+                                    <property name="title" translatable="yes">Bad code</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">5</property>
@@ -2448,7 +2449,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="deliverables_cx_7">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">deliverable_file</property>
+                                    <property name="title" translatable="yes">Deliverable file</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">6</property>
@@ -2460,7 +2461,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="deliverables_cx_8">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">status</property>
+                                    <property name="title" translatable="yes">Status</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">7</property>
@@ -2472,7 +2473,7 @@
                                 <child>
                                   <object class="GtkTreeViewColumn" id="deliverables_cx_9">
                                     <property name="resizable">True</property>
-                                    <property name="title" translatable="yes">student</property>
+                                    <property name="title" translatable="yes">Student</property>
                                     <property name="expand">True</property>
                                     <property name="clickable">True</property>
                                     <property name="sort_column_id">8</property>
