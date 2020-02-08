@@ -1,7 +1,3 @@
-//
-// Created by MaleWhere on 30/01/2020.
-//
-
 #include "sqliteFunctions.h"
 #include "functions.h"
 
@@ -9,26 +5,28 @@ void checkVersion() {
     printf("SQLite version: %s\n", sqlite3_version);
 }
 
+// Opens a connexion to the data base
 sqlite3 *connectDB() {
-    sqlite3 *db;
-    int returnCode = sqlite3_open(dbname, &db);
-    if (returnCode) {
+    sqlite3 *db; // Connexion pointer, allows to open and close the database
+    int returnCode = sqlite3_open(dbname, &db); // Opening the database
+    if (returnCode) { // Check if the database has been correctly open
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return 0;
     } else {
         fprintf(stdout, "Opened/Created database '%s' successfully\n", dbname);
     }
+    // Returns the pointer to the database structure
     return db;
 }
 
 int insertTableImage(char *table, int id, const char *photo_location) {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////    PARTIE FICHIER 1 ///////////////////////////////////////////////////////////////////////////
+    ////////////////////    SUPPRESSION DE L'EVENTUELLE PHOTO //////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     sqlite3 *db = connectDB();
     sqlite3_stmt *pStmt;
-    char *sqlRequest = malloc(50);
+    char *sqlRequest = malloc(50); // 50 because whatever the name of the table, the request n'a pas plus de 50 caractères
     sprintf(sqlRequest, "select photo from %s WHERE id = ?", table);
 
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
@@ -47,22 +45,27 @@ int insertTableImage(char *table, int id, const char *photo_location) {
     char *filePathBuffer = malloc(sqlite3_column_bytes(pStmt, 0) + 1);
     strcpy(filePathBuffer, sqlite3_column_text(pStmt, 0) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 0));
 
-    if (strlen(filePathBuffer) > 0) {
-        remove(filePathBuffer);
+    if (strlen(filePathBuffer) > 0) { // Si c'est supérieur à 0 : il y a photo
+        remove(filePathBuffer); // donc on remove la photo
     }
     free(filePathBuffer);
-    sqlite3_finalize(pStmt);
+    sqlite3_finalize(pStmt); // On finalise parce qu'après on va devoir faire une insertion
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////    PARTIE FICHIER 2 ///////////////////////////////////////////////////////////////////////////
+    ////////////////////    COPIE DU CHEMIN ////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    char fileName[strlen(photo_location)];
+    // Static array: duplication du chemin de la photo source passé en argument
+    char fileName[strlen(photo_location) + 1];
     strcpy(fileName, photo_location);
 
+    // Chemin de destination de l'image : taille du nom du fichier + taille du dossier qui va héberger
+    // + 60 : caractères pour l'arborescence intermédiaire
     char *targetFileBuffer = malloc(strlen(fileName) + strlen(storageFolder) + 60);
+    // Création du chemin final
     sprintf(targetFileBuffer, "%s/%s/%d/image.%s", storageFolder, table, id, get_filename_ext(basename(fileName)));
 
+    // copie du fichier source à la destination
     returnCode = copyFile(photo_location, targetFileBuffer);
     if (returnCode)
         return 1;
@@ -82,7 +85,6 @@ int insertTableImage(char *table, int id, const char *photo_location) {
 
     sqlite3_bind_text(pStmt, 1, targetFileBuffer, -1, 0);
     sqlite3_bind_int(pStmt, 2, id);
-    //remplace le parametre 2 ('?' n°2) par un entier
 
     returnCode = sqlite3_step(pStmt);
     if (returnCode != SQLITE_DONE) {
@@ -173,39 +175,44 @@ int updateUser(int id, const char *email, const char *first_name, const char *la
  * @data = "id|email|first_name|last_name|photo|birthdate;\n"
  */
 void getUser(char **data, int id) {
-    sqlite3 *db = connectDB();
-    sqlite3_stmt *pStmt;
-    char *sqlRequest = "select * from user where id = ?;";
-    size_t rowStringSize = 1;
+    sqlite3 *db = connectDB(); // Connection to the database
+    sqlite3_stmt *pStmt; // Creation of a statement : stores the state of the request
+    char *sqlRequest = "select * from user where id = ?;"; // Preparing the request string
+    size_t rowStringSize = 1; // 1 pour '\0'
     char *result = malloc(rowStringSize * sizeof(char));
-    strcpy(result, "");
+    strcpy(result, ""); // Sur le retour, on aura le \0
 
+    //Preparing the request
+    // data base / string de requête / taille de la string de la requête / adresse du statement
     int returnCode = sqlite3_prepare_v2(db, sqlRequest, (int) strlen(sqlRequest), &pStmt, NULL);
     if (returnCode != SQLITE_OK) {
         fprintf(stderr, "Cannot prepare sql request statement: %s\n", sqlite3_errmsg(db));
-        *data = result;
+        *data = result; // Si ça n'a pas fonctionné, chaîne de caractères vide
         return;
     }
 
+    // Binding: grâce au statetement, on prend le premier ? auquel on bind l'id
     sqlite3_bind_int(pStmt, 1, id);
 
+    //Execution de la requête
     returnCode = sqlite3_step(pStmt);
-    if (returnCode != SQLITE_ROW) {
-        *data = result;
+    if (returnCode != SQLITE_ROW) { // Vérification qu'il y a au moins un retour à la requête
+        *data = result; // Si il n'y a pas de résultat, chaîne de caractères vide
         return;
     }
 
+    // Variable temporaire qui va contenir les "chiffres"
     char intBuffer[6];
 
     //Colonne 0 (id)
-    itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10);
-    rowStringSize += strlen(intBuffer) + 1;// pour le "|"
-    result = realloc(result, rowStringSize);
-    strcat(result, strcat(intBuffer, "|"));
+    itoa(sqlite3_column_int(pStmt, 0), intBuffer, 10); // on récupère la première colonne, qu'on transforme en string et qu'on colle dans intBuffer
+    rowStringSize += strlen(intBuffer) + 1; // on agrandit la taille de rowstringsize de la taille de la string de l'id, +1 pour le "|" (délimiteur)
+    result = realloc(result, rowStringSize); // on réalloue la taille du result avec la nouvelle taille
+    strcat(result, strcat(intBuffer, "|")); // on concatène le résult + le pipe
     //Colonne 1 (email)
     rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
     result = realloc(result, rowStringSize);
-    strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1));
+    strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1)); //Si c'est nul, on concatène avec rien
     strcat(result, "|");
     //Colonne 2 (first_name)
     rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
@@ -223,14 +230,14 @@ void getUser(char **data, int id) {
     strcat(result, sqlite3_column_text(pStmt, 4) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 4));
     strcat(result, "|");
     //Colonne 5 (birthdate)
-    rowStringSize += sqlite3_column_bytes(pStmt, 5) + 2;
+    rowStringSize += sqlite3_column_bytes(pStmt, 5) + 2; // +2 car on finit la string avec ;\n
     result = realloc(result, rowStringSize);
     strcat(result, sqlite3_column_text(pStmt, 5) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 5));
     strcat(result, ";\n");
 
-    *data = result;
-    sqlite3_finalize(pStmt);
-    sqlite3_close(db);
+    *data = result; // "Renvoie" le result en modifiant, grâce pointeur
+    sqlite3_finalize(pStmt); // finalisation de la requête
+    sqlite3_close(db); // fermeture de la base de données
 }
 
 int insertClass(const char *name, const char *major, int year, int apprenticeship, int user_fk, int sanction_fk) {
@@ -336,6 +343,7 @@ int deleteClass(int id) {
         return 1;
     }
 
+    // Tous les étudiants qui avaient la classe supprimée ont une classe à NULL
     studentNullClass(id);
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
@@ -549,7 +557,7 @@ int insertStudent(const char *first_name, const char *last_name, const char *pho
         return 1;
     }
 
-    sqlite3_bind_text(pStmt, 1, first_name, -1, 0);
+    sqlite3_bind_text(pStmt, 1, first_name, -1, 0); //-1 et 0 : permet de bind correctement
     sqlite3_bind_text(pStmt, 2, last_name, -1, 0);
     sqlite3_bind_text(pStmt, 3, email, -1, 0);
     sqlite3_bind_int(pStmt, 4, class_fk);
@@ -562,7 +570,7 @@ int insertStudent(const char *first_name, const char *last_name, const char *pho
 
 
     if (photo_location != NULL && strlen(photo_location) > 0) {
-        int last_id = sqlite3_last_insert_rowid(db);
+        int last_id = sqlite3_last_insert_rowid(db); // Récupère le dernier ID (celui qu'on vient de créer)
         returnCode = insertTableImage("student", last_id, photo_location);
         if (returnCode) {
             fprintf(stderr, "adding profil picture failed");
@@ -672,18 +680,24 @@ int deleteStudent(int id) {
         return 1;
     }
 
+    // Removing the student's deliverable
     deleteStudentDeliverables(id);
 
+    // Transforming the int ID to string
     char *studentIdBuffer = malloc(5);
     itoa(id, studentIdBuffer, 10);
+    // Creating a string path storage/student/id_student
     char *studentStoragePathBuffer = malloc(10 + strlen(studentIdBuffer) + strlen(storageFolder));
     strcat(strcat(strcat(strcpy(studentStoragePathBuffer, storageFolder), "/student/"), studentIdBuffer), "/");
+    // Removing the directory
     removeDirectory(studentStoragePathBuffer);
+
     free(studentIdBuffer);
     free(studentStoragePathBuffer);
 
     sqlite3_finalize(pStmt);
     sqlite3_close(db);
+
     return 0;
 }
 
@@ -721,6 +735,9 @@ void listStudents(char **data) {
     strcpy(result, "");
 
     char intBuffer[10];
+
+    // First passage : return code = sqliteOK
+    // Then = SQLITE_ROW : check there's a line
     while (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {
         returnCode = sqlite3_step(pStmt);
         if (returnCode == SQLITE_OK || returnCode == SQLITE_ROW) {

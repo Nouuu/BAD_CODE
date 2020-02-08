@@ -1,7 +1,3 @@
-//
-// Created by MaleWhere on 30/01/2020.
-//
-
 #include "gtkFunctions.h"
 #include "sqliteFunctions.h"
 #include "functions.h"
@@ -444,8 +440,11 @@ guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
 
     GtkTreeIter iter;
     GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
+    // iter = the activated line in the treeview
     if (gtk_tree_model_get_iter(model, &iter, path)) {
+        // 0 = id
         gtk_tree_model_get(model, &iter, 0, &int_data, -1);
+        // returns the id
         return int_data;
     } else {
         fprintf(stderr, "Error! selected column not found!\n");
@@ -508,7 +507,7 @@ void fillClassComboList(GtkComboBoxText *comboBoxText) {
     char *classList;
     listClasses(&classList);
 
-    int nbSanctions = 0, i;
+    int nbClass = 0, i;
     char *result = classList, *firstAdress = classList, *nameBuffer, *idBuffer;
     size_t columnSize;
 
@@ -517,11 +516,11 @@ void fillClassComboList(GtkComboBoxText *comboBoxText) {
 
 
     while ((result = strstr(result, ";\n"))) {
-        nbSanctions++;
+        nbClass++;
         result++;
     }
 
-    for (i = 0; i < nbSanctions; ++i) {
+    for (i = 0; i < nbClass; ++i) {
         //ID
         result = strchr(classList, '|');
         columnSize = result - classList;

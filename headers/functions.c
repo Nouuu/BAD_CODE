@@ -1,40 +1,45 @@
-//
-// Created by MaleWhere on 30/01/2020.
-//
-
 #include "functions.h"
 
+// Function creating a path string
 void createPath(char *path) {
-    char buffer[20];
+    char buffer[60];
     int i;
 
-    for (i = 0; i < strlen(path); ++i) {
-        if (*(path + i) == '/') {
+    // mkdir: creates the first directory that doesn't exist
+    // Go boucle sur chaque "/" pour créer l'arborescence
+    for (i = 0; i < strlen(path); ++i) { // boucle sur tous les caractères
+        if (*(path + i) == '/') { // vérification si c'est un slash
             strncpy(buffer, path, i);
-            buffer[i] = '\0';
+            buffer[i] = '\0'; //strn : pas de \0
             mkdir(buffer);
         }
     }
+
+    // le dernier dossier n'a pas de /, donc une fois qu'on est à la fin, il faut faire un dernier mkdir pour le dernier élément
     strncpy(buffer, path, i);
     buffer[i] = '\0';
     mkdir(buffer);
 }
 
+// copier un fichier
 int copyFile(const char *src, const char *dest) {
+
+    // destination : chemin de dossier + le nom du fichier
+    char *targetFolderBuffer = malloc(strlen(dest) + 1); //+1 pour \0
+    strcpy(targetFolderBuffer, dest);
+    dirname(targetFolderBuffer); //extrait le nom du chemin, sans le fichier
+
+    createPath(targetFolderBuffer); //création de l'arborescence basée du sur le path
+    free(targetFolderBuffer); // free parce qu'on a malloc
+
     //TODO use wfopen and convert char* to wchar* to fix UTF-8 encoding issue
-    FILE *file = fopen(src, "rb");
+    FILE *file = fopen(src, "rb"); // ouvre de la source en lecture, bit
     if (file == NULL) {
         fprintf(stderr, "Cannot open file\n");
         return 1;
     }
 
-    char *targetFolderBuffer = malloc(strlen(dest)+1);
-    strcpy(targetFolderBuffer, dest);
-    dirname(targetFolderBuffer);
-
-    createPath(targetFolderBuffer);
-    free(targetFolderBuffer);
-
+    // création/ouverture du fichier de destination
     FILE *target = fopen(dest, "wb");
     if (target == NULL) {
         fclose(file);
@@ -42,6 +47,7 @@ int copyFile(const char *src, const char *dest) {
         return 1;
     }
 
+    //copie bit à bit du fichier source dans le fichier de destination
     int byte;
     while ((byte = fgetc(file)) != EOF) {
         fputc(byte, target);
@@ -52,34 +58,46 @@ int copyFile(const char *src, const char *dest) {
     return 0;
 }
 
+wchar_t *convertUnicodeStringToUTF8String(char *string) {
+    //mbstowcs_s
+    wchar_t *newString = malloc(strlen(string) + 1);
+    if (mbstowcs(newString, string, strlen(string)+1) != strlen(string))
+        fprintf(stderr, "Error while converting string\n");
+    return newString;
+}
+
+// Suppression d'un étudiant : suppression des fichiers dans un dossier puis suppression du dossier
+// Ne fonctionne pas si dans le dossier il y a un autre dossier : donc on a évité
 int removeDirectory(char *src) {
-    struct dirent *dir;
-    char *filePathBuffer = malloc(strlen(src) + 100);
-    DIR *d = opendir(src);
+    struct dirent *dir; //structure propre à la librairie dirent
+    char *filePathBuffer = malloc(strlen(src) + 100); //malloc la taille du dossier + un fichier dont le nom est max de 100 caractères
+    DIR *d = opendir(src); // pointeur de dossier
     if (d) {
-        while ((dir = readdir(d)) != NULL) {
-            if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, ".."))
+        while ((dir = readdir(d)) != NULL) { // while car lecture du premier fichier, et si null c'est que plus rien
+            if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, "..")) //vérification que ce ne sont pas les fichiers . et ..
                 continue;
-            strcat(strcat(strcpy(filePathBuffer, src), "/"), dir->d_name);
+            strcat(strcat(strcpy(filePathBuffer, src), "/"), dir->d_name); //chemin du dossier + / + nom du fichier
             printf("%s\n", filePathBuffer);
-            remove(filePathBuffer);
+            remove(filePathBuffer); // fonction qui supprime le fichier dans la mémoire
         }
         closedir(d);
-        rmdir(src);
+        rmdir(src); //une fois que le dossier est vide, on supprime le dossier (syscall)
     }
 
     free(filePathBuffer);
     return 0;
 }
 
+// Get the extension of a file
 char *get_filename_ext(char *path) {
-    char *bname = basename(path);
+    char *bname = basename(path); // basename : récupère le nom du fichier dans le path
 
-    char *dot = strrchr(bname, '.');
-    if (!dot || dot == bname) return "";
-    return dot + 1;
+    char *dot = strrchr(bname, '.'); // cherche la dernière occurence de '.' dans le nom du fichier
+    if (!dot || dot == bname) return ""; // si pas de point, pas d'extension donc on retourne une chaîne de caractère vide
+    return dot + 1; // +1 pour avoir "exe" et pas ".exe"
 }
 
+// Get the extension of an image and checks if the format is ok
 int checkImageExtension(char *path) {
     char *fileExt = get_filename_ext(path);
 
@@ -117,20 +135,22 @@ int checkAudioExtension(char *path) {
     return 1;
 }
 
+// Lit le fichier de conf et l'assigne aux variables globales
 void readConf() {
-    printf("Reading conf file...\n%s\n", configFile);
+    printf("Reading conf file...\n%s\n", configFile); //configFIle déclaré dans le main.c
     FILE *file = fopen(configFile, "rb");
     if (file == NULL) {
         fprintf(stderr, "Cannot open file\n");
         exit(EXIT_FAILURE);
     }
 
+    // Calcul de la taille du fichier
     fseek(file, 0, SEEK_END);
     size_t size = ftell(file) / sizeof(char);
     fseek(file, 0, SEEK_SET);
 
+    // copie du contenu du fichier dans la chaîne de caractères
     char *fileString = malloc((size + 1) * sizeof(char));
-
     if (fread(fileString, sizeof(char), size, file) != size) {
         fprintf(stderr, "Error while reading conf file ...\n");
         exit(EXIT_FAILURE);
@@ -138,11 +158,10 @@ void readConf() {
 
     //DATABASE
     char *P = strstr(fileString, "[DATABASE]");
-    P = strchr(P, '\n') + 1;
-
+    P = strchr(P, '\n') + 1; // On cherche le saut de ligne + 1 pour être à la ligne
     char buffer[255];
-    sscanf(P, "path : %s\n", buffer);
-    dbname = malloc(strlen(buffer)+1);
+    sscanf(P, "path : %s\n", buffer); //scan ce qu'il y a entre le "path" du fichier txt et le prochain \n
+    dbname = malloc(strlen(buffer) + 1); // Il le colle dans le buffer
     strcpy(dbname, buffer);
 
     //STORAGE
@@ -178,6 +197,8 @@ void readConf() {
     printf("Done!\n");
 }
 
+// Lit les variables globales et les écrit dans le fichier
+// Ecrit l'intégralité du fichier, plus simple vu que le fichier est court
 void writeConf() {
     printf("Writing conf file...\n%s\n", configFile);
     FILE *file = fopen(configFile, "wb");

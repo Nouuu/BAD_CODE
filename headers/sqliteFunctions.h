@@ -12,6 +12,8 @@
 #include <sqlite3.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+// Getting the variables from main.c
+// Variables from the conf file
 extern char *dbname;
 extern char *storageFolder;
 extern char *darkThemePath;

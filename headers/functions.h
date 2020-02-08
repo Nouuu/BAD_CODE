@@ -1,7 +1,3 @@
-//
-// Created by Unknow on 18/01/2020.
-//
-
 #ifndef BAD_CODE_FUNCTIONS_H
 #define BAD_CODE_FUNCTIONS_H
 

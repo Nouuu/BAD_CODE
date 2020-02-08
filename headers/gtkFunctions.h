@@ -1,7 +1,3 @@
-//
-// Created by MaleWhere on 15/01/2020.
-//
-
 #ifndef BAD_CODE_GTKFUNCTIONS_H
 #define BAD_CODE_GTKFUNCTIONS_H
 
@@ -17,6 +13,7 @@
 extern GtkBuilder *builder;
 extern char *gladeFile;
 
+// Widgets relative to students
 typedef struct {
     GtkStack *view_students_stack;
     GtkWidget *view_students_fixed;
@@ -256,6 +253,7 @@ typedef struct {
     GtkButton *view_settings_submit_button;
 } Settings;
 
+// All the glade widgets
 typedef struct {
     GtkWidget *window_dashboard;
     GtkFixed *gtk_fixed;
