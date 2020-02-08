@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk-3.0/gtk/gtk.h>
+#include <wchar.h>
 
 #include "headers/gtkFunctions.h"
 #include "headers/functions.h"
@@ -16,8 +17,12 @@ int darkTheme = -1;
 
 int main(int argc, char **argv) {
 
-    readConf();
-    dashboardGTK(&argc, &argv);
+//    readConf();
+//    dashboardGTK(&argc, &argv);
+
+    wchar_t *string = convertUnicodeStringToUTF8String("héhé");
+    printf("UNICODE:\t héhé\n");
+    wprintf(L"UTF8 :\t\t %ls\n", string);
 
     free(dbname);
     free(gladeFile);

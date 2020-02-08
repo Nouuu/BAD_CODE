@@ -10,6 +10,8 @@
 #include <libgen.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <wchar.h>
+
 
 extern char *dbname;
 extern char *configFile;
@@ -22,6 +24,8 @@ extern int darkTheme;
 void createPath(char *path);
 
 int copyFile(const char *src, const char *dest);
+
+wchar_t *convertUnicodeStringToUTF8String(char *string);
 
 int removeDirectory(char *src);
 
