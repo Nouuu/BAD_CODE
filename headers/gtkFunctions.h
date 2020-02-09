@@ -9,11 +9,11 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <math.h>
 
-// link builder to the one in main.c
+// Get builder and glade file from main.c
 extern GtkBuilder *builder;
 extern char *gladeFile;
 
-// Widgets relative to students
+// Structure holding all the widgets related to the students
 typedef struct {
     GtkStack *view_students_stack;
     GtkWidget *view_students_fixed;
@@ -66,6 +66,7 @@ typedef struct {
     GtkCellRenderer *students_cr_9;
 } Students;
 
+// Structure holding all the widgets related to the classes
 typedef struct {
     GtkStack *view_classes_stack;
     GtkWidget *view_classes_fixed;
@@ -115,6 +116,7 @@ typedef struct {
     GtkCellRenderer *classes_cr_9;
 } Classes;
 
+// Structure holding all the widgets related to the sanctions
 typedef struct {
     GtkStack *view_sanctions_stack;
     GtkWidget *view_sanctions_fixed;
@@ -150,6 +152,7 @@ typedef struct {
     GtkCellRenderer *sanctions_cr_5;
 } Sanctions;
 
+// Structure holding all the widgets related to the user
 typedef struct {
     GtkStack *view_user_stack;
     GtkWidget *view_user_fixed;
@@ -169,6 +172,7 @@ typedef struct {
     GtkFileChooserButton *view_user_image_file_picker;
 } User;
 
+// Structure holding all the widgets related to the deliverables
 typedef struct {
     GtkStack *view_deliverables_stack;
     GtkWidget *view_deliverables_fixed;
@@ -238,6 +242,7 @@ typedef struct {
     GtkCellRenderer *deliverables_cr_10;
 } Deliverables;
 
+// Structure holding all the widgets related to the settings
 typedef struct {
     GtkSwitch *view_settings_switch_theme_button;
     GtkFileChooserButton *settings_database_file_chooser;
@@ -253,7 +258,7 @@ typedef struct {
     GtkButton *view_settings_submit_button;
 } Settings;
 
-// All the glade widgets
+// Structure holding all the widgets of the app
 typedef struct {
     GtkWidget *window_dashboard;
     GtkFixed *gtk_fixed;
@@ -272,7 +277,7 @@ App_widgets *widgets;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Event listeners
+// Event listeners
 G_MODULE_EXPORT void on_select_changed(GtkWidget *widget);
 
 G_MODULE_EXPORT void on_menu_stack_visible_child_notify(GtkStack *stack);
@@ -405,7 +410,9 @@ G_MODULE_EXPORT void on_settings_glade_refresh_clicked();
 
 G_MODULE_EXPORT void on_settings_database_refresh_clicked();
 
-//Functions prototype
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Functions prototypes
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path);
 
 guint get_id_row_selected(GtkTreeSelection *selection);
@@ -478,7 +485,7 @@ int GTKCreateSanctionSubmitCheckRequiredField(char *textIter);
 
 void GTKListDeliverables();
 
-void GTKEditDelivreables(int id);
+void GTKEditDeliverables(int id);
 
 void GTKEditDelivreablesSubmit();
 

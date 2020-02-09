@@ -2,44 +2,54 @@
 #include "sqliteFunctions.h"
 #include "functions.h"
 
+/////////////////////////////////////////////////// SIGNALS ////////////////////////////////////////////////////////////
+
+// Closes the window and quit the program
 void on_destroy() {
     gtk_main_quit();
 }
 
+// Edition : called when row is double clicked or selected + press enter
 void on_sanctions_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
-    guint id = get_id_row_activated(tree_view, path);
+    guint id = get_id_row_activated(tree_view, path); // Get the sanction ID of the activated row
     printf("SANCTION ID: %d\n", id);
-    GTKEditSanction(id);
+    GTKEditSanction(id); // Display the sanction edition page
 }
 
+// Edition : called when row is double clicked or selected + press enter
 void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
-    guint id = get_id_row_activated(tree_view, path);
+    guint id = get_id_row_activated(tree_view, path); // Get the class ID of the activated row
     printf("CLASS ID: %d\n", id);
-    GTKEditClass(id);
+    GTKEditClass(id); // Display the class edition page
 }
 
+// Edition : called when row is double clicked or selected + press enter
 void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
-    guint id = get_id_row_activated(tree_view, path);
+    guint id = get_id_row_activated(tree_view, path); // Get the student ID of the activated row
     printf("STUDENT ID: %d\n", id);
-    GTKEditStudent(id);
+    GTKEditStudent(id); // Display the student edition page
 }
 
+// Called when row is double clicked or selected + press enter
 void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
-    guint id = get_id_row_activated(tree_view, path);
+    guint id = get_id_row_activated(tree_view, path); // Get the deliverable ID of the activated row
     printf("DELIVERABLE ID: %d\n", id);
-    GTKEditDelivreables(id);
+    GTKEditDeliverables(id); // Display the deliverable edition page
 }
 
+// Navigation between categories, called when clicking on a menu button
+// Displays the view page of the category
+///TODO
 void on_menu_stack_visible_child_notify(GtkStack *stack) {
-    if (gtk_stack_get_visible_child_name(stack) != NULL) {
-        const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack);
+    if (gtk_stack_get_visible_child_name(stack) != NULL) { // Check if the stack has a visible child
+        const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack); // Returns the name of the visible menu child
         if (!strcmp(menu, "view_classes")) {
             printf("Classes view\n");
-            setSearchEntry(FALSE, NULL, NULL);
-            GTKListClasses();
+            setSearchEntry(FALSE, NULL, NULL); // Hide the search bar
+            GTKListClasses(); // Display the list of the classes
         } else if (!strcmp(menu, "view_students")) {
             printf("Students view\n");
-            setSearchEntry(TRUE, widgets->view_students->students_tree_view, "Search by first name");
+            setSearchEntry(TRUE, widgets->view_students->students_tree_view, "Search by firstname"); // Display the search bar
             GTKListStudents();
         } else if (!strcmp(menu, "view_sanctions")) {
             printf("Sanctions view\n");
@@ -61,45 +71,54 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
     }
 }
 
+// Navigation between categories, called when clicking on a menu button
+///TODO
 void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher) {
-    if (gtk_stack_switcher_get_stack(stackSwitcher) != NULL)
-        on_menu_stack_visible_child_notify(gtk_stack_switcher_get_stack(stackSwitcher));
+    if (gtk_stack_switcher_get_stack(stackSwitcher) != NULL) // check if there's a stack to retrieve
+        on_menu_stack_visible_child_notify(gtk_stack_switcher_get_stack(stackSwitcher)); // get the name of the visible child of the stack
 }
 
+// Called when clicking the "refresh" button on the classes list view page
 void on_classes_view_refresh_button_clicked() {
     printf("Refresh classes\n");
-    GTKListClasses();
+    GTKListClasses(); // display the list of classes
 }
 
+// Called when clicking the "delete" button on the classes list view page
 void on_classes_view_delete_button_clicked() {
-    guint int_data = get_id_row_selected(widgets->view_classes->classes_tree_selection);
+    guint int_data = get_id_row_selected(widgets->view_classes->classes_tree_selection); // get the ID of the class in selected row
     if (int_data) {
-        deleteClass(int_data);
-        GTKListClasses();
+        deleteClass(int_data); // delete class
+        GTKListClasses();      // display the refreshed list of classes
     }
     printf("Delete class ID: %d\n", int_data);
 }
 
+// Called when clicking the "create" button on the classes list view
 void on_classes_view_create_button_clicked() {
     printf("Create class\n");
-    GTKCreateClass();
+    GTKCreateClass(); // display the view of class creation
 }
 
+// Called when clicking the "return" button on the class edition view
 void on_class_edit_return_button_clicked() {
     printf("Return to classes view\n");
-    GTKListClasses();
+    GTKListClasses(); // display the list of classes
 }
 
+// Called when clicking the "submit" button on the class edition view
 void on_class_edit_submit_button_clicked() {
     printf("Submit class edit\n");
-    GTKEditClassSubmit();
+    GTKEditClassSubmit(); // update the class item
 }
 
+// Called when clicking the "return" button on the class creation view
 void on_class_create_return_button_clicked() {
     printf("Return to classes view\n");
-    GTKListClasses();
+    GTKListClasses(); // display the list of classes
 }
 
+// Called when clicking the "submit" button on the class creation view
 void on_class_create_submit_button_clicked() {
     printf("Submit class create\n");
     GTKCreateClassSubmit();
@@ -433,33 +452,32 @@ void on_settings_database_refresh_clicked() {
     gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_database_file_chooser), dbname);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////// FUNCTIONS ////////////////////////////////////////////////////////////
 
+// Get the ID of the item whose row is activated (double click or selection + enter)
 guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     guint int_data;
-
     GtkTreeIter iter;
     GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
-    // iter = the activated line in the treeview
-    if (gtk_tree_model_get_iter(model, &iter, path)) {
-        // 0 = id
-        gtk_tree_model_get(model, &iter, 0, &int_data, -1);
-        // returns the id
-        return int_data;
+
+    if (gtk_tree_model_get_iter(model, &iter, path)) { // iter = the activated line in the treeview
+        gtk_tree_model_get(model, &iter, 0, &int_data, -1); // gets the value of the column 0 (id)
+        return int_data; // returns the id of the item
     } else {
-        fprintf(stderr, "Error! selected column not found!\n");
+        fprintf(stderr, "Error: selected column not found!\n");
         return EXIT_FAILURE;
     }
 }
 
+// Get the ID of the item whose row is selected (used for buttons)
 guint get_id_row_selected(GtkTreeSelection *selection) {
     guint int_data = 0;
     GtkTreeModel *model;
     GtkTreeIter iter;
-    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
-        gtk_tree_model_get(model, &iter, 0, &int_data, -1);
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) { // iter = the selected line in the treeview
+        gtk_tree_model_get(model, &iter, 0, &int_data, -1); // gets the value of the column 0 (id)
     }
-    return int_data;
+    return int_data; // returns the id of the item
 }
 
 void fillUserComboList(GtkComboBoxText *comboBoxText) {
@@ -511,24 +529,24 @@ void fillClassComboList(GtkComboBoxText *comboBoxText) {
     char *result = classList, *firstAdress = classList, *nameBuffer, *idBuffer;
     size_t columnSize;
 
-
+    // Flushing all data from the combo box
     gtk_combo_box_text_remove_all(comboBoxText);
 
-
+    // Counting the number of rows : a row ends with ";\n";
     while ((result = strstr(result, ";\n"))) {
         nbClass++;
-        result++;
+        result++; // moving the cursor to avoid infinite loop
     }
 
     for (i = 0; i < nbClass; ++i) {
         //ID
-        result = strchr(classList, '|');
-        columnSize = result - classList;
-        idBuffer = malloc(columnSize + 1);
+        result = strchr(classList, '|'); // result = position of the |
+        columnSize = result - classList; // getting the size of the column string
+        idBuffer = malloc(columnSize + 1); // allocating memory for the string
 
         strncpy(idBuffer, classList, columnSize);
-        idBuffer[columnSize] = '\0';
-        classList += columnSize + 1;
+        idBuffer[columnSize] = '\0'; // idBuffer = 'id\0'
+        classList += columnSize + 1; // moving the cursor behind the pipe
 
         //NAME
         result = strchr(classList, '|');
@@ -538,9 +556,13 @@ void fillClassComboList(GtkComboBoxText *comboBoxText) {
         strncpy(nameBuffer, classList, columnSize);
         nameBuffer[columnSize] = '\0';
 
+        // Filling the table: name (visible) + id (invisible)
         gtk_combo_box_text_append(comboBoxText, idBuffer, nameBuffer);
 
+        // The other columns are not important: getting to the end of the line + 2 to move to the next line
         classList = strstr(classList, ";\n") + 2;
+
+        // Flushing the data in the buffers to restart the process
         free(idBuffer);
         free(nameBuffer);
     }
@@ -620,35 +642,42 @@ void fillStatusComboList(GtkComboBoxText *comboBoxText, char *status) {
 }
 
 void GTKListStudents() {
+    // Set the correct "sub-page" visible
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->view_students_fixed);
     char *students, *result, *firstAddress;
     int nbStudents = 0;
+    // Filling the students string with the listStudents function
     listStudents(&students);
     firstAddress = students;
     result = students;
 
+    // Counting the number of students
     while ((result = strstr(result, ";\n"))) {
         nbStudents++;
-        result++;
+        result++; // moving the cursor to avoid infinite loop
     }
 
     GtkTreeIter iter;
+
+    // Flushing the data to restart the listing process (updating the tree view)
     gtk_tree_store_clear(widgets->view_students->students_tree_store);
 
+    // Filling the three view
     for (int i = 0; i < nbStudents; ++i) {
+        // Creating a new line, identified by "iter"
         gtk_tree_store_append(widgets->view_students->students_tree_store, &iter, NULL);
 
-        //ID
+        /* ID */
         result = strchr(students, '|');
         size_t columnSize = result - students;
         char *buffer = malloc(columnSize + 1);
-
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
 
+        // Filling the first column (0) of the new line the with the ID
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 0, atoi(buffer), -1);
-        students += columnSize + 1;
+        students += columnSize + 1; // +1 to get past the pipe
 
         //FIRST_NAME
         free(buffer);
@@ -734,23 +763,25 @@ void GTKListStudents() {
         buffer[columnSize] = '\0';
 
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 8, atoi(buffer), -1);
-        students += columnSize + 2;
-
+        students += columnSize + 2; // +2 : ;\n
     }
-
 
     free(firstAddress);
 }
 
+// Displaying the content of the edit page
 void GTKEditStudent(int id) {
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->edit_student_fixed);
     char *first_name, *last_name, *photo, *email, *bottles, *class, *class_fk, idBuffer[6];
 
+    // Filling the combo list
     fillClassComboList(widgets->view_students->edit_student_class);
+    // Filling the variables
     GTKStudentGetData(id, &first_name, &last_name, &photo, &email, &bottles, &class, &class_fk);
     itoa(id, idBuffer, 10);
 
+    // Displaying the image
     GTKEditStudentImage(photo);
 
     gtk_label_set_text(widgets->view_students->edit_student_id, idBuffer);
@@ -772,7 +803,7 @@ void GTKEditStudent(int id) {
 }
 
 void GTKEditStudentSubmit() {
-
+                     // check if all the fields are filled
     int returnCode = GTKEditStudentSubmitCheckRequiredField() ||
                      updateStudent(atoi(gtk_label_get_text(widgets->view_students->edit_student_id)),
                                    gtk_entry_get_text(widgets->view_students->edit_student_first_name),
@@ -785,6 +816,8 @@ void GTKEditStudentSubmit() {
         fprintf(stderr, "Error, could not update student\n");
     else {
         printf("Student update successful\n");
+
+        // Getting back and updating the list view
         GTKListStudents();
     }
 }
@@ -909,6 +942,7 @@ void GTKEditStudentImage(char *path) {
     }
 }
 
+// Update the image (database and file)
 int GTKEditStudentSetImage(char *path) {
     if (!checkImageExtension(path))
         return 1;
@@ -918,7 +952,9 @@ int GTKEditStudentSetImage(char *path) {
     if (returnCode)
         return 1;
 
+    // Updating the display of the image
     GTKEditStudent(id);
+
     return 0;
 }
 
@@ -1224,9 +1260,9 @@ void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char
 }
 
 void GTKEditClassSubmit() {
-
+    // check if the required fields have been correctly filled then SQL update: 0 if OK
     int returnCode = GTKEditClassSubmitCheckRequiredField() ||
-                     updateClass(atoi(gtk_label_get_text(widgets->view_classes->edit_class_id)),
+                     updateClass(atoi(gtk_label_get_text(widgets->view_classes->edit_class_id)), // get class id from invisible label on the view
                                  gtk_entry_get_text(widgets->view_classes->edit_class_name),
                                  gtk_entry_get_text(widgets->view_classes->edit_class_major),
                                  atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))),
@@ -1237,23 +1273,25 @@ void GTKEditClassSubmit() {
                                  atoi(gtk_combo_box_get_active_id(
                                          GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction)))
                      );
-
-    if (returnCode)
+    if (returnCode) // if 1
         fprintf(stderr, "Error, could not update class\n");
-    else {
+    else {          // if 0
         printf("Class update successful\n");
-        GTKListClasses();
+        GTKListClasses(); // Get back to the refresh list of classes
     }
 }
 
+// Check if the required fields have been correctly filled
 int GTKEditClassSubmitCheckRequiredField() {
     int returnCode = 0;
+    // Check if the name is not empty
     if (strlen(gtk_entry_get_text(widgets->view_classes->edit_class_name)) == 0) {
-        fprintf(stderr, "Name empty !\n");
+        fprintf(stderr, "Name empty!\n");
         returnCode = 1;
     }
+    // Check if the year is composed of four characters
     if (strlen(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))) != 4) {
-        fprintf(stderr, "Wrong year !\n");
+        fprintf(stderr, "Year problem: time travel is forbidden!\n");
         returnCode = 1;
     }
     return returnCode;
@@ -1276,7 +1314,7 @@ void GTKCreateClass() {
 }
 
 void GTKCreateClassSubmit() {
-
+    // check if the required fields have been correctly filled then SQL inertion: 0 if OK
     int returnCode = GTKCreateClassSubmitCheckRequiredField() ||
                      insertClass(gtk_entry_get_text(widgets->view_classes->create_class_name),
                                  gtk_entry_get_text(widgets->view_classes->create_class_major),
@@ -1288,11 +1326,11 @@ void GTKCreateClassSubmit() {
                                  atoi(gtk_combo_box_get_active_id(
                                          GTK_COMBO_BOX(widgets->view_classes->create_class_sanction))));
 
-    if (returnCode)
+    if (returnCode) // if 1
         fprintf(stderr, "Error, could not create class\n");
-    else {
+    else {          // if 0
         printf("Class create successful\n");
-        GTKListClasses();
+        GTKListClasses(); // Get back to the updated class list view
     }
 }
 
@@ -1748,7 +1786,9 @@ void GTKListDeliverables() {
     free(firstAddress);
 }
 
-void GTKEditDelivreables(int id) {
+// Displaying the deliverable edition page
+void GTKEditDeliverables(int id) {
+    // Getting to the correct "subpage"
     gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
                                 widgets->view_deliverables->edit_deliverable_fixed);
     char *due_date, *subject, *audio_record, *video_record, *bad_code, *deliverable_file, *status, *student, *student_fk, *sanction_name, *sanction_description, idBuffer[6];
@@ -1779,7 +1819,7 @@ void GTKEditDelivreables(int id) {
 
     if (audio_record != NULL && !strlen(audio_record)) {
         gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), FALSE);
-    } else {
+    } else { // displaying the download button if there is something to download
         gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), TRUE);
         gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download),
                                     audio_record);
@@ -2817,16 +2857,17 @@ void connectWidgets() {
 
 }
 
+// Hide or displays the search entry on a view
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
-    if (visible) {
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162, 161);
-        gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), TRUE);
+    if (visible) { // if TRUE
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162, 161); // moving the menu to the right
+        gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), TRUE); // set the search bar visible
         gtk_tree_view_set_search_entry(treeView, GTK_ENTRY(widgets->search_entry));
-        gtk_entry_set_text(GTK_ENTRY(widgets->search_entry), "");
-        gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->search_entry), placeholder);
-    } else {
-        gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), FALSE);
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 85, 161);
+        gtk_entry_set_text(GTK_ENTRY(widgets->search_entry), ""); // flush the text in the search bar
+        gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->search_entry), placeholder); // fill it with placeholder text
+    } else { // if FALSE
+        gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), FALSE); // hide the search bar
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 85, 161); // place the search bar to the correct place
     }
 }
 
