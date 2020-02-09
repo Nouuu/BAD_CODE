@@ -40,7 +40,7 @@ create table student
 (
     id         integer,
     first_name text,
-    last_name  int,
+    last_name  text,
     photo      text,
     email      text,
     nb_bottles integer,
@@ -65,5 +65,4 @@ create table deliverable
         primary key (id autoincrement),
     foreign key (student_fk) references student
 );
-
 
