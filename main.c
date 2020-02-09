@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk-3.0/gtk/gtk.h>
+#include <windows.h>
 
 #include "headers/gtkFunctions.h"
 #include "headers/functions.h"
@@ -17,6 +18,9 @@ int darkTheme = -1;
 int main(int argc, char **argv) {
 
     readConf();
+    HWND hWnd = GetConsoleWindow();
+    ShowWindow( hWnd, SW_MINIMIZE );
+//    ShowWindow( hWnd, SW_HIDE );
     dashboardGTK(&argc, &argv);
 
     free(dbname);
