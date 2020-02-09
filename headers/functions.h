@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 
+// Global variables from main.c / config file
 extern char *dbname;
 extern char *configFile;
 extern char *storageFolder;

@@ -1,45 +1,46 @@
 #include "functions.h"
 
-// Function creating a path string
+// Creating directories with mkdir
 void createPath(char *path) {
     char buffer[60];
     int i;
 
     // mkdir: creates the first directory that doesn't exist
-    // Go boucle sur chaque "/" pour créer l'arborescence
-    for (i = 0; i < strlen(path); ++i) { // boucle sur tous les caractères
-        if (*(path + i) == '/') { // vérification si c'est un slash
+    // Every passage in the loop: adding a new part of the path to create the folder
+    for (i = 0; i < strlen(path); ++i) {
+        if (*(path + i) == '/') {
             strncpy(buffer, path, i);
-            buffer[i] = '\0'; //strn : pas de \0
+            buffer[i] = '\0';
             mkdir(buffer);
         }
     }
 
-    // le dernier dossier n'a pas de /, donc une fois qu'on est à la fin, il faut faire un dernier mkdir pour le dernier élément
+    // Last folder of the path: often no finishing "/"
+    // Once we've reached the end of the string, need a last mkdir
     strncpy(buffer, path, i);
     buffer[i] = '\0';
     mkdir(buffer);
 }
 
-// copier un fichier
+// Bit by bit copy of a file
 int copyFile(const char *src, const char *dest) {
 
-    // destination : chemin de dossier + le nom du fichier
-    char *targetFolderBuffer = malloc(strlen(dest) + 1); //+1 pour \0
+    // Extraction the destination folder path and creation of the directories
+    char *targetFolderBuffer = malloc(strlen(dest) + 1); // +1 for '\0'
     strcpy(targetFolderBuffer, dest);
-    dirname(targetFolderBuffer); //extrait le nom du chemin, sans le fichier
+    dirname(targetFolderBuffer);
+    createPath(targetFolderBuffer);
+    free(targetFolderBuffer);
 
-    createPath(targetFolderBuffer); //création de l'arborescence basée du sur le path
-    free(targetFolderBuffer); // free parce qu'on a malloc
-
-    //TODO use wfopen and convert char* to wchar* to fix UTF-8 encoding issue
-    FILE *file = fopen(src, "rb"); // ouvre de la source en lecture, bit
+    // Opening the source file
+    // TODO: use wfopen and convert char* to wchar* to fix UTF-8 encoding issue
+    FILE *file = fopen(src, "rb");
     if (file == NULL) {
-        fprintf(stderr, "Cannot open file\n");
+        fprintf(stderr, "Cannot open source file\n");
         return 1;
     }
 
-    // création/ouverture du fichier de destination
+    // Creation/opening of the destination file
     FILE *target = fopen(dest, "wb");
     if (target == NULL) {
         fclose(file);
@@ -47,7 +48,7 @@ int copyFile(const char *src, const char *dest) {
         return 1;
     }
 
-    //copie bit à bit du fichier source dans le fichier de destination
+    // Bit by bit copy of source file to destination file
     int byte;
     while ((byte = fgetc(file)) != EOF) {
         fputc(byte, target);
@@ -66,22 +67,25 @@ wchar_t *convertUnicodeStringToUTF8String(char *string) {
     return newString;
 }
 
-// Suppression d'un étudiant : suppression des fichiers dans un dossier puis suppression du dossier
-// Ne fonctionne pas si dans le dossier il y a un autre dossier : donc on a évité
+// Removing a student folder
 int removeDirectory(char *src) {
-    struct dirent *dir; //structure propre à la librairie dirent
-    char *filePathBuffer = malloc(strlen(src) + 100); //malloc la taille du dossier + un fichier dont le nom est max de 100 caractères
-    DIR *d = opendir(src); // pointeur de dossier
+    struct dirent *dir;
+    char *filePathBuffer = malloc(strlen(src) + 100); // folder path + file name (100 characters max)
+    DIR *d = opendir(src);
+
     if (d) {
-        while ((dir = readdir(d)) != NULL) { // while car lecture du premier fichier, et si null c'est que plus rien
-            if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, "..")) //vérification que ce ne sont pas les fichiers . et ..
+        // Removing every file in the folder
+        while ((dir = readdir(d)) != NULL) { // Reading the first file, if NULL: no more file to read
+            if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, "..")) // check if not "." or ".."
                 continue;
-            strcat(strcat(strcpy(filePathBuffer, src), "/"), dir->d_name); //chemin du dossier + / + nom du fichier
+            strcat(strcat(strcpy(filePathBuffer, src), "/"), dir->d_name); // folder path + / + file name
             printf("%s\n", filePathBuffer);
-            remove(filePathBuffer); // fonction qui supprime le fichier dans la mémoire
+            remove(filePathBuffer); // Removing the file from the memory
         }
         closedir(d);
-        rmdir(src); //une fois que le dossier est vide, on supprime le dossier (syscall)
+
+        // Removing the folder once it's empty
+        rmdir(src);
     }
 
     free(filePathBuffer);
@@ -90,17 +94,16 @@ int removeDirectory(char *src) {
 
 // Get the extension of a file
 char *get_filename_ext(char *path) {
-    char *bname = basename(path); // basename : récupère le nom du fichier dans le path
-
-    char *dot = strrchr(bname, '.'); // cherche la dernière occurence de '.' dans le nom du fichier
-    if (!dot || dot == bname) return ""; // si pas de point, pas d'extension donc on retourne une chaîne de caractère vide
-    return dot + 1; // +1 pour avoir "exe" et pas ".exe"
+    char *bname = basename(path); // getting last part of the path (filename.extension)
+    char *dot = strrchr(bname, '.'); // searching the last occurrence of '.'
+    if (!dot || dot == bname) return ""; // if no '.', then no extension then return empty string
+    return dot + 1; // +1 to get 'ext' instead of '.ext'
 }
 
-// Get the extension of an image and checks if the format is ok
+// Get the extension of an image file and checks if the format is ok
+// Returns 1 if format is OK, 0 if not
 int checkImageExtension(char *path) {
     char *fileExt = get_filename_ext(path);
-
     if (strcmp(fileExt, "bmp") != 0 && strcmp(fileExt, "gif") != 0 && strcmp(fileExt, "ico") != 0 &&
         strcmp(fileExt, "jpeg") != 0 && strcmp(fileExt, "jpg") != 0 && strcmp(fileExt, "svg") != 0 &&
         strcmp(fileExt, "tiff") != 0 && strcmp(fileExt, "png") != 0 && strcmp(fileExt, "jfif") != 0)
@@ -109,9 +112,10 @@ int checkImageExtension(char *path) {
     return 1;
 }
 
+// Get the extension of a video file and checks if the format is ok
+// Returns 1 if format is OK, 0 if not
 int checkVideoExtension(char *path) {
     char *fileExt = get_filename_ext(path);
-
     if (strcmp(fileExt, "webm") != 0 && strcmp(fileExt, "mkv") != 0 && strcmp(fileExt, "flv") != 0 &&
         strcmp(fileExt, "vob") != 0 && strcmp(fileExt, "ogg") != 0 && strcmp(fileExt, "gif") != 0 &&
         strcmp(fileExt, "avi") != 0 && strcmp(fileExt, "TS") != 0 && strcmp(fileExt, "mov") != 0 &&
@@ -122,6 +126,8 @@ int checkVideoExtension(char *path) {
     return 1;
 }
 
+// Get the extension of an audio file and checks if the format is ok
+// Returns 1 if format is OK, 0 if not
 int checkAudioExtension(char *path) {
     char *fileExt = get_filename_ext(path);
 
@@ -135,56 +141,60 @@ int checkAudioExtension(char *path) {
     return 1;
 }
 
-// Lit le fichier de conf et l'assigne aux variables globales
+// Reads the configuration file and fill the global variables
 void readConf() {
-    printf("Reading conf file...\n%s\n", configFile); //configFIle déclaré dans le main.c
+    printf("Reading conf file...\n%s\n", configFile); // declared in main.c
+
+    // Opening the configuration file
     FILE *file = fopen(configFile, "rb");
     if (file == NULL) {
-        fprintf(stderr, "Cannot open file\n");
+        fprintf(stderr, "Cannot open file.\n");
         exit(EXIT_FAILURE);
     }
 
-    // Calcul de la taille du fichier
+    // Calculating the size of the file
     fseek(file, 0, SEEK_END);
     size_t size = ftell(file) / sizeof(char);
     fseek(file, 0, SEEK_SET);
 
-    // copie du contenu du fichier dans la chaîne de caractères
+    // Copying the content of the file in a string
     char *fileString = malloc((size + 1) * sizeof(char));
     if (fread(fileString, sizeof(char), size, file) != size) {
-        fprintf(stderr, "Error while reading conf file ...\n");
+        fprintf(stderr, "Error while reading conf file.\n");
         exit(EXIT_FAILURE);
     }
 
-    //DATABASE
-    char *P = strstr(fileString, "[DATABASE]");
-    P = strchr(P, '\n') + 1; // On cherche le saut de ligne + 1 pour être à la ligne
+    // DATABASE
+    char *P = strstr(fileString, "[DATABASE]"); // searching the position of the keyword
+    P = strchr(P, '\n') + 1; // pointer on next line (looking for '\n', end of line, +1)
     char buffer[255];
-    sscanf(P, "path : %s\n", buffer); //scan ce qu'il y a entre le "path" du fichier txt et le prochain \n
-    dbname = malloc(strlen(buffer) + 1); // Il le colle dans le buffer
-    strcpy(dbname, buffer);
+    sscanf(P, "path : %s\n", buffer); // buffer = the string between "path : " and the next "\n"
+    dbname = malloc(strlen(buffer) + 1);
+    strcpy(dbname, buffer); // dbname = buffer
 
-    //STORAGE
+    // STORAGE
     P = strstr(fileString, "[STORAGE]");
     P = strchr(P, '\n') + 1;
-    sscanf(P, "path : %s\n", buffer);
+    sscanf(P, "path : %s\n", buffer); // erasing the previous content and replacing it with the new one
     storageFolder = malloc(strlen(buffer)+1);
     strcpy(storageFolder, buffer);
 
-    //GLADE
+    // GLADE
     P = strstr(fileString, "[GLADE]");
     P = strchr(P, '\n') + 1;
     sscanf(P, "path : %s\n", buffer);
     gladeFile = malloc(strlen(buffer)+1);
     strcpy(gladeFile, buffer);
 
-    //THEME
+    // THEME
+    // Default
     P = strstr(fileString, "[THEME]");
     P = strchr(P, '\n') + 1;
     sscanf(P, "default_path : %s\n", buffer);
     defaultThemePath = malloc(strlen(buffer)+1);
     strcpy(defaultThemePath, buffer);
 
+    // Dark theme
     P = strchr(P, '\n') + 1;
     sscanf(P, "dark_path : %s\n", buffer);
     darkThemePath = malloc(strlen(buffer)+1);
@@ -197,13 +207,14 @@ void readConf() {
     printf("Done!\n");
 }
 
-// Lit les variables globales et les écrit dans le fichier
-// Ecrit l'intégralité du fichier, plus simple vu que le fichier est court
+// Reads the global variables and rewrites the file accordingly
 void writeConf() {
     printf("Writing conf file...\n%s\n", configFile);
+
+    // Creating and opening a new file, erasing the previous one
     FILE *file = fopen(configFile, "wb");
     if (file == NULL) {
-        fprintf(stderr, "Cannot open file\n");
+        fprintf(stderr, "Cannot open file.\n");
         exit(EXIT_FAILURE);
     }
 
