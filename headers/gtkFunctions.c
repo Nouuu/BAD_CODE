@@ -4,35 +4,35 @@
 
 /////////////////////////////////////////////////// SIGNALS ////////////////////////////////////////////////////////////
 
-// Closes the window and quit the program
+// Close the app window and quit the program
 void on_destroy() {
     gtk_main_quit();
 }
 
-// Edition : called when row is double clicked or selected + press enter
+// Edition: called when row is double clicked or selected + press enter
 void on_sanctions_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
-    guint id = get_id_row_activated(tree_view, path); // Get the sanction ID of the activated row
+    guint id = get_id_row_activated(tree_view, path);
     printf("SANCTION ID: %d\n", id);
     GTKEditSanction(id); // Display the sanction edition page
 }
 
-// Edition : called when row is double clicked or selected + press enter
+// Edition: called when row is double clicked or selected + press enter
 void on_classes_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
-    guint id = get_id_row_activated(tree_view, path); // Get the class ID of the activated row
+    guint id = get_id_row_activated(tree_view, path);
     printf("CLASS ID: %d\n", id);
     GTKEditClass(id); // Display the class edition page
 }
 
-// Edition : called when row is double clicked or selected + press enter
+// Edition: called when row is double clicked or selected + press enter
 void on_students_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
-    guint id = get_id_row_activated(tree_view, path); // Get the student ID of the activated row
+    guint id = get_id_row_activated(tree_view, path);
     printf("STUDENT ID: %d\n", id);
     GTKEditStudent(id); // Display the student edition page
 }
 
-// Called when row is double clicked or selected + press enter
+// Edition: called when row is double clicked or selected + press enter
 void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
-    guint id = get_id_row_activated(tree_view, path); // Get the deliverable ID of the activated row
+    guint id = get_id_row_activated(tree_view, path);
     printf("DELIVERABLE ID: %d\n", id);
     GTKEditDeliverables(id); // Display the deliverable edition page
 }
@@ -78,20 +78,20 @@ void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher
         on_menu_stack_visible_child_notify(gtk_stack_switcher_get_stack(stackSwitcher)); // get the name of the visible child of the stack
 }
 
-// Called when clicking the "refresh" button on the classes list view page
+// Called when clicking the "refresh" button on the classes list view
 void on_classes_view_refresh_button_clicked() {
-    printf("Refresh classes\n");
-    GTKListClasses(); // display the list of classes
+    printf("Refreshing classes list\n");
+    GTKListClasses();
 }
 
-// Called when clicking the "delete" button on the classes list view page
+// Called when clicking the "delete" button on the classes list view
 void on_classes_view_delete_button_clicked() {
-    guint int_data = get_id_row_selected(widgets->view_classes->classes_tree_selection); // get the ID of the class in selected row
+    guint int_data = get_id_row_selected(widgets->view_classes->classes_tree_selection);
     if (int_data) {
-        deleteClass(int_data); // delete class
-        GTKListClasses();      // display the refreshed list of classes
+        deleteClass(int_data);
+        GTKListClasses(); // get back to the updated list
     }
-    printf("Delete class ID: %d\n", int_data);
+    printf("ID of deleted class: %d\n", int_data);
 }
 
 // Called when clicking the "create" button on the classes list view
@@ -103,96 +103,102 @@ void on_classes_view_create_button_clicked() {
 // Called when clicking the "return" button on the class edition view
 void on_class_edit_return_button_clicked() {
     printf("Return to classes view\n");
-    GTKListClasses(); // display the list of classes
+    GTKListClasses();
 }
 
 // Called when clicking the "submit" button on the class edition view
 void on_class_edit_submit_button_clicked() {
     printf("Submit class edit\n");
-    GTKEditClassSubmit(); // update the class item
+    GTKEditClassSubmit(); // update the class item and get back to the updated list
 }
 
 // Called when clicking the "return" button on the class creation view
 void on_class_create_return_button_clicked() {
     printf("Return to classes view\n");
-    GTKListClasses(); // display the list of classes
+    GTKListClasses();
 }
 
 // Called when clicking the "submit" button on the class creation view
 void on_class_create_submit_button_clicked() {
     printf("Submit class create\n");
-    GTKCreateClassSubmit();
+    GTKCreateClassSubmit(); // creates the class item and get back to the updated list
 }
 
+// Called when clicking the "refresh" button on the students list view
 void on_students_view_refresh_button_clicked() {
     printf("Refresh students\n");
-    GTKListStudents();
+    GTKListStudents(); // launches a new request: display the updated list
 }
 
+// Called when clicking the "delete" button on the students list view
 void on_students_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        deleteStudent(int_data);
-        GTKListStudents();
+        deleteStudent(int_data);  // remove from database + all related files and folders
+        GTKListStudents();       // get back to the updated list
     }
     printf("Delete student ID: %d\n", int_data);
 }
 
+// Called when clicking the "create" button on the students list view
 void on_students_view_create_button_clicked() {
     printf("Create student\n");
-    GTKCreateStudent();
+    GTKCreateStudent(); // display the view of student creation
 }
 
+// Called when clicking the "- Bottle" button on the students list view
 void on_students_view_remove_bottle_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        addStudentBottle(int_data, -1);
-        GTKListStudents();
+        addStudentBottle(int_data, -1); // remove 1 bottle from student's total
+        GTKListStudents(); // get back to the updated list of students
     }
     printf("Remove bottle student ID: %d\n", int_data);
 }
 
+// Called when clicking the "+ Bottle" button on the students list view
 void on_students_view_add_bottle_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        addStudentBottle(int_data, 1);
-        GTKListStudents();
+        addStudentBottle(int_data, 1); // add 1 bottle to student's total
+        GTKListStudents(); // get back to the updated list of students
     }
     printf("Add bottle student ID: %d\n", int_data);
 }
 
+// Called when clicking the "return" button on the student edition view
 void on_student_edit_return_button_clicked() {
     printf("Return to students view\n");
     GTKListStudents();
 }
 
+// Called when clicking the "submit" button on the student edition view
 void on_student_edit_submit_button_clicked() {
     printf("Submit student edit\n");
-    GTKEditStudentSubmit();
+    GTKEditStudentSubmit(); // update the student item and get back to the updated list
 }
 
+// Called when clicking the "return" button on the student creation view
 void on_student_create_return_button_clicked() {
     printf("Return to students view\n");
     GTKListStudents();
 }
 
+// Called when clicking the "submit" button on the student creation view
 void on_student_create_submit_button_clicked() {
     printf("Submit student create\n");
-    GTKCreateStudentSubmit();
+    GTKCreateStudentSubmit(); // create the student item and get back to the updated list
 }
 
-void on_sanctions_view_refresh_button_clicked() {
-    printf("Refresh sanctions\n");
-    GTKListSanctions();
-}
-
+// Called when selecting a student picture file
 void on_edit_student_image_file_picker_file_set() {
+    // get filename for the selected file in the file selector
     char *path = gtk_file_chooser_get_filename(
             GTK_FILE_CHOOSER(widgets->view_students->edit_student_image_file_picker));
-    printf("Choose file! : %s\n", path);
+    printf("Chosen file: %s\n", path);
 
+    // update the image (database and file)
     int returnCode = GTKEditStudentSetImage(path);
-
     if (returnCode)
         fprintf(stderr, "Can't use this image\n");
     else {
@@ -200,166 +206,203 @@ void on_edit_student_image_file_picker_file_set() {
     }
 }
 
+// Called when clicking the "refresh" button on the sanctions list view
+void on_sanctions_view_refresh_button_clicked() {
+    printf("Refresh sanctions\n");
+    GTKListSanctions();
+}
+
+// Called when clicking the "delete" button on the sanctions list view
 void on_sanctions_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_sanctions->sanctions_tree_selection);
     if (int_data) {
         deleteSanction(int_data);
-        GTKListSanctions();
+        GTKListSanctions();       // get back to the updated list
     }
-    printf("Delete sanction ID: %d\n", int_data);
+    printf("ID of deleted sanction: %d\n", int_data);
 }
 
+// Called when clicking the "create" button on the sanctions list view
 void on_sanctions_view_create_button_clicked() {
     printf("Create sanction\n");
-    GTKCreateSanction();
+    GTKCreateSanction(); // display the sanction creation view
 }
 
+// Called when clicking the "return" button on the sanction edition view
 void on_sanction_edit_return_button_clicked() {
     printf("Return to sanctions view\n");
     GTKListSanctions();
 }
 
+// Called when clicking the "submit" button on the sanction edition view
 void on_sanction_edit_submit_button_clicked() {
     printf("Submit sanction edit\n");
-    GTKEditSanctionSubmit();
+    GTKEditSanctionSubmit(); // edit the sanction and get back to the sanction list view
 }
 
+// Called when clicking the "return" button on the sanction creation view
 void on_sanction_create_return_button_clicked() {
     printf("Return to sanctions view\n");
     GTKListSanctions();
 }
 
+// Called when clicking the "submit" button on the sanction creation view
 void on_sanction_create_submit_button_clicked() {
     printf("Submit sanction create\n");
-    GTKCreateSanctionSubmit();
+    GTKCreateSanctionSubmit(); // create new sanction and get back to the updated list view
 }
 
+// Called when clicking the "refresh" button on the deliverable list view
 void on_deliverables_view_refresh_button_clicked() {
     printf("Refresh deliverables\n");
     GTKListDeliverables();
 }
 
+// Called when clicking the "delete" button on the deliverable list view
 void on_deliverables_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_deliverables->deliverables_tree_selection);
     if (int_data) {
-        deleteDeliverable(int_data);
-        GTKListDeliverables();
+        deleteDeliverable(int_data); // deleting all the related files + sql updated
+        GTKListDeliverables(); // get back to updated list
     }
-    printf("Delete deliverable ID: %d\n", int_data);
+    printf("ID of deleted deliverable: %d\n", int_data);
 }
 
+// Called when clicking the "create" button on the deliverables list view
 void on_deliverables_view_create_button_clicked() {
-
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-
-        printf("Create deliverable student id: %d\n", int_data);
-        GTKCreateDelivreables(int_data);
+        printf("Creating deliverable for student, id: %d\n", int_data);
+        GTKCreateDelivreables(int_data); // display the deliverable creation view
     }
 }
 
+// Called when clicking the "return" button on the class edition view
 void on_deliverable_edit_return_button_clicked() {
     printf("Return to deliverables view\n");
     GTKListDeliverables();
 }
 
+// Called when clicking the "submit" button on the deliverable edition view
 void on_deliverable_edit_submit_button_clicked() {
     printf("Submit deliverable edit\n");
-    GTKEditDelivreablesSubmit();
+    GTKEditDelivreablesSubmit(); // create new deliverable and get back to the updated list view
 }
 
+// Called when clicking on the cancel button next to the student picture file chooser
 void on_create_student_image_clear_button_clicked() {
-    printf("Clear student create image");
+    printf("Clearing student image selection.\n");
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker));
 }
 
+// Called when clicking the "return" button on the deliverable creation view
 void on_deliverable_create_return_button_clicked() {
     printf("Return to deliverables view\n");
     GTKListDeliverables();
 }
 
+// Called when clicking the "submit" button on the deliverable creation view
 void on_deliverable_create_submit_button_clicked() {
     printf("Submit deliverable create\n");
-    GTKCreateDelivreablesSubmit();
+    GTKCreateDelivreablesSubmit(); // create the deliverable and get back to the updated list
 }
 
 void on_edit_deliverable_video_file_set() {
+    // get filename for the selected file in the file selector
     char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_video));
-    printf("Choose video file! : %s\n", path);
+    printf("Chosen video file: %s\n", path);
     if (GTKDeliverableSetVideo(path))
         fprintf(stderr, "Error while adding video\n");
 }
 
+// Called when selecting a deliverable bad code file
 void on_edit_deliverable_bad_code_file_set() {
+    // get filename for the selected file in the file selector
     char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_bad_code));
-    printf("Choose bad code file! : %s\n", path);
+    printf("Chosen bad code file: %s\n", path);
     if (GTKDeliverableSetBadCode(path))
         fprintf(stderr, "Error while adding bad code\n");
 
 }
 
+// Called when selecting a deliverable file
 void on_edit_deliverable_deliverable_file_file_set() {
+    // get filename for the selected file in the file selector
     char *path = gtk_file_chooser_get_filename(
             GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_deliverable_file));
-    printf("Choose deliverable file! : %s\n", path);
+    printf("Chosen deliverable file: %s\n", path);
     if (GTKDeliverableSetDeliverable(path))
         fprintf(stderr, "Error while adding deliverable file\n");
 }
 
+// Called when selecting a deliverable audio file
 void on_edit_deliverable_audio_file_set() {
+    // get filename for the selected file in the file selector
     char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_audio));
-    printf("Choose audio file! : %s\n", path);
+    printf("Chosen audio file: %s\n", path);
     if (GTKDeliverableSetAudio(path))
         fprintf(stderr, "Error while adding audio\n");
 }
 
+// Called when clicking on the download button next to the audio file file chooser
 void on_edit_deliverable_audio_download_clicked() {
+    // get the content of the tooltip text, dynamically generated
     char *path = gtk_widget_get_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download));
-
-    printf("Download audio: %s\n", path);
-    GTKSaveFile(path);
+    printf("Downloading audio: %s\n", path);
+    GTKSaveFile(path); // open a dialog window to locally download the file
 }
 
+// Called when clicking on the download button next to the video file file chooser
 void on_edit_deliverable_video_download_clicked() {
+    // get the content of the tooltip text, dynamically generated
     char *path = gtk_widget_get_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download));
-
-    printf("Download video\n");
-    GTKSaveFile(path);
+    printf("Downloading video\n");
+    GTKSaveFile(path); // open a dialog window to locally download the file
 }
 
+// Called when clicking on the download button next to the bad code file file chooser
 void on_edit_deliverable_bad_code_download_clicked() {
+    // get the content of the tooltip text, dynamically generated
     char *path = gtk_widget_get_tooltip_text(
             GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download));
-
-    printf("Download bad code\n");
-    GTKSaveFile(path);
+    printf("Downloading bad code\n");
+    GTKSaveFile(path); // open a dialog window to locally download the file
 }
 
+// Called when clicking on the download button next to the deliverable file file chooser
 void on_edit_deliverable_deliverable_file_download_clicked() {
+    // get the content of the tooltip text, dynamically generated
     char *path = gtk_widget_get_tooltip_text(
             GTK_WIDGET(widgets->view_deliverables->edit_deliverable_deliverable_file_download));
-
-    printf("Download deliverable\n");
-    GTKSaveFile(path);
+    printf("Downloading deliverable\n");
+    GTKSaveFile(path); // open a dialog window to locally download the file
 }
 
+// Called when clicking on the cancel button next to the audio file file chooser
 void on_create_deliverable_audio_clear_clicked() {
     printf("Clear audio\n");
+    // empty the file chooser
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_audio));
 }
 
+// Called when clicking on the cancel button next to the video file file chooser
 void on_create_deliverable_video_clear_clicked() {
     printf("Clear video\n");
+    // empty the file chooser
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_video));
 }
 
+// Called when clicking on the cancel button next to the bad code file file chooser
 void on_create_deliverable_bad_code_clear_clicked() {
     printf("Clear bad_code\n");
+    // empty the file chooser
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_bad_code));
 }
 
+// Called when clicking on the cancel button next to the deliverable file file chooser
 void on_create_deliverable_deliverable_file_clear_clicked() {
-    printf("Clear deliverable\n");
+    printf("Clearing deliverable.\n");
+    // empty the file chooser
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_deliverable_file));
 }
 
@@ -379,86 +422,99 @@ void on_create_deliverable_audio_file_set() {
 
 }
 
+// Called when selecting a user picture file
 void on_view_user_image_file_picker_file_set() {
+    // get filename for the selected file in the file selector
     char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_user->view_user_image_file_picker));
-    printf("Choose file! : %s\n", path);
+    printf("Chosen file: %s\n", path);
 
+    // update the image (database and file)
     int returnCode = GTKUserSetImage(path);
-
     if (returnCode)
         fprintf(stderr, "Can't use this image\n");
     else {
         printf("Image changed\n");
-        GTKViewUser();
+        GTKViewUser(); // get back to user view
     }
 }
 
+// Called when clicking the "edit" button on the user edition view
 void on_user_view_edit_button_clicked() {
-    printf("Edit user\n");
-    GTKEditUser();
+    printf("User edition view\n");
+    GTKEditUser(); // display user edition view
 }
 
+// Called when clicking the "submit" button on the user edition view
 void on_user_edit_submit_button_clicked() {
-    printf("User edit submit\n");
+    printf("Submitting new user information...\n");
     GTKEditUserSubmit();
 }
 
+// Called when clicking the "return" button on the user edition view
 void on_user_edit_return_button_clicked() {
-    printf("User return to view\n");
+    printf("Return to user view.\n");
     GTKViewUser();
 }
 
+// Called when switching the "dark theme" toggle button
 void on_view_settings_switch_theme_button_state_set() {
-    printf("Switch theme button !\n");
-
+    printf("Theme button switched!\n");
+    // darkTheme: global variable, get the state of the switch button (1 if active, 0 if not)
     darkTheme = gtk_switch_get_active(widgets->view_settings->view_settings_switch_theme_button);
-
-    GTKSetTheme();
-
-    writeConf();
+    GTKSetTheme();     // loads the theme depending on the button state
+    writeConf();       // update the configuration file with the new darkTheme value
 }
 
+// Called when switching the "show terminal" toggle button
 void on_view_settings_show_terminal_button_state_set() {
-    printf("Switch show terminal button");
-
+    printf("Show terminal button switched.\n");
+    // showConsole: global variable, get the state of the switch button (1 if active, 0 if not)
     showConsole = gtk_switch_get_active(widgets->view_settings->view_settings_show_terminal_button);
-
-    GTKShowConsole();
-
-    writeConf();
+    GTKShowConsole(); // show or hide console depending on the button state
+    writeConf();      // update the configuration file with the new showConsole value
 }
 
+// Called when clicking the "apply" button on the settings edition view
 void on_view_settings_submit_button_clicked() {
-    printf("Submit settings \n");
+    printf("Submitting settings.\n");
     GTKViewSettingsSubmit();
 }
 
+// Called when clicking the "refresh" button next to the storage file chooser
 void on_settings_storage_refresh_clicked() {
-    printf("storage refresh \n");
+    printf("Storage folder refreshed: back to default value.\n");
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser));
     gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser),
                                         storageFolder);
 }
 
+// Called when clicking the "refresh" button next to the dark theme file chooser
 void on_settings_dark_theme_refresh_clicked() {
-    printf("dark theme refresh \n");
+    printf("Dark theme file refreshed: back to default value.\n");
+    // Set the file chooser back to the default value from the conf file
     gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_dark_theme_file_chooser),
                                   darkThemePath);
 }
 
+// Called when clicking the "refresh" button next to the default theme file chooser
 void on_settings_default_theme_refresh_clicked() {
-    printf("default theme refresh \n");
+    printf("Default theme file refreshed: back to default value.\n");
+    // Set the file chooser back to the default value from the conf file
     gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_default_theme_file_chooser),
                                   defaultThemePath);
 }
 
+// Called when clicking the "refresh" button next to the glade file chooser
 void on_settings_glade_refresh_clicked() {
-    printf("glade refresh \n");
+    printf("Glade file refreshed: back to default value.\n");
+    // Set the file chooser back to the default value from the conf file
     gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_glade_file_chooser), gladeFile);
 }
 
+// Called when clicking the "refresh" button next to the database file chooser
 void on_settings_database_refresh_clicked() {
-    printf("database refresh \n");
+    printf("Database file refreshed: back to default value.\n");
+    // Set the file chooser back to the default value from the conf file
     gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_database_file_chooser), dbname);
 }
 
@@ -2387,36 +2443,37 @@ void GTKViewSettingsSubmit() {
 }
 
 void GTKSetTheme() {
-    GtkCssProvider *pCssProvider = NULL;
-    pCssProvider = gtk_css_provider_new();
+    GtkCssProvider *pCssProvider = NULL;    // pointer to a GtkCssProvider structure
+    pCssProvider = gtk_css_provider_new();  // create a new GtkCssProvider
     GError *error = NULL;
 
+    // add a style provider to the default screen for the default display
     gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(pCssProvider),
                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    // Decreases the reference count of the CssProvider
     g_object_unref(pCssProvider);
 
-    if (darkTheme) {
+    if (darkTheme) {  // 1 if switch button activated
+        // load the dark theme path into the css_provider
         if (!gtk_css_provider_load_from_path(pCssProvider, darkThemePath, &error)) {
             fprintf(stderr, "%s\n", error->message);
-
             exit(error->code);
         }
-    } else {
+    } else {         // 0 if switch button not activated
+        // load the default theme path into the css_provider
         if (!gtk_css_provider_load_from_path(pCssProvider, defaultThemePath, &error)) {
             fprintf(stderr, "%s\n", error->message);
-
             exit(error->code);
         }
     }
 }
 
 void GTKShowConsole() {
-
+    // Get the window handle used by the console
     HWND hWnd = GetConsoleWindow();
-
-    if (showConsole) {
+    if (showConsole) {  // 1 if switch button activated
         ShowWindow(hWnd, SW_SHOW);
-    } else {
+    } else {            // 0 if switch button not activated
         ShowWindow(hWnd, SW_HIDE);
     }
 }
@@ -2885,7 +2942,7 @@ void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeho
     if (visible) { // if TRUE
         gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162, 161); // moving the menu to the right
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), TRUE); // set the search bar visible
-        gtk_tree_view_set_search_entry(treeView, GTK_ENTRY(widgets->search_entry));
+        gtk_tree_view_set_search_entry(treeView, GTK_ENTRY(widgets->search_entry)); // set the search
         gtk_entry_set_text(GTK_ENTRY(widgets->search_entry), ""); // flush the text in the search bar
         gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->search_entry), placeholder); // fill it with placeholder text
     } else { // if FALSE
