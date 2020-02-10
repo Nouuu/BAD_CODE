@@ -403,6 +403,16 @@ void on_view_settings_switch_theme_button_state_set() {
     writeConf();
 }
 
+void on_view_settings_show_terminal_button_state_set() {
+    printf("Switch show terminal button");
+
+    showConsole = gtk_switch_get_active(widgets->view_settings->view_settings_show_terminal_button);
+
+    GTKShowConsole();
+
+    writeConf();
+}
+
 void on_view_settings_submit_button_clicked() {
     printf("Submit settings \n");
     GTKViewSettingsSubmit();
@@ -1941,8 +1951,7 @@ void GTKEditDeliverableSetDueDate(char *date) {
     //DAY
     columnSize = strchr(date, '\0') - date;
     buffer = malloc(columnSize + 1);
-    strncpy(buffer, date, columnSize);
-    buffer[columnSize] = '\0';
+    strcpy(buffer, date);
     day = atoi(buffer);
     free(buffer);
 
@@ -2292,6 +2301,7 @@ int GTKUserSetImage(char *path) {
 
 void GTKViewSettings() {
     gtk_switch_set_active(widgets->view_settings->view_settings_switch_theme_button, darkTheme ? TRUE : FALSE);
+    gtk_switch_set_active(widgets->view_settings->view_settings_show_terminal_button, showConsole ? TRUE : FALSE);
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser));
     gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser),
                                         storageFolder);
@@ -2358,6 +2368,17 @@ void GTKSetTheme() {
 
             exit(error->code);
         }
+    }
+}
+
+void GTKShowConsole() {
+
+    HWND hWnd = GetConsoleWindow();
+
+    if (showConsole) {
+        ShowWindow(hWnd, SW_SHOW);
+    } else {
+        ShowWindow(hWnd, SW_HIDE);
     }
 }
 
@@ -2793,6 +2814,8 @@ void connectWidgets() {
     widgets->view_settings = g_slice_new(Settings);
     widgets->view_settings->view_settings_switch_theme_button = GTK_SWITCH(
             gtk_builder_get_object(builder, "view_settings_switch_theme_button"));
+    widgets->view_settings->view_settings_show_terminal_button = GTK_SWITCH(
+            gtk_builder_get_object(builder, "view_settings_show_terminal_button"));
     widgets->view_settings->settings_database_file_chooser = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "settings_database_file_chooser"));
     widgets->view_settings->settings_database_refresh = GTK_BUTTON(
@@ -2820,14 +2843,14 @@ void connectWidgets() {
 
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
     if (visible) {
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162, 161);
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 240, 161);
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), TRUE);
         gtk_tree_view_set_search_entry(treeView, GTK_ENTRY(widgets->search_entry));
         gtk_entry_set_text(GTK_ENTRY(widgets->search_entry), "");
         gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->search_entry), placeholder);
     } else {
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), FALSE);
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 85, 161);
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 130, 161);
     }
 }
 
@@ -2872,14 +2895,14 @@ void dashboardGTK(int *argc, char ***argv) {
 
     gtk_init(argc, argv);
 
-    builder = gtk_builder_new_from_file(gladeFile); // Chemin absolu à modifier
+    builder = gtk_builder_new_from_file(gladeFile);
 
     connectWidgets();
 
     g_signal_connect(widgets->window_dashboard, "destroy", G_CALLBACK(on_destroy), NULL);
 
     gtk_builder_connect_signals(builder, NULL);
-    g_object_unref(builder); // Decreases the reference count of builder : if count = 0, memory is freed
+    g_object_unref(builder);
 
     GTKSetTheme();
 
