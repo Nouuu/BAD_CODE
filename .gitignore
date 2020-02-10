@@ -14,3 +14,5 @@ dlls.7z
 glade/dashboard.glade~
 
 glade/#listStudents.glade#
+
+cmake-build-release-mingw-gtk/

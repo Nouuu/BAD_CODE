@@ -8,6 +8,7 @@
 #include <gtk-3.0/gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <math.h>
+#include <windows.h>
 
 // Get builder and glade file from main.c
 extern GtkBuilder *builder;
@@ -245,6 +246,7 @@ typedef struct {
 // Structure holding all the widgets related to the settings
 typedef struct {
     GtkSwitch *view_settings_switch_theme_button;
+    GtkSwitch *view_settings_show_terminal_button;
     GtkFileChooserButton *settings_database_file_chooser;
     GtkButton *settings_database_refresh;
     GtkFileChooserButton *settings_storage_folder_chooser;
@@ -398,6 +400,8 @@ G_MODULE_EXPORT void on_user_edit_return_button_clicked();
 
 G_MODULE_EXPORT void on_view_settings_switch_theme_button_state_set();
 
+G_MODULE_EXPORT void on_view_settings_show_terminal_button_state_set();
+
 G_MODULE_EXPORT void on_view_settings_submit_button_clicked();
 
 G_MODULE_EXPORT void on_settings_storage_refresh_clicked();
@@ -531,6 +535,8 @@ void GTKViewSettings();
 void GTKViewSettingsSubmit();
 
 void GTKSetTheme();
+
+void GTKShowConsole();
 
 void connectWidgets();
 

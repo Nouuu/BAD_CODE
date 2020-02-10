@@ -15,6 +15,7 @@ extern char *gladeFile;
 extern char *darkThemePath;
 extern char *defaultThemePath;
 extern int darkTheme;
+extern int showConsole;
 
 void createPath(char *path);
 

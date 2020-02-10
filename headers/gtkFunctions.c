@@ -418,6 +418,16 @@ void on_view_settings_switch_theme_button_state_set() {
     writeConf();
 }
 
+void on_view_settings_show_terminal_button_state_set() {
+    printf("Switch show terminal button");
+
+    showConsole = gtk_switch_get_active(widgets->view_settings->view_settings_show_terminal_button);
+
+    GTKShowConsole();
+
+    writeConf();
+}
+
 void on_view_settings_submit_button_clicked() {
     printf("Submit settings \n");
     GTKViewSettingsSubmit();
@@ -1980,8 +1990,7 @@ void GTKEditDeliverableSetDueDate(char *date) {
     //DAY
     columnSize = strchr(date, '\0') - date;
     buffer = malloc(columnSize + 1);
-    strncpy(buffer, date, columnSize);
-    buffer[columnSize] = '\0';
+    strcpy(buffer, date);
     day = atoi(buffer);
     free(buffer);
 
@@ -2331,6 +2340,7 @@ int GTKUserSetImage(char *path) {
 
 void GTKViewSettings() {
     gtk_switch_set_active(widgets->view_settings->view_settings_switch_theme_button, darkTheme ? TRUE : FALSE);
+    gtk_switch_set_active(widgets->view_settings->view_settings_show_terminal_button, showConsole ? TRUE : FALSE);
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser));
     gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(widgets->view_settings->settings_storage_folder_chooser),
                                         storageFolder);
@@ -2397,6 +2407,17 @@ void GTKSetTheme() {
 
             exit(error->code);
         }
+    }
+}
+
+void GTKShowConsole() {
+
+    HWND hWnd = GetConsoleWindow();
+
+    if (showConsole) {
+        ShowWindow(hWnd, SW_SHOW);
+    } else {
+        ShowWindow(hWnd, SW_HIDE);
     }
 }
 
@@ -2832,6 +2853,8 @@ void connectWidgets() {
     widgets->view_settings = g_slice_new(Settings);
     widgets->view_settings->view_settings_switch_theme_button = GTK_SWITCH(
             gtk_builder_get_object(builder, "view_settings_switch_theme_button"));
+    widgets->view_settings->view_settings_show_terminal_button = GTK_SWITCH(
+            gtk_builder_get_object(builder, "view_settings_show_terminal_button"));
     widgets->view_settings->settings_database_file_chooser = GTK_FILE_CHOOSER_BUTTON(
             gtk_builder_get_object(builder, "settings_database_file_chooser"));
     widgets->view_settings->settings_database_refresh = GTK_BUTTON(
