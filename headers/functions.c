@@ -28,7 +28,7 @@ int copyFile(const char *src, const char *dest) {
         return 1;
     }
 
-    char *targetFolderBuffer = malloc(strlen(dest)+1);
+    char *targetFolderBuffer = malloc(strlen(dest) + 1);
     strcpy(targetFolderBuffer, dest);
     dirname(targetFolderBuffer);
 
@@ -142,36 +142,42 @@ void readConf() {
 
     char buffer[255];
     sscanf(P, "path : %s\n", buffer);
-    dbname = malloc(strlen(buffer)+1);
+    dbname = malloc(strlen(buffer) + 1);
     strcpy(dbname, buffer);
 
     //STORAGE
     P = strstr(fileString, "[STORAGE]");
     P = strchr(P, '\n') + 1;
     sscanf(P, "path : %s\n", buffer);
-    storageFolder = malloc(strlen(buffer)+1);
+    storageFolder = malloc(strlen(buffer) + 1);
     strcpy(storageFolder, buffer);
 
     //GLADE
     P = strstr(fileString, "[GLADE]");
     P = strchr(P, '\n') + 1;
     sscanf(P, "path : %s\n", buffer);
-    gladeFile = malloc(strlen(buffer)+1);
+    gladeFile = malloc(strlen(buffer) + 1);
     strcpy(gladeFile, buffer);
 
     //THEME
     P = strstr(fileString, "[THEME]");
     P = strchr(P, '\n') + 1;
     sscanf(P, "default_path : %s\n", buffer);
-    defaultThemePath = malloc(strlen(buffer)+1);
+    defaultThemePath = malloc(strlen(buffer) + 1);
     strcpy(defaultThemePath, buffer);
 
     P = strchr(P, '\n') + 1;
     sscanf(P, "dark_path : %s\n", buffer);
-    darkThemePath = malloc(strlen(buffer)+1);
+    darkThemePath = malloc(strlen(buffer) + 1);
     strcpy(darkThemePath, buffer);
     P = strchr(P, '\n') + 1;
     sscanf(P, "dark : %d\n", &darkTheme);
+
+    //CONSOLE
+    P = strstr(fileString, "[CONSOLE]");
+    P = strchr(P, '\n') + 1;
+    sscanf(P, "dark : %d\n", &showConsole);
+
 
     fclose(file);
     free(fileString);
@@ -202,7 +208,12 @@ void writeConf() {
     fprintf(file, "[THEME]\n");
     fprintf(file, "default_path : %s\n", defaultThemePath);
     fprintf(file, "dark_path : %s\n", darkThemePath);
-    fprintf(file, "dark : %d\n", darkTheme);
+    fprintf(file, "dark : %d\n\n", darkTheme);
+
+    //CONSOLE
+    fprintf(file, "[CONSOLE]\n");
+    fprintf(file, "show : %d\n", showConsole);
+
 
     fclose(file);
 }

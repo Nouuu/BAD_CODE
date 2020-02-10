@@ -14,13 +14,18 @@ char *darkThemePath = NULL;
 char *defaultThemePath = NULL;
 char *configFile = "../config.ini";
 int darkTheme = -1;
+int showConsole = 0;
 
 int main(int argc, char **argv) {
 
     readConf();
     HWND hWnd = GetConsoleWindow();
-    ShowWindow( hWnd, SW_MINIMIZE );
-//    ShowWindow( hWnd, SW_HIDE );
+    if (showConsole) {
+        ShowWindow(hWnd, SW_SHOW);
+        ShowWindow(hWnd, SW_MINIMIZE);
+    } else {
+        ShowWindow(hWnd, SW_HIDE);
+    }
     dashboardGTK(&argc, &argv);
 
     free(dbname);
