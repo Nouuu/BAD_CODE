@@ -1415,6 +1415,9 @@ int insertDeliverable(const char *due_date, const char *subject, const char *aud
         free(returnCode_c);
     }
 
+    sqlite3_finalize(pStmt);
+    sqlite3_close(db);
+
     return 0;
 }
 
