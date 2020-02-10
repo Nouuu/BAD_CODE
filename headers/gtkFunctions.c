@@ -2819,14 +2819,14 @@ void connectWidgets() {
 
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
     if (visible) {
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162, 161);
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 240, 161);
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), TRUE);
         gtk_tree_view_set_search_entry(treeView, GTK_ENTRY(widgets->search_entry));
         gtk_entry_set_text(GTK_ENTRY(widgets->search_entry), "");
         gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->search_entry), placeholder);
     } else {
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), FALSE);
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 85, 161);
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 130, 161);
     }
 }
 
