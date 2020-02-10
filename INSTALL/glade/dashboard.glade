@@ -333,8 +333,8 @@
     <property name="icon_name">object-select-symbolic</property>
   </object>
   <object class="GtkWindow" id="window_dashboard">
-    <property name="width_request">900</property>
-    <property name="height_request">650</property>
+    <property name="width_request">1000</property>
+    <property name="height_request">750</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">GOOD CODE - BAD CODE</property>
     <property name="resizable">False</property>
@@ -348,7 +348,7 @@
         <property name="can_focus">False</property>
         <child>
           <object class="GtkImage" id="logo">
-            <property name="width_request">900</property>
+            <property name="width_request">1000</property>
             <property name="height_request">150</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -369,14 +369,14 @@
             <signal name="notify::visible-child" handler="on_menu_stack_switcher_visible_child_notify" swapped="no"/>
           </object>
           <packing>
-            <property name="x">162</property>
+            <property name="x">240</property>
             <property name="y">161</property>
           </packing>
         </child>
         <child>
           <object class="GtkStack" id="menu_stack">
-            <property name="width_request">880</property>
-            <property name="height_request">420</property>
+            <property name="width_request">980</property>
+            <property name="height_request">520</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="transition_duration">500</property>
@@ -448,14 +448,14 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">570</property>
-                        <property name="y">387</property>
+                        <property name="x">695</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkViewport" id="classes_view">
-                        <property name="width_request">880</property>
-                        <property name="height_request">380</property>
+                        <property name="width_request">980</property>
+                        <property name="height_request">480</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -645,8 +645,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">680</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -655,8 +655,8 @@
                         <property name="height_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="row_spacing">30</property>
-                        <property name="column_spacing">10</property>
+                        <property name="row_spacing">40</property>
+                        <property name="column_spacing">20</property>
                         <property name="row_homogeneous">True</property>
                         <property name="column_homogeneous">True</property>
                         <child>
@@ -839,7 +839,7 @@
                       </object>
                       <packing>
                         <property name="x">40</property>
-                        <property name="y">20</property>
+                        <property name="y">40</property>
                       </packing>
                     </child>
                     <child>
@@ -899,8 +899,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">680</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -909,8 +909,8 @@
                         <property name="height_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="row_spacing">30</property>
-                        <property name="column_spacing">10</property>
+                        <property name="row_spacing">40</property>
+                        <property name="column_spacing">20</property>
                         <property name="row_homogeneous">True</property>
                         <property name="column_homogeneous">True</property>
                         <child>
@@ -1094,7 +1094,7 @@
                       </object>
                       <packing>
                         <property name="x">40</property>
-                        <property name="y">20</property>
+                        <property name="y">40</property>
                       </packing>
                     </child>
                   </object>
@@ -1121,8 +1121,8 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkViewport" id="students_view">
-                        <property name="width_request">880</property>
-                        <property name="height_request">380</property>
+                        <property name="width_request">980</property>
+                        <property name="height_request">480</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -1318,8 +1318,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">570</property>
-                        <property name="y">387</property>
+                        <property name="x">695</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -1379,7 +1379,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="y">387</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                   </object>
@@ -1433,8 +1433,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">680</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -1443,8 +1443,8 @@
                         <property name="height_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="row_spacing">30</property>
-                        <property name="column_spacing">10</property>
+                        <property name="row_spacing">40</property>
+                        <property name="column_spacing">20</property>
                         <property name="row_homogeneous">True</property>
                         <property name="column_homogeneous">True</property>
                         <child>
@@ -1632,7 +1632,7 @@
                       </object>
                       <packing>
                         <property name="x">580</property>
-                        <property name="y">20</property>
+                        <property name="y">40</property>
                       </packing>
                     </child>
                     <child>
@@ -1693,8 +1693,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">680</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -1703,8 +1703,8 @@
                         <property name="height_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="row_spacing">30</property>
-                        <property name="column_spacing">10</property>
+                        <property name="row_spacing">40</property>
+                        <property name="column_spacing">20</property>
                         <property name="row_homogeneous">True</property>
                         <property name="column_homogeneous">True</property>
                         <child>
@@ -1859,8 +1859,8 @@
                         <signal name="clicked" handler="on_create_student_image_clear_button_clicked" swapped="no"/>
                       </object>
                       <packing>
-                        <property name="x">400</property>
-                        <property name="y">296</property>
+                        <property name="x">425</property>
+                        <property name="y">336</property>
                       </packing>
                     </child>
                   </object>
@@ -1888,8 +1888,8 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkViewport" id="sanctions_view">
-                        <property name="width_request">880</property>
-                        <property name="height_request">380</property>
+                        <property name="width_request">980</property>
+                        <property name="height_request">480</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -2036,8 +2036,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">570</property>
-                        <property name="y">387</property>
+                        <property name="x">695</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                   </object>
@@ -2091,8 +2091,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">680</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -2247,8 +2247,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">680</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -2370,8 +2370,8 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkViewport" id="deliverables_view">
-                        <property name="width_request">880</property>
-                        <property name="height_request">380</property>
+                        <property name="width_request">980</property>
+                        <property name="height_request">480</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -2561,8 +2561,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">695</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                   </object>
@@ -2616,8 +2616,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">680</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -2626,8 +2626,8 @@
                         <property name="height_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="row_spacing">15</property>
-                        <property name="column_spacing">15</property>
+                        <property name="row_spacing">40</property>
+                        <property name="column_spacing">20</property>
                         <property name="column_homogeneous">True</property>
                         <child>
                           <object class="GtkLabel">
@@ -2746,7 +2746,7 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">480</property>
+                        <property name="x">530</property>
                         <property name="y">30</property>
                       </packing>
                     </child>
@@ -2769,7 +2769,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">480</property>
+                        <property name="x">530</property>
                         <property name="y">80</property>
                       </packing>
                     </child>
@@ -2799,8 +2799,8 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">700</property>
-                        <property name="y">290</property>
+                        <property name="x">750</property>
+                        <property name="y">340</property>
                       </packing>
                     </child>
                     <child>
@@ -2815,8 +2815,8 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">480</property>
-                        <property name="y">290</property>
+                        <property name="x">530</property>
+                        <property name="y">340</property>
                       </packing>
                     </child>
                     <child>
@@ -2831,7 +2831,7 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">700</property>
+                        <property name="x">750</property>
                         <property name="y">200</property>
                       </packing>
                     </child>
@@ -2847,7 +2847,7 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">480</property>
+                        <property name="x">530</property>
                         <property name="y">200</property>
                       </packing>
                     </child>
@@ -2888,8 +2888,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">480</property>
-                        <property name="y">230</property>
+                        <property name="x">530</property>
+                        <property name="y">240</property>
                       </packing>
                     </child>
                     <child>
@@ -2929,8 +2929,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">700</property>
-                        <property name="y">330</property>
+                        <property name="x">750</property>
+                        <property name="y">380</property>
                       </packing>
                     </child>
                     <child>
@@ -2970,8 +2970,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">480</property>
-                        <property name="y">330</property>
+                        <property name="x">530</property>
+                        <property name="y">380</property>
                       </packing>
                     </child>
                     <child>
@@ -3011,8 +3011,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">700</property>
-                        <property name="y">230</property>
+                        <property name="x">750</property>
+                        <property name="y">240</property>
                       </packing>
                     </child>
                   </object>
@@ -3067,8 +3067,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">680</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -3077,8 +3077,8 @@
                         <property name="height_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="row_spacing">15</property>
-                        <property name="column_spacing">15</property>
+                        <property name="row_spacing">40</property>
+                        <property name="column_spacing">20</property>
                         <property name="column_homogeneous">True</property>
                         <child>
                           <object class="GtkLabel">
@@ -3196,7 +3196,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">480</property>
+                        <property name="x">530</property>
                         <property name="y">80</property>
                       </packing>
                     </child>
@@ -3210,7 +3210,7 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">480</property>
+                        <property name="x">530</property>
                         <property name="y">30</property>
                       </packing>
                     </child>
@@ -3265,8 +3265,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">480</property>
-                        <property name="y">230</property>
+                        <property name="x">530</property>
+                        <property name="y">240</property>
                       </packing>
                     </child>
                     <child>
@@ -3281,7 +3281,7 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">480</property>
+                        <property name="x">530</property>
                         <property name="y">200</property>
                       </packing>
                     </child>
@@ -3322,8 +3322,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">700</property>
-                        <property name="y">330</property>
+                        <property name="x">750</property>
+                        <property name="y">380</property>
                       </packing>
                     </child>
                     <child>
@@ -3338,8 +3338,8 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">700</property>
-                        <property name="y">290</property>
+                        <property name="x">750</property>
+                        <property name="y">340</property>
                       </packing>
                     </child>
                     <child>
@@ -3379,8 +3379,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">700</property>
-                        <property name="y">230</property>
+                        <property name="x">750</property>
+                        <property name="y">240</property>
                       </packing>
                     </child>
                     <child>
@@ -3395,7 +3395,7 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">700</property>
+                        <property name="x">750</property>
                         <property name="y">200</property>
                       </packing>
                     </child>
@@ -3436,8 +3436,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">480</property>
-                        <property name="y">330</property>
+                        <property name="x">530</property>
+                        <property name="y">380</property>
                       </packing>
                     </child>
                     <child>
@@ -3452,8 +3452,8 @@
                         </attributes>
                       </object>
                       <packing>
-                        <property name="x">480</property>
-                        <property name="y">290</property>
+                        <property name="x">530</property>
+                        <property name="y">340</property>
                       </packing>
                     </child>
                     <child>
@@ -3496,7 +3496,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
-                        <property name="spacing">10</property>
+                        <property name="spacing">40</property>
                         <child>
                           <object class="GtkImage" id="view_user_image">
                             <property name="width_request">250</property>
@@ -3528,7 +3528,7 @@
                       </object>
                       <packing>
                         <property name="x">580</property>
-                        <property name="y">20</property>
+                        <property name="y">80</property>
                       </packing>
                     </child>
                     <child>
@@ -3554,16 +3554,16 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">790</property>
-                        <property name="y">387</property>
+                        <property name="x">900</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkGrid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="row_spacing">30</property>
-                        <property name="column_spacing">10</property>
+                        <property name="row_spacing">40</property>
+                        <property name="column_spacing">20</property>
                         <property name="row_homogeneous">True</property>
                         <property name="column_homogeneous">True</property>
                         <child>
@@ -3685,8 +3685,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">40</property>
-                        <property name="y">40</property>
+                        <property name="x">80</property>
+                        <property name="y">80</property>
                       </packing>
                     </child>
                   </object>
@@ -3740,8 +3740,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">680</property>
-                        <property name="y">387</property>
+                        <property name="x">795</property>
+                        <property name="y">487</property>
                       </packing>
                     </child>
                     <child>
@@ -3750,8 +3750,8 @@
                         <property name="height_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="row_spacing">30</property>
-                        <property name="column_spacing">10</property>
+                        <property name="row_spacing">40</property>
+                        <property name="column_spacing">20</property>
                         <property name="row_homogeneous">True</property>
                         <property name="column_homogeneous">True</property>
                         <child>
@@ -3867,8 +3867,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="x">40</property>
-                        <property name="y">40</property>
+                        <property name="x">80</property>
+                        <property name="y">80</property>
                       </packing>
                     </child>
                   </object>
@@ -3929,7 +3929,7 @@
                   </object>
                   <packing>
                     <property name="x">40</property>
-                    <property name="y">140</property>
+                    <property name="y">160</property>
                   </packing>
                 </child>
                 <child>
@@ -3945,7 +3945,7 @@
                   </object>
                   <packing>
                     <property name="x">40</property>
-                    <property name="y">240</property>
+                    <property name="y">260</property>
                   </packing>
                 </child>
                 <child>
@@ -3961,7 +3961,7 @@
                   </object>
                   <packing>
                     <property name="x">40</property>
-                    <property name="y">340</property>
+                    <property name="y">360</property>
                   </packing>
                 </child>
                 <child>
@@ -3976,7 +3976,7 @@
                     </attributes>
                   </object>
                   <packing>
-                    <property name="x">240</property>
+                    <property name="x">280</property>
                     <property name="y">40</property>
                   </packing>
                 </child>
@@ -3992,7 +3992,7 @@
                     </attributes>
                   </object>
                   <packing>
-                    <property name="x">440</property>
+                    <property name="x">520</property>
                     <property name="y">40</property>
                   </packing>
                 </child>
@@ -4032,7 +4032,7 @@
                   </object>
                   <packing>
                     <property name="x">40</property>
-                    <property name="y">180</property>
+                    <property name="y">200</property>
                   </packing>
                 </child>
                 <child>
@@ -4072,7 +4072,7 @@
                   </object>
                   <packing>
                     <property name="x">40</property>
-                    <property name="y">280</property>
+                    <property name="y">300</property>
                   </packing>
                 </child>
                 <child>
@@ -4111,7 +4111,7 @@
                   </object>
                   <packing>
                     <property name="x">40</property>
-                    <property name="y">380</property>
+                    <property name="y">400</property>
                   </packing>
                 </child>
                 <child>
@@ -4149,7 +4149,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">440</property>
+                    <property name="x">520</property>
                     <property name="y">80</property>
                   </packing>
                 </child>
@@ -4188,7 +4188,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">240</property>
+                    <property name="x">280</property>
                     <property name="y">80</property>
                   </packing>
                 </child>
@@ -4203,8 +4203,35 @@
                     <signal name="clicked" handler="on_view_settings_submit_button_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="x">790</property>
-                    <property name="y">387</property>
+                    <property name="x">915</property>
+                    <property name="y">487</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="view_settings_show_terminal_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <signal name="state-set" handler="on_view_settings_show_terminal_button_state_set" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="x">280</property>
+                    <property name="y">200</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Show terminal :</property>
+                    <attributes>
+                      <attribute name="font-desc" value="Sans Bold 14"/>
+                      <attribute name="style" value="normal"/>
+                      <attribute name="underline" value="True"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="x">280</property>
+                    <property name="y">160</property>
                   </packing>
                 </child>
               </object>
@@ -4226,7 +4253,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="max_length">25</property>
-            <property name="width_chars">22</property>
+            <property name="width_chars">25</property>
             <property name="primary_icon_name">edit-find-symbolic</property>
             <property name="primary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">False</property>
