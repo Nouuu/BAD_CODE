@@ -1941,8 +1941,7 @@ void GTKEditDeliverableSetDueDate(char *date) {
     //DAY
     columnSize = strchr(date, '\0') - date;
     buffer = malloc(columnSize + 1);
-    strncpy(buffer, date, columnSize);
-    buffer[columnSize] = '\0';
+    strcpy(buffer, date);
     day = atoi(buffer);
     free(buffer);
 
