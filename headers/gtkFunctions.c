@@ -2925,7 +2925,7 @@ void connectWidgets() {
 // Hide or displays the search entry on a view
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
     if (visible) { // if TRUE
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162,
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 240,
                        161); // moving the menu to the right
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), TRUE); // set the search bar visible
         gtk_tree_view_set_search_entry(treeView, GTK_ENTRY(widgets->search_entry)); // set the search
@@ -2933,7 +2933,7 @@ void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeho
         gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->search_entry), placeholder); // fill it with placeholder text
     } else { // if FALSE
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), FALSE); // hide the search bar
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 85,
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 130,
                        161); // place the search bar to the correct place
     }
 }

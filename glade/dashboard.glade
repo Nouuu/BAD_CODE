@@ -3240,7 +3240,6 @@
                             <property name="can_focus">False</property>
                             <property name="create_folders">False</property>
                             <property name="title" translatable="yes">Audio file</property>
-                            <signal name="file-set" handler="on_create_deliverable_audio_file_set" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -3297,7 +3296,6 @@
                             <property name="can_focus">False</property>
                             <property name="create_folders">False</property>
                             <property name="title" translatable="yes">Audio file</property>
-                            <signal name="file-set" handler="on_create_deliverable_deliverable_file_file_set" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -3354,7 +3352,6 @@
                             <property name="can_focus">False</property>
                             <property name="create_folders">False</property>
                             <property name="title" translatable="yes">Audio file</property>
-                            <signal name="file-set" handler="on_create_deliverable_bad_code_file_set" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -3411,7 +3408,6 @@
                             <property name="can_focus">False</property>
                             <property name="create_folders">False</property>
                             <property name="title" translatable="yes">Audio file</property>
-                            <signal name="file-set" handler="on_create_deliverable_video_file_set" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
