@@ -1,7 +1,3 @@
-//
-// Created by Unknow on 18/01/2020.
-//
-
 #ifndef BAD_CODE_FUNCTIONS_H
 #define BAD_CODE_FUNCTIONS_H
 
@@ -11,6 +7,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 
+// Global variables from main.c / config file
 extern char *dbname;
 extern char *configFile;
 extern char *storageFolder;
