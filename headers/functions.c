@@ -62,7 +62,7 @@ int copyFile(const char *src, const char *dest) {
 wchar_t *convertUnicodeStringToUTF8String(char *string) {
     //mbstowcs_s
     wchar_t *newString = malloc(strlen(string) + 1);
-    if (mbstowcs(newString, string, strlen(string)+1) != strlen(string))
+    if (mbstowcs(newString, string, strlen(string) + 1) != strlen(string))
         fprintf(stderr, "Error while converting string\n");
     return newString;
 }
@@ -176,7 +176,7 @@ void readConf() {
     P = strstr(fileString, "[STORAGE]");
     P = strchr(P, '\n') + 1;
     sscanf(P, "path : %s\n", buffer); // erasing the previous content and replacing it with the new one
-    storageFolder = malloc(strlen(buffer)+1);
+    storageFolder = malloc(strlen(buffer) + 1);
     strcpy(storageFolder, buffer);
 
     // GLADE

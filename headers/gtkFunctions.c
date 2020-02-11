@@ -40,14 +40,16 @@ void on_deliverables_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath
 // Get the visible stack and display the default view page of the category
 void on_menu_stack_visible_child_notify(GtkStack *stack) {
     if (gtk_stack_get_visible_child_name(stack) != NULL) { // Check if the stack has a visible child
-        const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack); // Returns the name of the visible menu child
+        const gchar *menu = gtk_stack_get_visible_child_name(
+                widgets->menu_stack); // Returns the name of the visible menu child
         if (!strcmp(menu, "view_classes")) {
             printf("Classes view\n");
             setSearchEntry(FALSE, NULL, NULL); // Hide the search bar
             GTKListClasses(); // Display the list of the classes
         } else if (!strcmp(menu, "view_students")) {
             printf("Students view\n");
-            setSearchEntry(TRUE, widgets->view_students->students_tree_view, "Search by firstname"); // Display the search bar
+            setSearchEntry(TRUE, widgets->view_students->students_tree_view,
+                           "Search by firstname"); // Display the search bar
             GTKListStudents();
         } else if (!strcmp(menu, "view_sanctions")) {
             printf("Sanctions view\n");
@@ -560,7 +562,7 @@ void fillUserComboList(GtkComboBoxText *comboBoxText) {
     strcat(nameBuffer, " ");                // concatenate space character
     nameSize = strlen(nameBuffer);          // size of the complete name
     strncat(nameBuffer, user, columnSize);  // concatenate the content of column into the name string
-    nameBuffer[columnSize + nameSize] = '\0'; ///TODO
+    nameBuffer[columnSize + nameSize] = '\0';
 
     // Flush all previous data from the combo box
     gtk_combo_box_text_remove_all(comboBoxText);
@@ -575,7 +577,8 @@ void fillUserComboList(GtkComboBoxText *comboBoxText) {
 // Fill the combo list of the classes
 void fillClassComboList(GtkComboBoxText *comboBoxText) {
     char *classList;
-    listClasses(&classList); // classList = n * "id|name|year|apprenticeship|major|user(first_name + last_name)|user_fk|sanction(name)|sanction_fk;\n"
+    listClasses(
+            &classList); // classList = n * "id|name|year|apprenticeship|major|user(first_name + last_name)|user_fk|sanction(name)|sanction_fk;\n"
 
     int nbClass = 0, i;
     // result: address of the first character of the classList string, used as a cursor
@@ -706,9 +709,10 @@ void GTKListStudents() {
     // Flush the previous data from the tree store
     gtk_tree_store_clear(widgets->view_students->students_tree_store);
 
-    char *students, *result, *firstAddress;
+    char *students, *result, *firstAddress, *buffer;
     int nbStudents = 0;
-    listStudents(&students); // students = n * "id|first_name|last_name|photo|email|bad_code(count)|nb_bottles|class(name)|class_fk;\n"
+    listStudents(
+            &students); // students = n * "id|first_name|last_name|photo|email|bad_code(count)|nb_bottles|class(name)|class_fk;\n"
     firstAddress = students;
     result = students;       // result: address of the first character of the students string, used as a cursor
     GtkTreeIter iter;        // row pointer
@@ -727,7 +731,7 @@ void GTKListStudents() {
         // ID
         result = strchr(students, '|');             // result = position of the first | of the row
         size_t columnSize = result - students;      // difference between the first character and the first '|'
-        char *buffer = malloc(columnSize + 1);      // allocate memory for the string
+        buffer = malloc(columnSize + 1);      // allocate memory for the string
         strncpy(buffer, students, columnSize);      // copy column content into variable
         buffer[columnSize] = '\0';                  // add \0 on the last character
         // Fill the first column (0) of the new line the with the ID
@@ -804,8 +808,8 @@ void GTKListStudents() {
         buffer[columnSize] = '\0';
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 8, atoi(buffer), -1);
         students += columnSize + 2; // +2 for ";\n": move to the next row
+        free(buffer);
     }
-    /// TODO: freebuffer ?
     free(firstAddress);
 }
 
@@ -843,7 +847,7 @@ void GTKEditStudent(int id) {
 }
 
 void GTKEditStudentSubmit() {
-                     // check if all the fields are filled
+    // check if all the fields are filled
     int returnCode = GTKEditStudentSubmitCheckRequiredField() ||
                      updateStudent(atoi(gtk_label_get_text(widgets->view_students->edit_student_id)),
                                    gtk_entry_get_text(widgets->view_students->edit_student_first_name),
@@ -1065,9 +1069,10 @@ void GTKListClasses() {
     // Flush the previous data from the tree store
     gtk_tree_store_clear(widgets->view_classes->classes_tree_store);
 
-    char *classes, *result, *firstAddress;
+    char *classes, *result, *firstAddress, *buffer;
     int nbClasses = 0;
-    listClasses(&classes);  // classes = n * "id|name|year|apprenticeship|major|user(first_name + last_name)|user_fk|sanction(name)|sanction_fk;\n"
+    listClasses(
+            &classes);  // classes = n * "id|name|year|apprenticeship|major|user(first_name + last_name)|user_fk|sanction(name)|sanction_fk;\n"
     firstAddress = classes;
     result = classes;       // result: address of the first character of the classes string, used as a cursor
     GtkTreeIter iter;       // row pointer
@@ -1086,7 +1091,7 @@ void GTKListClasses() {
         // ID
         result = strchr(classes, '|');          // result = position of the first | of the row
         size_t columnSize = result - classes;   // difference between the first character and the first '|'
-        char *buffer = malloc(columnSize + 1);  // allocate memory for the string
+        buffer = malloc(columnSize + 1);  // allocate memory for the string
         strncpy(buffer, classes, columnSize);   // copy column content into variable
         buffer[columnSize] = '\0';              // add \0 on the last character
         // Fill the first column (0) of the new line the with the ID
@@ -1179,9 +1184,9 @@ void GTKListClasses() {
         buffer[columnSize] = '\0';
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 8, atoi(buffer), -1);
         classes += columnSize + 2; // +2 for ";\n": move to the next row
+        free(buffer);
 
     }
-    /// TODO: freebuffer ?
     free(firstAddress);
 }
 
@@ -1291,7 +1296,8 @@ void GTKClassGetData(int id, char **name, char **year, int *apprenticeship, char
 void GTKEditClassSubmit() {
     // check if the required fields have been correctly filled then SQL update: 0 if OK
     int returnCode = GTKEditClassSubmitCheckRequiredField() ||
-                     updateClass(atoi(gtk_label_get_text(widgets->view_classes->edit_class_id)), // get class id from invisible label on the view
+                     updateClass(atoi(gtk_label_get_text(
+                             widgets->view_classes->edit_class_id)), // get class id from invisible label on the view
                                  gtk_entry_get_text(widgets->view_classes->edit_class_name),
                                  gtk_entry_get_text(widgets->view_classes->edit_class_major),
                                  atoi(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))),
@@ -2918,14 +2924,16 @@ void connectWidgets() {
 // Hide or displays the search entry on a view
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
     if (visible) { // if TRUE
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162, 161); // moving the menu to the right
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162,
+                       161); // moving the menu to the right
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), TRUE); // set the search bar visible
         gtk_tree_view_set_search_entry(treeView, GTK_ENTRY(widgets->search_entry)); // set the search
         gtk_entry_set_text(GTK_ENTRY(widgets->search_entry), ""); // flush the text in the search bar
         gtk_entry_set_placeholder_text(GTK_ENTRY(widgets->search_entry), placeholder); // fill it with placeholder text
     } else { // if FALSE
         gtk_widget_set_visible(GTK_WIDGET(widgets->search_entry), FALSE); // hide the search bar
-        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 85, 161); // place the search bar to the correct place
+        gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 85,
+                       161); // place the search bar to the correct place
     }
 }
 
@@ -2944,14 +2952,14 @@ void GTKSaveFile(char *path) {
                                          "Save",
                                          GTK_RESPONSE_ACCEPT,
                                          NULL);
-    chooser = GTK_FILE_CHOOSER (dialog);
+    chooser = GTK_FILE_CHOOSER(dialog);
 
     gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
 
 
     gtk_file_chooser_set_filename(chooser, path);
 
-    res = gtk_dialog_run(GTK_DIALOG (dialog));
+    res = gtk_dialog_run(GTK_DIALOG(dialog));
     if (res == GTK_RESPONSE_ACCEPT) {
         char *filename;
 

@@ -214,7 +214,8 @@ void getUser(char **data, int id) {
     // Column 1 (email)
     rowStringSize += sqlite3_column_bytes(pStmt, 1) + 1;
     result = realloc(result, rowStringSize);
-    strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt, 1)); // If NULL, empty string
+    strcat(result, sqlite3_column_text(pStmt, 1) == NULL ? "" : (char *) sqlite3_column_text(pStmt,
+                                                                                             1)); // If NULL, empty string
     strcat(result, "|");
     // Column 2 (first_name)
     rowStringSize += sqlite3_column_bytes(pStmt, 2) + 1;
