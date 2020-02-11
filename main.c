@@ -18,14 +18,20 @@ int showConsole = 0;
 
 int main(int argc, char **argv) {
 
+    // Read the configuration file and fill the global variables
     readConf();
+
+    // Display or hide the console window, depending on the config variable showConsole
+    ///TODO: pourquoi pas appeler la fonction GTKShowConsole()?
     HWND hWnd = GetConsoleWindow();
     if (showConsole) {
         ShowWindow(hWnd, SW_SHOW);
-        ShowWindow(hWnd, SW_MINIMIZE);
+        ShowWindow(hWnd, SW_MINIMIZE); ///TODO: pourquoi minimiser ici et pas dans la fonction?
     } else {
         ShowWindow(hWnd, SW_HIDE);
     }
+
+    // Open the app and run the main loop / program
     dashboardGTK(&argc, &argv);
 
     free(dbname);
@@ -33,6 +39,7 @@ int main(int argc, char **argv) {
     free(storageFolder);
     free(darkThemePath);
     free(defaultThemePath);
+
     printf("Exit program");
     return EXIT_SUCCESS;
 }
