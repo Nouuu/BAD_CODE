@@ -69,7 +69,7 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
     }
 }
 
-// Called when clicking on the menu button + Force the stack detection when opening the app
+// Called when clicking on the menu button + force the stack detection when opening the app
 void on_menu_stack_switcher_visible_child_notify(GtkStackSwitcher *stackSwitcher) {
     // check if there's a stack to retrieve
     if (gtk_stack_switcher_get_stack(stackSwitcher) != NULL) {
@@ -511,8 +511,8 @@ guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
 
     if (gtk_tree_model_get_iter(model, &iter, path)) { // iter = the activated line in the treeview
-        gtk_tree_model_get(model, &iter, 0, &int_data, -1); // gets the value of the column 0 (id)
-        return int_data; // returns the id of the item
+        gtk_tree_model_get(model, &iter, 0, &int_data, -1); // get the value of the column 0 (id)
+        return int_data; // return the id of the item
     } else {
         fprintf(stderr, "Error: selected column not found!\n");
         return EXIT_FAILURE;
@@ -525,45 +525,46 @@ guint get_id_row_selected(GtkTreeSelection *selection) {
     GtkTreeModel *model;
     GtkTreeIter iter;
     if (gtk_tree_selection_get_selected(selection, &model, &iter)) { // iter = the selected line in the treeview
-        gtk_tree_model_get(model, &iter, 0, &int_data, -1); // gets the value of the column 0 (id)
+        gtk_tree_model_get(model, &iter, 0, &int_data, -1); // get the value of the column 0 (id)
     }
-    return int_data; // returns the id of the item
+    return int_data; // return the id of the item
 }
 
+// Fill the combo list of the app users
 void fillUserComboList(GtkComboBoxText *comboBoxText) {
     char *user;
-    getUser(&user, 1);
+    getUser(&user, 1); // user = "id|email|first_name|last_name|photo|birthdate;\n" (ID = 1)
     size_t columnSize, nameSize;
     char *firstAdress = user, *nameBuffer, *idBuffer;
 
-    //ID
-    columnSize = strchr(user, '|') - user;
-    idBuffer = malloc(columnSize + 1);
-    strncpy(idBuffer, user, columnSize);
-    idBuffer[columnSize] = '\0';
+    // Get ID string
+    columnSize = strchr(user, '|') - user;  // difference between the first character and the first '|'
+    idBuffer = malloc(columnSize + 1);      // allocate memory + 1 for \0
+    strncpy(idBuffer, user, columnSize);    // copy column content into variable
+    idBuffer[columnSize] = '\0';            // add \0 on the last character
 
-    user += columnSize + 1;
+    user += columnSize + 1;                 // move the cursor behind the pipe to the next column (email)
+    user += strchr(user, '|') - user + 1;   // move the cursor behind the pipe to the next column (first name)
 
-    //EMAIL
-    user += strchr(user, '|') - user + 1;
-
-    //FIRST_NAME
+    // Get firstname string
     columnSize = strchr(user, '|') - user;
     nameBuffer = malloc(columnSize + 1);
     strncpy(nameBuffer, user, columnSize);
     nameBuffer[columnSize] = '\0';
 
-    user += columnSize + 1;
+    user += columnSize + 1;                 // move the cursor behind the pipe to the next column (last name)
 
-    //LAST_NAME
+    // Get last name string
     columnSize = strchr(user, '|') - user;
-    nameBuffer = realloc(nameBuffer, strlen(nameBuffer) + columnSize + 1);
-    strcat(nameBuffer, " ");
-    nameSize = strlen(nameBuffer);
-    strncat(nameBuffer, user, columnSize);
-    nameBuffer[columnSize + nameSize] = '\0';
+    nameBuffer = realloc(nameBuffer, strlen(nameBuffer) + columnSize + 2); // full size = firstname + ' ' + lastname
+    strcat(nameBuffer, " ");                // concatenate space character
+    nameSize = strlen(nameBuffer);          // size of the complete name
+    strncat(nameBuffer, user, columnSize);  // concatenate the content of column into the name string
+    nameBuffer[columnSize + nameSize] = '\0'; ///TODO
 
+    // Flush all previous data from the combo box
     gtk_combo_box_text_remove_all(comboBoxText);
+    // Fill the table with user data: name (visible) + id (invisible)
     gtk_combo_box_text_append(comboBoxText, idBuffer, nameBuffer);
 
     free(idBuffer);
@@ -571,48 +572,48 @@ void fillUserComboList(GtkComboBoxText *comboBoxText) {
     free(firstAdress);
 }
 
+// Fill the combo list of the classes
 void fillClassComboList(GtkComboBoxText *comboBoxText) {
     char *classList;
-    listClasses(&classList);
+    listClasses(&classList); // classList = n * "id|name|year|apprenticeship|major|user(first_name + last_name)|user_fk|sanction(name)|sanction_fk;\n"
 
     int nbClass = 0, i;
+    // result: address of the first character of the classList string, used as a cursor
     char *result = classList, *firstAdress = classList, *nameBuffer, *idBuffer;
     size_t columnSize;
 
-    // Flushing all data from the combo box
+    // Flush all previous data from the combo box
     gtk_combo_box_text_remove_all(comboBoxText);
 
-    // Counting the number of rows : a row ends with ";\n";
+    // Count the number of rows (ends with ";\n")
     while ((result = strstr(result, ";\n"))) {
         nbClass++;
-        result++; // moving the cursor to avoid infinite loop
+        result++; // move the cursor to the character after ";" to avoid infinite loop
     }
 
     for (i = 0; i < nbClass; ++i) {
-        //ID
-        result = strchr(classList, '|'); // result = position of the |
-        columnSize = result - classList; // getting the size of the column string
-        idBuffer = malloc(columnSize + 1); // allocating memory for the string
+        // Get ID string
+        result = strchr(classList, '|');    // result = position of the first | of the row
+        columnSize = result - classList;    // difference between the first character and the first '|'
+        idBuffer = malloc(columnSize + 1);  // allocate memory for the string
+        strncpy(idBuffer, classList, columnSize); // copy column content into variable
+        idBuffer[columnSize] = '\0';        // add \0 on the last character
+        classList += columnSize + 1;        // move the cursor behind the pipe to the next column
 
-        strncpy(idBuffer, classList, columnSize);
-        idBuffer[columnSize] = '\0'; // idBuffer = 'id\0'
-        classList += columnSize + 1; // moving the cursor behind the pipe
-
-        //NAME
+        // Get name string
         result = strchr(classList, '|');
         columnSize = result - classList;
         nameBuffer = malloc(columnSize + 1);
-
         strncpy(nameBuffer, classList, columnSize);
         nameBuffer[columnSize] = '\0';
 
-        // Filling the table: name (visible) + id (invisible)
+        // Fill the table with class data: name (visible) + id (invisible)
         gtk_combo_box_text_append(comboBoxText, idBuffer, nameBuffer);
 
         // The other columns are not important: getting to the end of the line + 2 to move to the next line
         classList = strstr(classList, ";\n") + 2;
 
-        // Flushing the data in the buffers to restart the process
+        // Flush the data in the buffers to restart the process
         free(idBuffer);
         free(nameBuffer);
     }
@@ -620,45 +621,50 @@ void fillClassComboList(GtkComboBoxText *comboBoxText) {
     free(firstAdress);
 }
 
+// Fill the combo list of the sanctions
 void fillSanctionComboList(GtkComboBoxText *comboBoxText) {
     char *sanctionsList;
-    listSanctions(&sanctionsList);
+    listSanctions(&sanctionsList); // sanctionsList = n * "id|name|description|user(first_name + last_name)|user_fk;\n"
 
     int nbSanctions = 0, i;
+    // result: address of the first character of the classList string, used as a cursor
     char *result = sanctionsList, *firstAdress = sanctionsList, *nameBuffer, *idBuffer;
     size_t columnSize;
 
-
+    // Flush all previous data from the combo box
     gtk_combo_box_text_remove_all(comboBoxText);
+
+    // Add first entry to the combo list
     gtk_combo_box_text_append(comboBoxText, "0", "None");
 
-
+    // Count the number of rows (ends with ";\n")
     while ((result = strstr(result, ";\n"))) {
         nbSanctions++;
-        result++;
+        result++;   // moving the cursor behind ";" to avoid infinite loop
     }
 
     for (i = 0; i < nbSanctions; ++i) {
-        //ID
-        result = strchr(sanctionsList, '|');
-        columnSize = result - sanctionsList;
-        idBuffer = malloc(columnSize + 1);
+        // Get ID string
+        result = strchr(sanctionsList, '|');    // result = position of the first | of the row
+        columnSize = result - sanctionsList;    // difference between the first character and the first '|'
+        idBuffer = malloc(columnSize + 1);      // allocating memory for the string
+        strncpy(idBuffer, sanctionsList, columnSize); // copying column content into variable
+        idBuffer[columnSize] = '\0';            // adding \0 on the last character
+        sanctionsList += columnSize + 1;        // moving the cursor behind the pipe to the next column
 
-        strncpy(idBuffer, sanctionsList, columnSize);
-        idBuffer[columnSize] = '\0';
-        sanctionsList += columnSize + 1;
-
-        //NAME
+        // Get name string
         result = strchr(sanctionsList, '|');
         columnSize = result - sanctionsList;
         nameBuffer = malloc(columnSize + 1);
-
         strncpy(nameBuffer, sanctionsList, columnSize);
         nameBuffer[columnSize] = '\0';
 
+        // Fill the table with sanction data: name (visible) + id (invisible)
         gtk_combo_box_text_append(comboBoxText, idBuffer, nameBuffer);
 
+        // The other columns are not important: getting to the end of the line + 2 to move to the next line
         sanctionsList = strstr(sanctionsList, ";\n") + 2;
+
         free(idBuffer);
         free(nameBuffer);
     }
@@ -666,160 +672,144 @@ void fillSanctionComboList(GtkComboBoxText *comboBoxText) {
     free(firstAdress);
 }
 
+// Fill the combo list of the deliverable status
 void fillStatusComboList(GtkComboBoxText *comboBoxText, char *status) {
+    // Flush all previous data from the combo box
     gtk_combo_box_text_remove_all(comboBoxText);
 
+    // Add entries in combo list: ID (invisible) + name (visible)
     gtk_combo_box_text_append(comboBoxText, "1", "To do");
+    gtk_combo_box_text_append(comboBoxText, "2", "Completed");
+    gtk_combo_box_text_append(comboBoxText, "3", "On hold");
+    gtk_combo_box_text_append(comboBoxText, "4", "Checking");
+    gtk_combo_box_text_append(comboBoxText, "5", "Waiting deliverable");
+
+    // Display the entry list matching the deliverable status
     if (!strcmp(status, "To do"))
         gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "1");
-
-    gtk_combo_box_text_append(comboBoxText, "2", "Completed");
     if (!strcmp(status, "Completed"))
         gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "2");
-
-    gtk_combo_box_text_append(comboBoxText, "3", "On hold");
     if (!strcmp(status, "On hold"))
         gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "3");
-
-    gtk_combo_box_text_append(comboBoxText, "4", "Checking");
     if (!strcmp(status, "Checking"))
         gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "4");
-
-    gtk_combo_box_text_append(comboBoxText, "5", "Waiting deliverable");
     if (!strcmp(status, "Waiting deliverable"))
         gtk_combo_box_set_active_id(GTK_COMBO_BOX(comboBoxText), "5");
-
 }
 
+// Display the student list view + update the request
 void GTKListStudents() {
-    // Set the correct "sub-page" visible
+    // Display the student list view
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->view_students_fixed);
+
+    // Flush the previous data from the tree store
+    gtk_tree_store_clear(widgets->view_students->students_tree_store);
+
     char *students, *result, *firstAddress;
     int nbStudents = 0;
-    // Filling the students string with the listStudents function
-    listStudents(&students);
+    listStudents(&students); // students = n * "id|first_name|last_name|photo|email|bad_code(count)|nb_bottles|class(name)|class_fk;\n"
     firstAddress = students;
-    result = students;
+    result = students;       // result: address of the first character of the students string, used as a cursor
+    GtkTreeIter iter;        // row pointer
 
     // Counting the number of students
     while ((result = strstr(result, ";\n"))) {
         nbStudents++;
-        result++; // moving the cursor to avoid infinite loop
+        result++;           // move the cursor behind ";" to avoid infinite loop
     }
 
-    GtkTreeIter iter;
-
-    // Flushing the data to restart the listing process (updating the tree view)
-    gtk_tree_store_clear(widgets->view_students->students_tree_store);
-
-    // Filling the three view
+    // Fill the tree view
     for (int i = 0; i < nbStudents; ++i) {
-        // Creating a new line, identified by "iter"
+        // Create a new row, pointed by "iter"
         gtk_tree_store_append(widgets->view_students->students_tree_store, &iter, NULL);
 
-        /* ID */
-        result = strchr(students, '|');
-        size_t columnSize = result - students;
-        char *buffer = malloc(columnSize + 1);
-        strncpy(buffer, students, columnSize);
-        buffer[columnSize] = '\0';
-
-        // Filling the first column (0) of the new line the with the ID
+        // ID
+        result = strchr(students, '|');             // result = position of the first | of the row
+        size_t columnSize = result - students;      // difference between the first character and the first '|'
+        char *buffer = malloc(columnSize + 1);      // allocate memory for the string
+        strncpy(buffer, students, columnSize);      // copy column content into variable
+        buffer[columnSize] = '\0';                  // add \0 on the last character
+        // Fill the first column (0) of the new line the with the ID
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 0, atoi(buffer), -1);
-        students += columnSize + 1; // +1 to get past the pipe
+        students += columnSize + 1;                 // move the cursor behind the pipe to the next column
+        free(buffer);                               // liberating memory for next column
 
-        //FIRST_NAME
-        free(buffer);
+        // FIRST_NAME
         result = strchr(students, '|');
         columnSize = result - students;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 1, buffer, -1);
         students += columnSize + 1;
-
-        //LAST_NAME
         free(buffer);
+
+        // LAST_NAME
         result = strchr(students, '|');
         columnSize = result - students;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 2, buffer, -1);
         students += columnSize + 1;
-
-        students += strchr(students, '|') - students + 1;
-
-        //EMAIL
+        students += strchr(students, '|') - students + 1; // move behind photo column
         free(buffer);
+
+        // EMAIL
         result = strchr(students, '|');
         columnSize = result - students;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 4, buffer, -1);
         students += columnSize + 1;
-
-        //BAD_CODE
         free(buffer);
+
+        // BAD_CODE
         result = strchr(students, '|');
         columnSize = result - students;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 5, atoi(buffer), -1);
         students += columnSize + 1;
+        free(buffer);
 
         //NB_BOTTLES
-        free(buffer);
         result = strchr(students, '|');
         columnSize = result - students;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 6, atoi(buffer), -1);
         students += columnSize + 1;
+        free(buffer);
 
         //CLASS
-        free(buffer);
         result = strchr(students, '|');
         columnSize = result - students;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 7, buffer, -1);
         students += columnSize + 1;
+        free(buffer);
 
         //CLASS_FK
-        free(buffer);
         result = strstr(students, ";\n");
         columnSize = result - students;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, students, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_students->students_tree_store, &iter, 8, atoi(buffer), -1);
-        students += columnSize + 2; // +2 : ;\n
+        students += columnSize + 2; // +2 for ";\n": move to the next row
     }
-
+    /// TODO: freebuffer ?
     free(firstAddress);
 }
 
-// Displaying the content of the edit page
+// Display the content of the edit page
 void GTKEditStudent(int id) {
     gtk_stack_set_visible_child(widgets->view_students->view_students_stack,
                                 widgets->view_students->edit_student_fixed);
@@ -1069,65 +1059,65 @@ int GTKCreateStudentSubmitCheckRequiredField() {
 }
 
 void GTKListClasses() {
+    // Display the classes list view
     gtk_stack_set_visible_child(widgets->view_classes->view_classes_stack, widgets->view_classes->view_classes_fixed);
-    char *classes, *result, *firstAddress;
-    int nbClasses = 0;
-    listClasses(&classes);
-    firstAddress = classes;
-    result = classes;
 
-    while ((result = strstr(result, ";\n"))) {
-        nbClasses++;
-        result++;
-    }
-
-    GtkTreeIter iter;
+    // Flush the previous data from the tree store
     gtk_tree_store_clear(widgets->view_classes->classes_tree_store);
 
+    char *classes, *result, *firstAddress;
+    int nbClasses = 0;
+    listClasses(&classes);  // classes = n * "id|name|year|apprenticeship|major|user(first_name + last_name)|user_fk|sanction(name)|sanction_fk;\n"
+    firstAddress = classes;
+    result = classes;       // result: address of the first character of the classes string, used as a cursor
+    GtkTreeIter iter;       // row pointer
+
+    // Count the number of classes
+    while ((result = strstr(result, ";\n"))) {
+        nbClasses++;
+        result++;           // move the cursor behind ";" to avoid infinite loop
+    }
+
+    // Fill the tree view
     for (int i = 0; i < nbClasses; ++i) {
+        // Create a new row, pointed by "iter"
         gtk_tree_store_append(widgets->view_classes->classes_tree_store, &iter, NULL);
 
-        //ID
-        result = strchr(classes, '|');
-        size_t columnSize = result - classes;
-        char *buffer = malloc(columnSize + 1);
-
-        strncpy(buffer, classes, columnSize);
-        buffer[columnSize] = '\0';
-
+        // ID
+        result = strchr(classes, '|');          // result = position of the first | of the row
+        size_t columnSize = result - classes;   // difference between the first character and the first '|'
+        char *buffer = malloc(columnSize + 1);  // allocate memory for the string
+        strncpy(buffer, classes, columnSize);   // copy column content into variable
+        buffer[columnSize] = '\0';              // add \0 on the last character
+        // Fill the first column (0) of the new line the with the ID
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 0, atoi(buffer), -1);
-        classes += columnSize + 1;
+        classes += columnSize + 1;              // move the cursor behind the pipe to the next column
+        free(buffer);                           // liberating memory for next column
 
-        //NAME
-        free(buffer);
+        // NAME
         result = strchr(classes, '|');
         columnSize = result - classes;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, classes, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 1, buffer, -1);
         classes += columnSize + 1;
-
-        //YEAR
         free(buffer);
+
+        // YEAR
         result = strchr(classes, '|');
         columnSize = result - classes;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, classes, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 2, atoi(buffer), -1);
         classes += columnSize + 1;
-
-        //APPRENTICESHIP
         free(buffer);
+
+        // APPRENTICESHIP
         result = strchr(classes, '|');
         columnSize = result - classes;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, classes, columnSize);
         buffer[columnSize] = '\0';
         if (!strcmp(buffer, "1")) {
@@ -1137,72 +1127,61 @@ void GTKListClasses() {
             buffer = realloc(buffer, 3 * sizeof(char));
             strcpy(buffer, "No");
         }
-
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 3, buffer, -1);
         classes += columnSize + 1;
-
-        //MAJOR
         free(buffer);
+
+        // MAJOR
         result = strchr(classes, '|');
         columnSize = result - classes;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, classes, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 4, buffer, -1);
         classes += columnSize + 1;
-
-        //USER
         free(buffer);
+
+        // USER
         result = strchr(classes, '|');
         columnSize = result - classes;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, classes, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 5, buffer, -1);
         classes += columnSize + 1;
+        free(buffer);
 
         //USER_FK
-        free(buffer);
         result = strchr(classes, '|');
         columnSize = result - classes;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, classes, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 6, atoi(buffer), -1);
         classes += columnSize + 1;
+        free(buffer);
 
         //SANCTION
-        free(buffer);
         result = strchr(classes, '|');
         columnSize = result - classes;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, classes, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 7, buffer, -1);
         classes += columnSize + 1;
+        free(buffer);
 
         //SANCTION_FK
-        free(buffer);
         result = strstr(classes, ";\n");
         columnSize = result - classes;
         buffer = malloc(columnSize + 1);
-
         strncpy(buffer, classes, columnSize);
         buffer[columnSize] = '\0';
-
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 8, atoi(buffer), -1);
-        classes += columnSize + 2;
+        classes += columnSize + 2; // +2 for ";\n": move to the next row
 
     }
-
+    /// TODO: freebuffer ?
     free(firstAddress);
 }
 
