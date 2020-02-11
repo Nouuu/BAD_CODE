@@ -1185,7 +1185,6 @@ void GTKListClasses() {
         gtk_tree_store_set(widgets->view_classes->classes_tree_store, &iter, 8, atoi(buffer), -1);
         classes += columnSize + 2; // +2 for ";\n": move to the next row
         free(buffer);
-
     }
     free(firstAddress);
 }
@@ -1385,7 +1384,7 @@ int GTKCreateClassSubmitCheckRequiredField() {
 void GTKListSanctions() {
     gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
                                 widgets->view_sanctions->view_sanctions_fixed);
-    char *sanctions, *result, *firstAddress;
+    char *sanctions, *result, *firstAddress, *buffer;
     int nbSanctions = 0, i;
     listSanctions(&sanctions);
     firstAddress = sanctions;
@@ -1405,7 +1404,7 @@ void GTKListSanctions() {
         //ID
         result = strchr(sanctions, '|');
         size_t columnSize = result - sanctions;
-        char *buffer = malloc(columnSize + 1);
+        buffer = malloc(columnSize + 1);
 
         strncpy(buffer, sanctions, columnSize);
         buffer[columnSize] = '\0';
@@ -1460,6 +1459,7 @@ void GTKListSanctions() {
 
         gtk_tree_store_set(widgets->view_sanctions->sanctions_tree_store, &iter, 4, atoi(buffer), -1);
         sanctions += columnSize + 2;
+        free(buffer);
     }
     free(firstAddress);
 }
@@ -1653,7 +1653,7 @@ int GTKCreateSanctionSubmitCheckRequiredField(char *textIter) {
 void GTKListDeliverables() {
     gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
                                 widgets->view_deliverables->view_deliverables_fixed);
-    char *deliverables, *result, *firstAddress;
+    char *deliverables, *result, *firstAddress, *buffer;
     int nbdeliverables = 0;
     listDeliverables(&deliverables);
     firstAddress = deliverables;
@@ -1673,7 +1673,7 @@ void GTKListDeliverables() {
         //ID
         result = strchr(deliverables, '|');
         size_t columnSize = result - deliverables;
-        char *buffer = malloc(columnSize + 1);
+        buffer = malloc(columnSize + 1);
 
         strncpy(buffer, deliverables, columnSize);
         buffer[columnSize] = '\0';
@@ -1816,6 +1816,7 @@ void GTKListDeliverables() {
 
         gtk_tree_store_set(widgets->view_deliverables->deliverables_tree_store, &iter, 9, atoi(buffer), -1);
         deliverables += columnSize + 2;
+        free(buffer);
     }
 
     free(firstAddress);
