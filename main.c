@@ -14,7 +14,7 @@ char *darkThemePath = NULL;
 char *defaultThemePath = NULL;
 char *configFile = "../config.ini";
 int darkTheme = -1;
-int showConsole = 0;
+int showConsole = -1;
 
 int main(int argc, char **argv) {
 

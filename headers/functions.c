@@ -205,7 +205,7 @@ void readConf() {
     //CONSOLE
     P = strstr(fileString, "[CONSOLE]");
     P = strchr(P, '\n') + 1;
-    sscanf(P, "dark : %d\n", &showConsole);
+    sscanf(P, "show : %d\n", &showConsole);
 
 
     fclose(file);
