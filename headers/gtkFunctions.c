@@ -43,8 +43,8 @@ void on_menu_stack_visible_child_notify(GtkStack *stack) {
         const gchar *menu = gtk_stack_get_visible_child_name(widgets->menu_stack); // Returns the name of the visible menu child
         if (!strcmp(menu, "view_classes")) {
             printf("Classes view\n");
-            setSearchEntry(FALSE, NULL, NULL); // Hide the search bar
-            GTKListClasses(); // Display the list of the classes
+            setSearchEntry(FALSE, NULL, NULL);  // Hide the search bar
+            GTKListClasses();                   // Display the list of the classes
         } else if (!strcmp(menu, "view_students")) {
             printf("Students view\n");
             setSearchEntry(TRUE, widgets->view_students->students_tree_view, "Search by firstname"); // Display the search bar
@@ -88,8 +88,8 @@ void on_classes_view_refresh_button_clicked() {
 void on_classes_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_classes->classes_tree_selection);
     if (int_data) {
-        deleteClass(int_data); // delete class and set class = null for students
-        GTKListClasses(); // get back to the updated list
+        deleteClass(int_data);  // delete class and set class = null for students
+        GTKListClasses();       // get back to the updated list
     }
     printf("ID of deleted class: %d\n", int_data);
 }
@@ -134,8 +134,8 @@ void on_students_view_refresh_button_clicked() {
 void on_students_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        deleteStudent(int_data);  // remove from database + all related files and folders
-        GTKListStudents();       // get back to the updated list
+        deleteStudent(int_data);    // remove from database + all related files and folders
+        GTKListStudents();          // get back to the updated list
     }
     printf("Delete student ID: %d\n", int_data);
 }
@@ -151,7 +151,7 @@ void on_students_view_remove_bottle_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
         addStudentBottle(int_data, -1); // remove 1 bottle from student's total
-        GTKListStudents(); // get back to the updated list of students
+        GTKListStudents();              // get back to the updated list of students
     }
     printf("Remove bottle student ID: %d\n", int_data);
 }
@@ -160,8 +160,8 @@ void on_students_view_remove_bottle_button_clicked() {
 void on_students_view_add_bottle_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_students->students_tree_selection);
     if (int_data) {
-        addStudentBottle(int_data, 1); // add 1 bottle to student's total
-        GTKListStudents(); // get back to the updated list of students
+        addStudentBottle(int_data, 1);  // add 1 bottle to student's total
+        GTKListStudents();              // get back to the updated list of students
     }
     printf("Add bottle student ID: %d\n", int_data);
 }
@@ -262,8 +262,8 @@ void on_deliverables_view_refresh_button_clicked() {
 void on_deliverables_view_delete_button_clicked() {
     guint int_data = get_id_row_selected(widgets->view_deliverables->deliverables_tree_selection);
     if (int_data) {
-        deleteDeliverable(int_data); // deleting all the related files + sql updated
-        GTKListDeliverables(); // get back to updated list
+        deleteDeliverable(int_data);    // deleting all the related files + sql updated
+        GTKListDeliverables();          // get back to updated list
     }
     printf("ID of deleted deliverable: %d\n", int_data);
 }
@@ -303,7 +303,7 @@ void on_deliverable_create_return_button_clicked() {
 
 // Called when clicking the "submit" button on the deliverable creation view
 void on_deliverable_create_submit_button_clicked() {
-    printf("Submit deliverable create\n");
+    printf("Submitting deliverable creation.\n");
     GTKCreateDelivreablesSubmit(); // create the deliverable and get back to the updated list
 }
 
@@ -380,21 +380,21 @@ void on_edit_deliverable_deliverable_file_download_clicked() {
 
 // Called when clicking on the cancel button next to the audio file file chooser
 void on_create_deliverable_audio_clear_clicked() {
-    printf("Clear audio\n");
+    printf("Clearing audio.\n");
     // empty the file chooser
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_audio));
 }
 
 // Called when clicking on the cancel button next to the video file file chooser
 void on_create_deliverable_video_clear_clicked() {
-    printf("Clear video\n");
+    printf("Clearing video.\n");
     // empty the file chooser
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_video));
 }
 
 // Called when clicking on the cancel button next to the bad code file file chooser
 void on_create_deliverable_bad_code_clear_clicked() {
-    printf("Clear bad_code\n");
+    printf("Clearing bad_code.\n");
     // empty the file chooser
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->create_deliverable_bad_code));
 }
@@ -418,7 +418,7 @@ void on_view_user_image_file_picker_file_set() {
         fprintf(stderr, "Can't use this image\n");
     else {
         printf("Image changed\n");
-        GTKViewUser(); // get back to user view
+        GTKViewUser(); // get back to user view with updated image
     }
 }
 
@@ -461,7 +461,7 @@ void on_view_settings_show_terminal_button_state_set() {
 // Called when clicking the "apply" button on the settings edition view
 void on_view_settings_submit_button_clicked() {
     printf("Submitting settings.\n");
-    GTKViewSettingsSubmit(); // Update the global variables with the content of the settings edition view
+    GTKViewSettingsSubmit(); // Update global variables with content of the settings edition view + write new conf file
 }
 
 // Called when clicking the "refresh" button next to the storage file chooser
@@ -510,9 +510,9 @@ guint get_id_row_activated(GtkTreeView *tree_view, GtkTreePath *path) {
     GtkTreeIter iter;
     GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
 
-    if (gtk_tree_model_get_iter(model, &iter, path)) { // iter = the activated line in the treeview
+    if (gtk_tree_model_get_iter(model, &iter, path)) {      // iter = the activated line in the treeview (path)
         gtk_tree_model_get(model, &iter, 0, &int_data, -1); // get the value of the column 0 (id)
-        return int_data; // return the id of the item
+        return int_data;                                    // return the id of the item
     } else {
         fprintf(stderr, "Error: selected column not found!\n");
         return EXIT_FAILURE;
@@ -525,9 +525,9 @@ guint get_id_row_selected(GtkTreeSelection *selection) {
     GtkTreeModel *model;
     GtkTreeIter iter;
     if (gtk_tree_selection_get_selected(selection, &model, &iter)) { // iter = the selected line in the treeview
-        gtk_tree_model_get(model, &iter, 0, &int_data, -1); // get the value of the column 0 (id)
+        gtk_tree_model_get(model, &iter, 0, &int_data, -1);          // get the value of the column 0 (id)
     }
-    return int_data; // return the id of the item
+    return int_data;
 }
 
 // Fill the combo list of the app users
@@ -560,7 +560,7 @@ void fillUserComboList(GtkComboBoxText *comboBoxText) {
     strcat(nameBuffer, " ");                // concatenate space character
     nameSize = strlen(nameBuffer);          // size of the complete name
     strncat(nameBuffer, user, columnSize);  // concatenate the content of column into the name string
-    nameBuffer[columnSize + nameSize] = '\0'; ///TODO
+    nameBuffer[columnSize + nameSize] = '\0';
 
     // Flush all previous data from the combo box
     gtk_combo_box_text_remove_all(comboBoxText);
@@ -593,12 +593,12 @@ void fillClassComboList(GtkComboBoxText *comboBoxText) {
 
     for (i = 0; i < nbClass; ++i) {
         // Get ID string
-        result = strchr(classList, '|');    // result = position of the first | of the row
-        columnSize = result - classList;    // difference between the first character and the first '|'
-        idBuffer = malloc(columnSize + 1);  // allocate memory for the string
-        strncpy(idBuffer, classList, columnSize); // copy column content into variable
-        idBuffer[columnSize] = '\0';        // add \0 on the last character
-        classList += columnSize + 1;        // move the cursor behind the pipe to the next column
+        result = strchr(classList, '|');            // result = position of the first | of the row
+        columnSize = result - classList;            // difference between the first character and the first '|'
+        idBuffer = malloc(columnSize + 1);          // allocate memory for the string
+        strncpy(idBuffer, classList, columnSize);   // copy column content into variable
+        idBuffer[columnSize] = '\0';                // add \0 on the last character
+        classList += columnSize + 1;                // move the cursor behind the pipe to the next column
 
         // Get name string
         result = strchr(classList, '|');
@@ -617,7 +617,6 @@ void fillClassComboList(GtkComboBoxText *comboBoxText) {
         free(idBuffer);
         free(nameBuffer);
     }
-
     free(firstAdress);
 }
 
@@ -645,12 +644,12 @@ void fillSanctionComboList(GtkComboBoxText *comboBoxText) {
 
     for (i = 0; i < nbSanctions; ++i) {
         // Get ID string
-        result = strchr(sanctionsList, '|');    // result = position of the first | of the row
-        columnSize = result - sanctionsList;    // difference between the first character and the first '|'
-        idBuffer = malloc(columnSize + 1);      // allocating memory for the string
-        strncpy(idBuffer, sanctionsList, columnSize); // copying column content into variable
-        idBuffer[columnSize] = '\0';            // adding \0 on the last character
-        sanctionsList += columnSize + 1;        // moving the cursor behind the pipe to the next column
+        result = strchr(sanctionsList, '|');            // result = position of the first | of the row
+        columnSize = result - sanctionsList;            // difference between the first character and the first '|'
+        idBuffer = malloc(columnSize + 1);              // allocating memory for the string
+        strncpy(idBuffer, sanctionsList, columnSize);   // copying column content into variable
+        idBuffer[columnSize] = '\0';                    // adding \0 on the last character
+        sanctionsList += columnSize + 1;                // moving the cursor behind the pipe to the next column
 
         // Get name string
         result = strchr(sanctionsList, '|');
@@ -668,7 +667,6 @@ void fillSanctionComboList(GtkComboBoxText *comboBoxText) {
         free(idBuffer);
         free(nameBuffer);
     }
-
     free(firstAdress);
 }
 
@@ -816,17 +814,19 @@ void GTKEditStudent(int id) {
                                 widgets->view_students->edit_student_fixed);
     char *first_name, *last_name, *photo, *email, *bottles, *class, *class_fk, idBuffer[6];
 
-    // Fill the combo list for classes
+    // Fill the classes combo list
     fillClassComboList(widgets->view_students->edit_student_class);
-    // Fill the parameters with results from database request
+
+    // Fill the variables with results from database request
     GTKStudentGetData(id, &first_name, &last_name, &photo, &email, &bottles, &class, &class_fk);
     itoa(id, idBuffer, 10);
 
-    // Displaying the image
+    // Display a scaled version of the student image
     GTKEditStudentImage(photo);
 
+    // Fill entries with request return
     gtk_label_set_text(widgets->view_students->edit_student_id, idBuffer);
-    gtk_widget_set_visible(GTK_WIDGET(widgets->view_students->edit_student_id), FALSE);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_students->edit_student_id), FALSE); // hide the ID label
     gtk_entry_set_text(widgets->view_students->edit_student_first_name, first_name);
     gtk_entry_set_text(widgets->view_students->edit_student_last_name, last_name);
     gtk_entry_set_text(widgets->view_students->edit_student_email, email);
@@ -859,7 +859,7 @@ void GTKEditStudentSubmit() {
     else {
         printf("Student update successful\n");
 
-        // Get back and updating the list view
+        // Update list and get back to list view
         GTKListStudents();
     }
 }
@@ -899,45 +899,45 @@ void GTKStudentGetData(int id, char **first_name, char **last_name, char **photo
     // ID
     studentData += strchr(studentData, '|') - studentData + 1; // id already known, moving to next column
 
-    //FIRST_NAME
+    // FIRST_NAME
     columnSize = strchr(studentData, '|') - studentData;    // difference between the first character and the next '|'
     *first_name = malloc(columnSize + 1);                   // allocate memory for the string
     strncpy(*first_name, studentData, columnSize);          // copy column content into parameter variable
     (*first_name)[columnSize] = '\0';                       // add \0 on the last character
     studentData += columnSize + 1;                          // move the cursor behind the pipe to the next column
 
-    //LAST_NAME
+    // LAST_NAME
     columnSize = strchr(studentData, '|') - studentData;
     *last_name = malloc(columnSize + 1);
     strncpy(*last_name, studentData, columnSize);
     (*last_name)[columnSize] = '\0';
     studentData += columnSize + 1;
 
-    //PHOTO
+    // PHOTO
     columnSize = strchr(studentData, '|') - studentData;
     *photo = malloc(columnSize + 1);
     strncpy(*photo, studentData, columnSize);
     (*photo)[columnSize] = '\0';
     studentData += columnSize + 1;
 
-    //EMAIL
+    // EMAIL
     columnSize = strchr(studentData, '|') - studentData;
     *email = malloc(columnSize + 1);
     strncpy(*email, studentData, columnSize);
     (*email)[columnSize] = '\0';
     studentData += columnSize + 1;
 
-    //BADCODE COUNT
+    // BAD CODE COUNT
     studentData += strchr(studentData, '|') - studentData + 1;  // not interested, moving to next column
 
-    //BOTTLES
+    // BOTTLES
     columnSize = strchr(studentData, '|') - studentData;
     *bottles = malloc(columnSize + 1);
     strncpy(*bottles, studentData, columnSize);
     (*bottles)[columnSize] = '\0';
     studentData += columnSize + 1;
 
-    //CLASS
+    // CLASS
     columnSize = strchr(studentData, '|') - studentData;
     *class = malloc(columnSize + 1);
     strncpy(*class, studentData, columnSize);
@@ -1000,15 +1000,17 @@ void GTKEditStudentImage(char *path) {
 
 // Update the image (database and file)
 int GTKEditStudentSetImage(char *path) {
+    // Check if extension is OK
     if (!checkImageExtension(path))
         return 1;
 
+    // Get ID + insert image path in the database + create the directories/file
     int id = atoi(gtk_label_get_text(widgets->view_students->edit_student_id));
     int returnCode = insertTableImage("student", id, path);
     if (returnCode)
         return 1;
 
-    // Updating the display of the image
+    // Back to edition view with updated image
     GTKEditStudent(id);
 
     return 0;
@@ -1035,6 +1037,7 @@ void GTKCreateStudent() {
 
 // Create new student from edition view data
 void GTKCreateStudentSubmit() {
+    // Get photo path from file chooser
     char *photo_path = gtk_file_chooser_get_filename(
             GTK_FILE_CHOOSER(widgets->view_students->create_student_image_file_picker));
     int returnCode;
@@ -1222,10 +1225,11 @@ void GTKEditClass(int id) {
     fillSanctionComboList(widgets->view_classes->edit_class_sanction);
     fillUserComboList(widgets->view_classes->edit_class_user);
 
-    // Fill the parameters with results from database request
+    // Fill the variables with results from database request
     GTKClassGetData(id, &name, &year, &apprenticeship, &major, &user, &user_fk, &sanction, &sanction_fk);
     itoa(id, idBuffer, 10);
 
+    // Fill entries with request return
     gtk_label_set_text(widgets->view_classes->edit_class_id, idBuffer);
     gtk_widget_set_visible(GTK_WIDGET(widgets->view_classes->edit_class_id), FALSE);
     gtk_entry_set_text(widgets->view_classes->edit_class_name, name);
@@ -1334,22 +1338,24 @@ void GTKEditClassSubmit() {
                                  atoi(gtk_combo_box_get_active_id(
                                          GTK_COMBO_BOX(widgets->view_classes->edit_class_sanction)))
                      );
-    if (returnCode) // if 1
+    if (returnCode)
         fprintf(stderr, "Error, could not update class\n");
-    else {          // if 0
+    else {
         printf("Class update successful\n");
-        GTKListClasses(); // Get back to the refresh list of classes
+        GTKListClasses(); // Get back to updated list of classes
     }
 }
 
 // Check if the required fields have been correctly filled when editing a class
 int GTKEditClassSubmitCheckRequiredField() {
     int returnCode = 0;
+
     // Check if the name is not empty
     if (strlen(gtk_entry_get_text(widgets->view_classes->edit_class_name)) == 0) {
         fprintf(stderr, "Name empty!\n");
         returnCode = 1;
     }
+
     // Check if the year is composed of four characters
     if (strlen(gtk_entry_get_text(GTK_ENTRY(widgets->view_classes->edit_class_year))) != 4) {
         fprintf(stderr, "Year problem: time travel is forbidden!\n");
@@ -1379,7 +1385,7 @@ void GTKCreateClass() {
 
 // Create new class
 void GTKCreateClassSubmit() {
-    // check if the required fields have been correctly filled then SQL insertion: 0 if OK
+    // check if the required fields have been correctly filled then SQL insertion
     int returnCode = GTKCreateClassSubmitCheckRequiredField() ||
                      insertClass(gtk_entry_get_text(widgets->view_classes->create_class_name),
                                  gtk_entry_get_text(widgets->view_classes->create_class_major),
@@ -1391,11 +1397,11 @@ void GTKCreateClassSubmit() {
                                  atoi(gtk_combo_box_get_active_id(
                                          GTK_COMBO_BOX(widgets->view_classes->create_class_sanction))));
 
-    if (returnCode) // if 1
+    if (returnCode)
         fprintf(stderr, "Error, could not create class\n");
-    else {          // if 0
+    else {
         printf("Class create successful\n");
-        GTKListClasses(); // Get back to the updated class list view
+        GTKListClasses(); // Get back to updated class list view
     }
 }
 
@@ -1413,7 +1419,7 @@ int GTKCreateClassSubmitCheckRequiredField() {
     return returnCode;
 }
 
-// Display the sanctions list view + new database request
+// Display the content of sanctions list view + new database request
 void GTKListSanctions() {
     // Display the sanctions list view
     gtk_stack_set_visible_child(widgets->view_sanctions->view_sanctions_stack,
@@ -1509,13 +1515,13 @@ void GTKEditSanction(int id) {
     // Fill user combo list
     fillUserComboList(widgets->view_sanctions->edit_sanction_user);
 
-    ///TODO, textbuffer?
+    // Fill entries with request return
     GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->edit_sanction_description);
     gtk_text_buffer_set_text(textBuffer, description, strlen(description));
     gtk_entry_set_text(widgets->view_sanctions->edit_sanction_name, name);
     gtk_combo_box_set_active_id(GTK_COMBO_BOX(widgets->view_sanctions->edit_sanction_user), user_fk);
     gtk_label_set_text(widgets->view_sanctions->edit_sanction_id, idBuffer);
-    gtk_widget_set_visible(GTK_WIDGET(widgets->view_sanctions->edit_sanction_id), FALSE);
+    gtk_widget_set_visible(GTK_WIDGET(widgets->view_sanctions->edit_sanction_id), FALSE); // hide ID label
 
     free(name);
     free(description);
@@ -1524,11 +1530,10 @@ void GTKEditSanction(int id) {
 }
 
 // Update sanction
-///TODO, textbuffer?
 void GTKEditSanctionSubmit() {
 
     GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->edit_sanction_description);
-    GtkTextIter startIter;
+    GtkTextIter startIter; // Text buffer iterator
     GtkTextIter endIter;
     gtk_text_buffer_get_start_iter(textBuffer, &startIter);
     gtk_text_buffer_get_end_iter(textBuffer, &endIter);
@@ -1653,7 +1658,7 @@ void GTKCreateSanction() {
     // Fill combo list
     fillUserComboList(widgets->view_sanctions->create_sanction_user);
 
-    ///TDODO text buffer?
+    // Set empty strings for text entries and default values
     GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->create_sanction_description);
     gtk_text_buffer_set_text(textBuffer, "", 0);
     gtk_entry_set_text(widgets->view_sanctions->create_sanction_name, "");
@@ -1661,9 +1666,7 @@ void GTKCreateSanction() {
 }
 
 // Create new sanction from edition view
-///TDODO text buffer?
 void GTKCreateSanctionSubmit() {
-
     GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(widgets->view_sanctions->create_sanction_description);
     GtkTextIter startIter;
     GtkTextIter endIter;
@@ -1700,7 +1703,7 @@ int GTKCreateSanctionSubmitCheckRequiredField(char *textIter) {
     return returnCode;
 }
 
-// Display the deliverables list view + update the request
+// Display the content of deliverables list view + update the request
 void GTKListDeliverables() {
     // Display the deliverables list view
     gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
@@ -1869,21 +1872,20 @@ void GTKEditDeliverables(int id) {
     char *due_date, *subject, *audio_record, *video_record, *bad_code, *deliverable_file, *status, *student, *student_fk, *sanction_name, *sanction_description, idBuffer[6];
     itoa(id, idBuffer, 10);
 
-    // Fill the parameters with result from single deliverable database request
+    // Fill the variables with result from single deliverable database request
     GTKDelivreablesGetData(id, &due_date, &subject, &audio_record, &video_record, &bad_code, &deliverable_file, &status,
                            &student, &student_fk, &sanction_name, &sanction_description);
 
-    GTKEditDeliverableSetDueDate(due_date); // Set current due in calendar
+    // Set current due date in calendar
+    GTKEditDeliverableSetDueDate(due_date);
 
     // Fill status combo list
     fillStatusComboList(widgets->view_deliverables->edit_deliverable_status, status);
 
-    ///TODO
+    // Fill entries with request return
     GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(
             widgets->view_deliverables->edit_deliverable_sanction_description);
     gtk_text_buffer_set_text(textBuffer, sanction_description, strlen(sanction_description));
-
-    // Fill entries with request return
     gtk_label_set_text(widgets->view_deliverables->edit_deliverable_id, idBuffer);
     gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_id), FALSE);
     gtk_label_set_text(widgets->view_deliverables->edit_deliverable_student_fk, student_fk);
@@ -1897,11 +1899,12 @@ void GTKEditDeliverables(int id) {
     gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widgets->view_deliverables->edit_deliverable_bad_code));
 
     // AUDIO FILE
-    // Display the download button if there is a file to download (tooltip used to download)
+    // Display the download button if there is a file to download
     if (audio_record != NULL && !strlen(audio_record)) {
         gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), FALSE);
     } else {
         gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), TRUE);
+        // Path in tooltip text will be used to download
         gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download),
                                     audio_record);
     }
@@ -2041,7 +2044,7 @@ void GTKDelivreablesGetData(int id, char **due_date, char **subject, char **audi
 
 // Set due date when editing deliverable (from string to calendar)
 void GTKEditDeliverableSetDueDate(char *date) {
-    // date = YYYY/MM/DD
+    // string date format = YYYY/MM/DD
     guint day, month, year, columnSize;
     char *buffer;
 
@@ -2081,9 +2084,9 @@ void GTKEditDelivreablesSubmit() {
     char dateBuffer[9];
 
     // Get date from calendar
-    //year decimal number (e.g. 2011), or NULL.
-    //month number (between 0 and 11), or NULL.
-    //day number (between 1 and 31), or NULL.
+    // year: decimal number (e.g. 2011) or NULL.
+    // month: number (between 0 and 11) or NULL.
+    // day: number (between 1 and 31) or NULL.
     gtk_calendar_get_date(widgets->view_deliverables->edit_deliverable_due_date, &year, &month, &day);
     sprintf(dateBuffer, "%d/%d/%d", year, month + 1, day);
 
@@ -2117,7 +2120,6 @@ int GTKEditDeliverableSubmitCheckRequiredField() {
 
 // Update audio file
 int GTKDeliverableSetAudio(char *path) {
-
     // check the extension of the audio file
     if (!checkAudioExtension(path)) {
         fprintf(stderr, "Wrong audio file extension !\n");
@@ -2137,7 +2139,7 @@ int GTKDeliverableSetAudio(char *path) {
 
     // set the download button visible
     gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), TRUE);
-    // display the new file path in the tooltip
+    // display the new file path in the tooltip (for the download)
     gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_audio_download), newPath);
 
     free(newPath);
@@ -2147,7 +2149,6 @@ int GTKDeliverableSetAudio(char *path) {
 
 // Update video file
 int GTKDeliverableSetVideo(char *path) {
-
     // check the extension of the video file
     if (!checkVideoExtension(path)) {
         fprintf(stderr, "Wrong video file extension !\n");
@@ -2155,7 +2156,6 @@ int GTKDeliverableSetVideo(char *path) {
     }
 
     char *newPath;
-
     if (!strlen(newPath = insertDeliverableFile("video_record",
                                                 atoi(gtk_label_get_text(
                                                         widgets->view_deliverables->edit_deliverable_id)),
@@ -2168,16 +2168,17 @@ int GTKDeliverableSetVideo(char *path) {
 
     // set the download button visible
     gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), TRUE);
-    // display the new file path in the tooltip
+    // display the new file path in the tooltip (for the download)
     gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_video_download), newPath);
+
     free(newPath);
+
     return 0;
 }
 
 // Update bad code file
 int GTKDeliverableSetBadCode(char *path) {
     char *newPath;
-
     if (!strlen(newPath = insertDeliverableFile("bad_code",
                                                 atoi(gtk_label_get_text(
                                                         widgets->view_deliverables->edit_deliverable_id)),
@@ -2190,16 +2191,17 @@ int GTKDeliverableSetBadCode(char *path) {
 
     // set the download button visible
     gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), TRUE);
-    // display the new file path in the tooltip
+    // display the new file path in the tooltip (for the download)
     gtk_widget_set_tooltip_text(GTK_WIDGET(widgets->view_deliverables->edit_deliverable_bad_code_download), newPath);
+
     free(newPath);
+
     return 0;
 }
 
 // Update deliverable file
 int GTKDeliverableSetDeliverable(char *path) {
     char *newPath;
-
     if (!strlen(newPath = insertDeliverableFile("deliverable_file",
                                                 atoi(gtk_label_get_text(
                                                         widgets->view_deliverables->edit_deliverable_id)),
@@ -2221,24 +2223,23 @@ int GTKDeliverableSetDeliverable(char *path) {
 
 // Display deliverable creation view content
 void GTKCreateDelivreables(int student_fk) {
-    // Display deliverable creation view
+    // Go to the deliverable stack + display deliverable creation view
     gtk_stack_set_visible_child_name(widgets->menu_stack, "view_deliverables");
     gtk_stack_set_visible_child(widgets->view_deliverables->view_deliverables_stack,
                                 widgets->view_deliverables->create_deliverable_fixed);
 
     char *sanction_name, *sanction_description, *student, *student_fk_c;
 
+    // Fill the parameters with results from database request
     GTKSanctionGetDataStudentId(student_fk, &sanction_name, &sanction_description, &student, &student_fk_c);
 
     // Fill status combo list
     fillStatusComboList(widgets->view_deliverables->create_deliverable_status, "To do");
 
-    ///TODO textbuffer ?
+    // Fill the content of the entries
     GtkTextBuffer *textBuffer = gtk_text_view_get_buffer(
             widgets->view_deliverables->create_deliverable_sanction_description);
     gtk_text_buffer_set_text(textBuffer, sanction_description, strlen(sanction_description));
-
-    // Fill the content of the entries
     gtk_label_set_text(widgets->view_deliverables->create_deliverable_student_fk, student_fk_c);
     gtk_widget_set_visible(GTK_WIDGET(widgets->view_deliverables->create_deliverable_student_fk), FALSE);
     gtk_label_set_text(widgets->view_deliverables->create_deliverable_sanction_name, sanction_name);
@@ -2262,7 +2263,7 @@ void GTKCreateDelivreablesSubmit() {
 
     // get the date from calendar
     gtk_calendar_get_date(widgets->view_deliverables->create_deliverable_due_date, &year, &month, &day);
-    sprintf(dateBuffer, "%d/%d/%d", year, month + 1, day); // month + 1 to get mont number
+    sprintf(dateBuffer, "%d/%d/%d", year, month + 1, day); // month + 1 to get month number (0 to 11)
 
     // get file paths
     char *audioPath = gtk_file_chooser_get_filename(
@@ -2319,11 +2320,15 @@ void GTKViewUser() {
 
     // Fill the parameters with result from the user database request
     GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
+
+    // Create "mailto" link from user email
     emailURI = malloc(strlen(email) + 8); // +8 for mailto:\0
     strcat(strcpy(emailURI, "mailto:"), email);
 
-    GTKUserImage(photo); // Display a scaled version of the user image
+    // Display a scaled version of the user image
+    GTKUserImage(photo);
 
+    // Fill entries with request return
     gtk_label_set_text(widgets->view_user->view_user_first_name, first_name);
     gtk_label_set_text(widgets->view_user->view_user_last_name, last_name);
     gtk_label_set_text(widgets->view_user->view_user_birthdate, birthdate);
@@ -2346,9 +2351,10 @@ void GTKEditUser() {
     char *email, *first_name, *last_name, *photo, *birthdate;
     int id;
 
-    // Fill the parameters with result from the user database request
+    // Fill variables with result from the user database request
     GTKUserGetData(&id, &email, &first_name, &last_name, &photo, &birthdate);
 
+    // Fill entries with request return
     gtk_entry_set_text(widgets->view_user->edit_user_first_name, first_name);
     gtk_entry_set_text(widgets->view_user->edit_user_last_name, last_name);
     gtk_entry_set_text(widgets->view_user->edit_user_email, email);
@@ -2474,6 +2480,7 @@ int GTKUserSetImage(char *path) {
     if (!checkImageExtension(path))
         return 1;
 
+    // Insert image in the database and creates the directories/file
     return insertTableImage("user", 1, path);
 }
 
@@ -2544,7 +2551,7 @@ void GTKViewSettingsSubmit() {
     strcpy(darkThemePath,
            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widgets->view_settings->settings_dark_theme_file_chooser)));
 
-    // Writing new configuration file
+    // Write new configuration file
     writeConf();
 }
 
@@ -2575,7 +2582,7 @@ void GTKSetTheme() {
     }
 }
 
-// Display or hide the console window, depending on the global variable showConsole
+// Display or hide the console window, depending on the showConsole global variable value
 void GTKShowConsole() {
     // Get the window handle used by the console
     HWND hWnd = GetConsoleWindow();
@@ -3046,7 +3053,7 @@ void connectWidgets() {
             gtk_builder_get_object(builder, "view_settings_submit_button"));
 }
 
-// Hide or displays the search entry on a view
+// Hide or display search bar
 void setSearchEntry(gboolean visible, GtkTreeView *treeView, const char *placeholder) {
     if (visible) { // if TRUE
         gtk_fixed_move(widgets->gtk_fixed, GTK_WIDGET(widgets->menu_stack_switcher), 162, 161); // move menu to the right
@@ -3067,7 +3074,7 @@ void GTKSaveFile(char *path) {
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE; // save mode
     gint res;
 
-    // Create a new GtkFileChooserDialog
+    // Create a new GtkFileChooserDialog with two buttons
     dialog = gtk_file_chooser_dialog_new("Save File",
                                          GTK_WINDOW(widgets->window_dashboard),
                                          action,

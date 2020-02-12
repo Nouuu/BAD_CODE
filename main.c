@@ -21,12 +21,11 @@ int main(int argc, char **argv) {
     // Read the configuration file and fill the global variables
     readConf();
 
-    // Display or hide the console window, depending on the config variable showConsole
-    ///TODO: pourquoi pas appeler la fonction GTKShowConsole()?
+    // Display or hide the console window, depending on the showConsole config variable
     HWND hWnd = GetConsoleWindow();
     if (showConsole) {
         ShowWindow(hWnd, SW_SHOW);
-        ShowWindow(hWnd, SW_MINIMIZE); ///TODO: pourquoi minimiser ici et pas dans la fonction?
+        ShowWindow(hWnd, SW_MINIMIZE);
     } else {
         ShowWindow(hWnd, SW_HIDE);
     }
