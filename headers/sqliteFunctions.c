@@ -364,7 +364,7 @@ int deleteClass(int id) {
  * @param 
  * @param data
  *
- * @data = "id| name| year| apprenticeship| major| user(first_name + last_name)| user_fk| sanction(name)| sanction_fk;\n..."
+ * @data = "id|name|year|apprenticeship|major|user(first_name + last_name)|user_fk|sanction(name)|sanction_fk;\n..."
  */
 void listClasses(char **data) {
     sqlite3 *db = connectDB();
