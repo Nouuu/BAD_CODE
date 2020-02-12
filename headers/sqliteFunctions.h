@@ -1,7 +1,3 @@
-//
-// Created by MaleWhere on 06/01/2020.
-//
-
 #ifndef BAD_CODE_SQLITEFUNCTIONS_H
 #define BAD_CODE_SQLITEFUNCTIONS_H
 
@@ -12,6 +8,7 @@
 #include <sqlite3.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+// Global variables from main.c / config file
 extern char *dbname;
 extern char *storageFolder;
 extern char *darkThemePath;
