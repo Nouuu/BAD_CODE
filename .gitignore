@@ -16,3 +16,5 @@ glade/dashboard.glade~
 glade/#listStudents.glade#
 
 cmake-build-release-mingw-gtk/
+
+cmake-build-release/
