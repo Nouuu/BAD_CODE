@@ -521,14 +521,15 @@ environment variable PATH`
 
 During the build, if some libraries are not found, go to the folder
 `msys2/mingw64/include` and copy them outside of there *version
-folder*:\ **Exemple :** copy **gtk** and **gdk** folder inside
+folder*:  
+**Exemple :** copy **gtk** and **gdk** folder inside
 `msys2/mingw64/include/gtk-3-0/` directly inside
 `msys2/mingw64/include/`
 
 ## Contributing
 
 If someone has the idea and know how to compile in static with GTK and
-stuffs to be dependance free on windows OS, be my guest !
+stuffs to be dependence free on windows OS, be my guest !
 
 ## Authors
 
